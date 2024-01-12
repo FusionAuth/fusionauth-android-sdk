@@ -15,7 +15,7 @@
 # The workflow should work with no modifications, but you might like to use a
 # later version of the Detekt CLI by modifing the $DETEKT_RELEASE_TAG
 # environment variable.
-name: Scan with Detekt
+name: Vulnerability Scan with Detekt
 
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
@@ -24,7 +24,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-     - cron: '39 15 * * 6'
+     - cron: '25 6 * * 1'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -37,7 +37,7 @@ env:
 jobs:
   # This workflow contains a single job called "scan"
   scan:
-    name: Scan
+    name: Detekt Scan
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
