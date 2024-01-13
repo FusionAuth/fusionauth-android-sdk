@@ -56,14 +56,14 @@ jobs:
           --location \
           --output $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip
         unzip $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip -d $dest/
-        chmod a+x $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/detekt
+        chmod a+x $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/detekt-cli
         echo $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/ >> $GITHUB_PATH
 
     # Performs static analysis using Detekt
     - name: Run Detekt
       continue-on-error: true
       run: |
-        detekt --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
+        detekt-cli --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
 
     # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
     # This is so we can easily map results onto their source files
