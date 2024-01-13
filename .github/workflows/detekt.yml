@@ -57,7 +57,7 @@ jobs:
           query getReleaseAssetDownloadUrl($tagName: String!) {
             repository(name: "detekt", owner: "detekt") {
               release(tagName: $tagName) {
-                releaseAssets(name: "detekt", first: 1) {
+                releaseAssets(name: "detekt-cli-1.23.4.zip", first: 1) {
                   nodes {
                     downloadUrl
                   }
@@ -70,11 +70,11 @@ jobs:
           }
         ' 1> gh_response.json
 
-        #DETEKT_RELEASE_SHA=$(jq --raw-output '.data.repository.release.releaseAssets.tagCommit.oid' gh_response.json)
-        #if [ $DETEKT_RELEASE_SHA != $EXPECTED_DETEKT_RELEASE_SHA ]; then
-        #  echo "Release tag doesn't match expected $EXPECTED_DETEKT_RELEASE_SHA commit SHA but got $DETEKT_RELEASE_SHA"
-        #  exit 1
-        #fi
+        DETEKT_RELEASE_SHA=$(jq --raw-output '.data.repository.release.releaseAssets.tagCommit.oid' gh_response.json)
+        if [ $DETEKT_RELEASE_SHA != $EXPECTED_DETEKT_RELEASE_SHA ]; then
+          echo "Release tag doesn't match expected $EXPECTED_DETEKT_RELEASE_SHA commit SHA but got $DETEKT_RELEASE_SHA"
+          exit 1
+        fi
 
         DETEKT_DOWNLOAD_URL=$(jq --raw-output '.data.repository.release.releaseAssets.nodes[0].downloadUrl' gh_response.json)
         echo "download_url=$DETEKT_DOWNLOAD_URL" >> $GITHUB_OUTPUT
@@ -87,7 +87,9 @@ jobs:
           --url ${{ steps.detekt_info.outputs.download_url }} \
           --silent \
           --location \
-          --output $dest/detekt
+          --output $dest/detekt.zip
+        unzip $dest/detekt.zip
+        mv $dest/detekt-cli-1.23.4/bin/detekt-cli $dest/detekt
         chmod a+x $dest/detekt
         echo $dest >> $GITHUB_PATH
 
