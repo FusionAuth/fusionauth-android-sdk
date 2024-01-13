@@ -55,7 +55,7 @@ jobs:
           --silent \
           --location \
           --output $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip
-        unzip $dest/detekt.zip -d $dest/
+        unzip $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip -d $dest/
         chmod a+x $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/detekt
         echo $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/ >> $GITHUB_PATH
 
