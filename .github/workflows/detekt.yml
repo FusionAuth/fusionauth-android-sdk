@@ -34,7 +34,7 @@ env:
   DETEKT_RELEASE_TAG: "1.23.4"
   DETEKT_FILE_NAME: "detekt-cli-$DETEKT_RELEASE_TAG-all.jar"
   DETEKT_URL: "https://github.com/detekt/detekt/releases/download/v$DETEKT_RELEASE_TAG/$DETEKT_FILE_NAME"
-  DETEKT_DIRECTORY: "${{ github.workspace }}/tmp/detekt_temp/lib/"
+  DETEKT_DIRECTORY: "${{ github.workspace }}/tmp/detekt_temp/lib"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
