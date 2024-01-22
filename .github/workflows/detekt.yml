@@ -70,7 +70,7 @@ jobs:
           --silent \
           --location \
           --output $dest/${DETEKT_FILE_NAME}
-        mv $dest/${DETEKT_FILE_NAME} -d $dest/detekt.jar
+        mv $dest/${DETEKT_FILE_NAME} $dest/detekt.jar
 
     # Performs static analysis using Detekt
     - name: Run Detekt
