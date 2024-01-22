@@ -34,7 +34,7 @@ env:
   DETEKT_RELEASE_TAG: "1.23.4"
   DETEKT_FILE_NAME: "detekt-cli-$DETEKT_VERSION-all.jar"
   DETEKT_URL: "https://github.com/detekt/detekt/releases/download/v$DETEKT_VERSION/$DETEKT_FILE_NAME"
-  DETEKT_DIRECTORY: "/detekt_temp/lib/"
+  DETEKT_DIRECTORY: "/tmp/detekt_temp/lib/"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -65,6 +65,7 @@ jobs:
     # Sets up the detekt cli
     - name: Setup Detekt
       run: |
+        mkdir $DETEKT_DIRECTORY
         curl --request GET \
           --url $DETEKT_URL \
           --silent \
