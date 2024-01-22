@@ -65,7 +65,7 @@ jobs:
     # Sets up the detekt cli
     - name: Setup Detekt
       run: |
-        mkdir $DETEKT_DIRECTORY
+        mkdir -p $DETEKT_DIRECTORY
         curl --request GET \
           --url $DETEKT_URL \
           --silent \
