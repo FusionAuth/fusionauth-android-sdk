@@ -31,7 +31,9 @@ on:
 env:
   # Release tag associated with version of Detekt to be installed
   # SARIF support (required for this workflow) was introduced in Detekt v1.15.0
-  DETEKT_RELEASE_TAG: 1.23.4
+  DETEKT_RELEASE_TAG: "1.23.4"
+  DETEKT_FILE_NAME: "detekt-cli-${DETEKT_VERSION}-all.jar"
+  DETEKT_URL: "https://github.com/detekt/detekt/releases/download/v${DETEKT_VERSION}/${DETEKT_FILE_NAME}"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -48,27 +50,33 @@ jobs:
       contents: read
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Sets up JDK
+    - name: Setup JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     # Sets up the detekt cli
     - name: Setup Detekt
       run: |
         dest=$( mktemp -d )
         curl --request GET \
-          --url https://github.com/detekt/detekt/releases/download/v$DETEKT_RELEASE_TAG/detekt-cli-$DETEKT_RELEASE_TAG.zip \
+          --url ${DETEKT_URL} \
           --silent \
           --location \
-          --output $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip
-        unzip $dest/detekt-cli-$DETEKT_RELEASE_TAG.zip -d $dest/
-        chmod a+x $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/detekt-cli
-        echo $dest/detekt-cli-$DETEKT_RELEASE_TAG/bin/ >> $GITHUB_PATH
+          --output $dest/${DETEKT_FILE_NAME}
+        mv $dest/${DETEKT_FILE_NAME} -d $dest/detekt.jar
 
     # Performs static analysis using Detekt
     - name: Run Detekt
       continue-on-error: true
       run: |
-        detekt-cli --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
+        java -jar $dest/detekt.jar --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
 
     # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
     # This is so we can easily map results onto their source files
@@ -82,6 +90,16 @@ jobs:
             '. | ( .runs[].results[].locations[].physicalLocation.artifactLocation.uri |= if test($github_workspace) then .[($github_workspace | length | . + 1):] else . end )' \
             ${{ github.workspace }}/detekt.sarif.json
         )" > ${{ github.workspace }}/detekt.sarif.json
+
+    # Sets up the reviewdog cli
+    - name: Setup reviewdog
+      uses: reviewdog/action-setup@v1
+
+    - name: Show reviewdog version
+      run: reviewdog -version
+
+    - name: Run reviewdog
+      run: reviewdog -f=sarif -diff="git diff" -name="detekt" < ${{ github.workspace }}/detekt.sarif.json
 
     # Uploads results to GitHub repository using the upload-sarif action
     - uses: github/codeql-action/upload-sarif@v3
