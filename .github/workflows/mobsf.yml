@@ -59,4 +59,4 @@ jobs:
       # Process Sarif Report file from MobSF with reviewdog cli
       - name: Run reviewdog
         if: success() || failure()
-        run: reviewdog -f=sarif -diff="git diff" -name="detekt" < mobsf.sarif.json
+        run: reviewdog -f=sarif -diff="git diff" -name="mobsf" -reporter=github-check < mobsf.sarif.json

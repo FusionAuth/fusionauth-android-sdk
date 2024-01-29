@@ -81,4 +81,4 @@ jobs:
     # Process Sarif Report file from Detekt with reviewdog cli
     - name: Run reviewdog
       if: success() || failure()
-      run: reviewdog -f=sarif -diff="git diff" -name="detekt" < build/reports/detekt/merge.sarif.json
+      run: reviewdog -f=sarif -diff="git diff" -name="detekt" -reporter=github-check < build/reports/detekt/merge.sarif.json
