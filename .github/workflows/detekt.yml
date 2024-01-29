@@ -28,14 +28,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-env:
-  # Release tag associated with version of Detekt to be installed
-  # SARIF support (required for this workflow) was introduced in Detekt v1.15.0
-  DETEKT_RELEASE_TAG: "1.23.4"
-  DETEKT_FILE_NAME: "detekt-cli-$DETEKT_RELEASE_TAG-all.jar"
-  DETEKT_URL: "https://github.com/detekt/detekt/releases/download/v$DETEKT_RELEASE_TAG/$DETEKT_FILE_NAME"
-  DETEKT_DIRECTORY: "${{ github.workspace }}/tmp/detekt_temp/lib"
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "scan"
@@ -51,8 +43,8 @@ jobs:
       contents: read
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Sets up JDK
-    - name: Setup JDK 17
+    # Sets up JDK as a prerequisite to run Gradle
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
@@ -62,35 +54,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Sets up the detekt cli
-    - name: Setup Detekt
-      run: |
-        mkdir -p $DETEKT_DIRECTORY
-        curl --request GET \
-          --url $DETEKT_URL \
-          --silent \
-          --location \
-          --output $DETEKT_DIRECTORY/$DETEKT_FILE_NAME
-        mv $DETEKT_DIRECTORY/$DETEKT_FILE_NAME $DETEKT_DIRECTORY/detekt.jar
+    # Sets up Gradle as a prerequisite to run Detekt
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-home-cache-cleanup: true
 
-    # Performs static analysis using Detekt
+    # Performs analysis using Detekt via Gradle and outputs a Sarif Report
     - name: Run Detekt
-      continue-on-error: true
-      run: |
-        java -jar $DETEKT_DIRECTORY/detekt.jar --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
+      run: ./gradlew detektMain detektTest detektReportMergeSarif --continue
 
-    # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
-    # This is so we can easily map results onto their source files
-    # This can be removed once relative URI support lands in Detekt: https://git.io/JLBbA
-    - name: Make artifact location URIs relative
-      continue-on-error: true
-      run: |
-        echo "$(
-          jq \
-            --arg github_workspace ${{ github.workspace }} \
-            '. | ( .runs[].results[].locations[].physicalLocation.artifactLocation.uri |= if test($github_workspace) then .[($github_workspace | length | . + 1):] else . end )' \
-            ${{ github.workspace }}/detekt.sarif.json
-        )" > ${{ github.workspace }}/detekt.sarif.json
+    # Uploads Sarif Report to GitHub
+    - name: Upload SARIF to GitHub
+      uses: github/codeql-action/upload-sarif@v3 # v3
+      if: success() || failure()
+      with:
+        sarif_file: build/reports/detekt/merge.sarif.json
 
     # Sets up the reviewdog cli
     - name: Setup reviewdog
@@ -99,12 +78,6 @@ jobs:
     - name: Show reviewdog version
       run: reviewdog -version
 
+    # Process Sarif Report file from Detekt with reviewdog cli
     - name: Run reviewdog
-      run: reviewdog -f=sarif -diff="git diff" -name="detekt" < ${{ github.workspace }}/detekt.sarif.json
-
-    # Uploads results to GitHub repository using the upload-sarif action
-    - uses: github/codeql-action/upload-sarif@v3
-      with:
-        # Path to SARIF file relative to the root of the repository
-        sarif_file: ${{ github.workspace }}/detekt.sarif.json
-        checkout_path: ${{ github.workspace }}
+      run: reviewdog -f=sarif -diff="git diff" -name="detekt" < build/reports/detekt/merge.sarif.json
