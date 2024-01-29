@@ -81,4 +81,6 @@ jobs:
     # Process Sarif Report file from Detekt with reviewdog cli
     - name: Run reviewdog
       if: success() || failure()
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: reviewdog -f=sarif -diff="git diff" -name="detekt" -reporter=github-check < build/reports/detekt/merge.sarif.json

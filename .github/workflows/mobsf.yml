@@ -58,5 +58,7 @@ jobs:
 
       # Process Sarif Report file from MobSF with reviewdog cli
       - name: Run reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: success() || failure()
         run: reviewdog -f=sarif -diff="git diff" -name="mobsf" -reporter=github-check < mobsf.sarif.json
