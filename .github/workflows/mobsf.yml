@@ -47,16 +47,16 @@ jobs:
       - name: Run mobsfscan
         uses: MobSF/mobsfscan@e29e85c36fa1aa950d7f1b1064345d94a70b2a28
         with:
-          args: . --sarif --output build/reports/mobsf/results.sarif.json || true
+          args: . --sarif --output mobsf.sarif.json || true
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: build/reports/mobsf/results.sarif.json
+          sarif_file: mobsf.sarif.json
 
       # Process Sarif Report file from MobSF with reviewdog cli
       - name: Run reviewdog
         if: success() || failure()
-        run: reviewdog -f=sarif -diff="git diff" -name="detekt" < build/reports/mobsf/results.sarif.json
+        run: reviewdog -f=sarif -diff="git diff" -name="detekt" < mobsf.sarif.json
