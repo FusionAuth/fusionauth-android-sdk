@@ -50,6 +50,13 @@ jobs:
         java-version: '17'
         distribution: 'zulu'
 
+    # Sets up the reviewdog cli
+    - name: Setup reviewdog
+      uses: reviewdog/action-setup@v1
+
+    - name: Show reviewdog version
+      run: reviewdog -version
+
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -71,13 +78,7 @@ jobs:
       with:
         sarif_file: build/reports/detekt/merge.sarif.json
 
-    # Sets up the reviewdog cli
-    - name: Setup reviewdog
-      uses: reviewdog/action-setup@v1
-
-    - name: Show reviewdog version
-      run: reviewdog -version
-
     # Process Sarif Report file from Detekt with reviewdog cli
     - name: Run reviewdog
+      if: success() || failure()
       run: reviewdog -f=sarif -diff="git diff" -name="detekt" < build/reports/detekt/merge.sarif.json
