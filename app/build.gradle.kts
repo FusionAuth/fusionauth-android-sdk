@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.fusionauth.sdktest"
+        applicationId = "io.fusionauth.app"
         minSdk = 23
         targetSdk = 34
         versionCode = 1
@@ -18,7 +18,7 @@ android {
 
         // Make sure this is consistent with the redirect URI used in res/raw/auth_config.json,
         // or specify additional redirect URIs in AndroidManifest.xml
-        manifestPlaceholders["appAuthRedirectScheme"] = "io.fusionauth.sdktest-demo"
+        manifestPlaceholders["appAuthRedirectScheme"] = "io.fusionauth.app"
     }
 
     buildTypes {
@@ -53,6 +53,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.browser:browser:1.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
