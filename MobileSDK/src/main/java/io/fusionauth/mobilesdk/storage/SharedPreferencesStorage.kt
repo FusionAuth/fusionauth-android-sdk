@@ -36,6 +36,6 @@ class SharedPreferencesStorage
     }
 
     override fun remove(key: String) {
-        TODO("Not yet implemented")
+        this.sharedPreferences.edit().remove(key).apply()
     }
 }

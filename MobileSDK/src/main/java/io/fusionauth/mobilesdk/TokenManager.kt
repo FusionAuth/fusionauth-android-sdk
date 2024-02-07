@@ -15,13 +15,13 @@ class TokenManager {
         return this
     }
 
-    fun getAuthState(): AuthState? {
+    fun getAuthState(): FusionAuthState? {
         return this.storage?.get("authState")?.let { authState ->
-            return Cbor.decodeFromHexString<AuthState>(authState)
+            return Cbor.decodeFromHexString<FusionAuthState>(authState)
         }
     }
 
-    fun saveAuthState(authState: AuthState) {
+    fun saveAuthState(authState: FusionAuthState) {
         this.storage?.set("authState", Cbor.encodeToHexString(authState))
     }
 

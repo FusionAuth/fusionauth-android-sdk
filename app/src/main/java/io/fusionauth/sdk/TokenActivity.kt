@@ -27,21 +27,17 @@ import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import io.fusionauth.mobilesdk.AuthState
-import io.fusionauth.mobilesdk.AuthenticationConfiguration
-import io.fusionauth.mobilesdk.AuthenticationManager
-import io.fusionauth.mobilesdk.IdToken
+import io.fusionauth.mobilesdk.*
+import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
+import java.util.logging.Logger
 import kotlin.math.floor
 
 /**
@@ -51,14 +47,12 @@ import kotlin.math.floor
  * additional post-authorization operations if available, such as fetching user info.
  */
 class TokenActivity : AppCompatActivity() {
-    private val mUserInfoJson = AtomicReference<JSONObject?>()
-    private var mExecutor: ExecutorService? = null
+    private val mUserInfoJson = AtomicReference<UserInfo?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mExecutor = Executors.newSingleThreadExecutor()
-
+        AuthenticationManager.initStorage(SharedPreferencesStorage(this))
         AuthenticationManager.initialize(
             AuthenticationConfiguration(
                 clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
@@ -72,7 +66,7 @@ class TokenActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             try {
-                mUserInfoJson.set(JSONObject(savedInstanceState.getString(KEY_USER_INFO)))
+//                mUserInfoJson.set(JSONObject(savedInstanceState.getString(KEY_USER_INFO)))
             } catch (ex: JSONException) {
                 Log.e(TAG, "Failed to parse saved user info JSON, discarding", ex)
             }
@@ -82,21 +76,19 @@ class TokenActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        if (mExecutor!!.isShutdown) {
-            mExecutor = Executors.newSingleThreadExecutor()
-        }
-
+        Logger.getLogger(TAG).info("Checking for authorization response")
         if (AuthenticationManager.isAuthenticated()) {
             fetchUserInfoAndDisplayAuthorized(/*authState.getAccessToken()*/)
             return
         }
 
-        lifecycleScope.launch(block = {
+        lifecycleScope.launch {
             displayLoading("Exchanging authorization code")
-            val authState: AuthState = AuthenticationManager.oAuth(this@TokenActivity)
+            val authState: FusionAuthState = AuthenticationManager.oAuth(this@TokenActivity)
                 .handleRedirect(intent)
+            Log.i(TAG, authState.toString())
             fetchUserInfoAndDisplayAuthorized()
-        })
+        }
     }
 
     override fun onSaveInstanceState(state: Bundle) {
@@ -112,7 +104,6 @@ class TokenActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AuthenticationManager.dispose()
-        mExecutor!!.shutdownNow()
     }
 
     @MainThread
@@ -155,7 +146,9 @@ class TokenActivity : AppCompatActivity() {
 
         val changeTextInput: EditText = findViewById(R.id.change_text_input)
         changeTextInput.addTextChangedListener(MoneyChangedHandler(changeTextInput))
-        findViewById<View>(R.id.sign_out).setOnClickListener { endSession() }
+        findViewById<View>(R.id.sign_out).setOnClickListener {
+            endSession()
+        }
         findViewById<View>(R.id.change_button).setOnClickListener { makeChange() }
 
         var name = ""
@@ -165,12 +158,8 @@ class TokenActivity : AppCompatActivity() {
         val userInfo = mUserInfoJson.get()
         if (userInfo != null) {
             try {
-                if (userInfo.has("given_name")) {
-                    name = userInfo.getString("given_name")
-                }
-                if (userInfo.has("email")) {
-                    email = userInfo.getString("email")
-                }
+                name = userInfo.given_name ?: ""
+                email = userInfo.email ?: ""
             } catch (ex: JSONException) {
                 Log.e(TAG, "Failed to read userinfo JSON", ex)
             }
@@ -244,20 +233,21 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-        AuthenticationManager.clearState()
+//        AuthenticationManager.clearState()
 
-        lifecycleScope.launch(block = {
+        lifecycleScope.launch {
             AuthenticationManager
                 .oAuth(this@TokenActivity)
                 .logout(
                     PendingIntent.getActivity(
                         this@TokenActivity,
-                        END_SESSION_REQUEST_CODE,
-                        Intent(this@TokenActivity, LoginActivity::class.java),
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        0,
+                        Intent(this@TokenActivity, LoginActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                        PendingIntent.FLAG_MUTABLE
                     )
                 )
-        })
+        }
     }
 
     @MainThread

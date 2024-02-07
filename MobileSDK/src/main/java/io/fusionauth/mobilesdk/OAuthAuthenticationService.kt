@@ -13,7 +13,6 @@ import kotlinx.serialization.json.decodeFromStream
 import net.openid.appauth.*
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.util.logging.Logger
 import kotlin.coroutines.resume
@@ -29,6 +28,8 @@ class OAuthAuthenticationService internal constructor(
     var allowUnsecureConnection: Boolean = false,
 ) {
 
+    val json = Json { ignoreUnknownKeys = true }
+
     suspend fun authorize(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
         return withContext(Dispatchers.IO) {
             val config = getConfiguration()
@@ -38,18 +39,18 @@ class OAuthAuthenticationService internal constructor(
                     config,
                     clientId,
                     ResponseTypeValues.CODE,
-                    Uri.parse("io.fusionauth.mobilesdk:/oauth2redirect"),
+                    Uri.parse("io.fusionauth.app:/oauth2redirect"),
                 )
-                    .setScope("openid")
+                    .setScope("openid offline_access")
                     .build()
 
-            val authService = AuthorizationService(context)
+            val authService = getAuthorizationService()
             if (cancelIntent == null) {
                 authService.performAuthorizationRequest(
                     authRequest,
                     completedIntent,
                 )
-                return@withContext
+                return@withContext;
             }
             authService.performAuthorizationRequest(
                 authRequest,
@@ -59,17 +60,15 @@ class OAuthAuthenticationService internal constructor(
         }
     }
 
-    suspend fun handleRedirect(intent: Intent): AuthState {
+    suspend fun handleRedirect(intent: Intent): FusionAuthState {
         return withContext(Dispatchers.IO) {
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = AuthorizationException.fromIntent(intent)
 
             if (response != null) {
-                val tokenResponse = async { performTokenRequest(response) }
-                Logger.getLogger("FusionAuth Mobile SDK")
-                    .info("Token response: ${tokenResponse.await()}")
+                val tokenResponse = async { performTokenRequest(response, exception) }
                 val t = tokenResponse.await()
-                val authState = AuthState(
+                val authState = FusionAuthState(
                     accessToken = t.accessToken,
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
                     idToken = t.idToken
@@ -82,8 +81,21 @@ class OAuthAuthenticationService internal constructor(
         }
     }
 
+    /**
+     * Checks if the authorization process has failed by examining the given intent.
+     * This method should be called inside a coroutine.
+     *
+     * @param intent The intent to examine.
+     * @return `true` if the authorization process has failed, `false` otherwise.
+     */
+    fun isFailed(intent: Intent): Boolean {
+        val exception = AuthorizationException.fromIntent(intent)
+
+        return exception != null
+    }
+
     @OptIn(ExperimentalSerializationApi::class)
-    suspend fun getUserInfo(): JSONObject? {
+    suspend fun getUserInfo(): UserInfo? {
         return withContext(Dispatchers.IO) {
             val authState = tokenManager?.getAuthState() ?: return@withContext null
 
@@ -95,13 +107,16 @@ class OAuthAuthenticationService internal constructor(
             conn.setRequestProperty("Authorization", "Bearer ${authState!!.accessToken}")
             conn.instanceFollowRedirects = false
 
-            Json.decodeFromStream(conn.inputStream)
+            json.decodeFromStream<UserInfo>(conn.inputStream)
         }
     }
 
     suspend fun logout(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
         return withContext(Dispatchers.IO) {
             val authState = tokenManager?.getAuthState() ?: return@withContext
+            Logger.getLogger("OAuthAuthenticationService").info("Logout request: $authState")
+
+            AuthenticationManager.clearState()
 
             val config = getConfiguration()
 
@@ -109,10 +124,12 @@ class OAuthAuthenticationService internal constructor(
                 config
             )
                 .setIdTokenHint(authState.idToken)
-                .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.mobilesdk:/oauth2redirect"))
+                .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.app:/oauth2redirect"))
                 .build()
 
-            val authService = AuthorizationService(context)
+            Logger.getLogger("OAuthAuthenticationService").info("Logout request: $logoutRequest")
+
+            val authService = getAuthorizationService()
             if (cancelIntent == null) {
                 authService.performEndSessionRequest(
                     logoutRequest,
@@ -128,12 +145,19 @@ class OAuthAuthenticationService internal constructor(
         }
     }
 
-    private suspend fun performTokenRequest(response: AuthorizationResponse): TokenResponse {
+    private suspend fun performTokenRequest(
+        response: AuthorizationResponse,
+        ex: AuthorizationException?
+    ): TokenResponse {
         return suspendCoroutine { continuation ->
-            val authService = AuthorizationService(context)
+            val authService = getAuthorizationService()
+
+            val authState = AuthState()
+            authState.update(response, ex)
 
             authService.performTokenRequest(
                 response.createTokenExchangeRequest(),
+                authState.clientAuthentication
             ) { tokenResponse, exception ->
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
@@ -162,6 +186,20 @@ class OAuthAuthenticationService internal constructor(
 
     private fun getConnectionBuilder(): ConnectionBuilder {
         return if (allowUnsecureConnection) SingletonUnsecureConnectionBuilder else DefaultConnectionBuilder.INSTANCE
+    }
+
+    /**
+     * Retrieves the authorization service used for OAuth authentication.
+     *
+     * @return The authorization service instance.
+     */
+    private fun getAuthorizationService(): AuthorizationService {
+        return AuthorizationService(
+            context, AppAuthConfiguration.Builder()
+                .setConnectionBuilder(getConnectionBuilder())
+                .setSkipIssuerHttpsCheck(allowUnsecureConnection)
+                .build()
+        )
     }
 
 }

@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 
 object AuthenticationManager {
     private val isUserAuthenticated: Boolean? = null
-    private lateinit var tokenManager: TokenManager
+    private var tokenManager: TokenManager
     private lateinit var storage: Storage
     private lateinit var configuration: AuthenticationConfiguration
 
