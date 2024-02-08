@@ -40,7 +40,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("net.openid:appauth:0.11.1")
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
