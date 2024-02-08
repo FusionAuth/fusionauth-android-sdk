@@ -21,13 +21,7 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      prod-gradle-minor-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "minor"
-          - "patch"
-      dev-gradle-minor-dependencies:
-        dependency-type: "development"
+      gradle-minor-dependencies:
         update-types:
           - "minor"
           - "patch"
