@@ -2,7 +2,7 @@ package io.fusionauth.mobilesdk
 
 import java.util.UUID
 
-@Suppress("PropertyName")
+@Suppress("PropertyName", "ConstructorParameterNaming")
 data class IdToken (
     val at_hash: String? = null,
     val aud: String? = null,

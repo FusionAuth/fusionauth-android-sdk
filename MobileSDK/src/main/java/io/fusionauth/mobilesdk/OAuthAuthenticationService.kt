@@ -4,13 +4,23 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import net.openid.appauth.*
+import net.openid.appauth.AppAuthConfiguration
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationRequest
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.AuthorizationServiceConfiguration
+import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.TokenResponse
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.net.HttpURLConnection
@@ -26,42 +36,41 @@ class OAuthAuthenticationService internal constructor(
     var tenant: String?,
     var tokenManager: TokenManager?,
     var allowUnsecureConnection: Boolean = false,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
 
     val json = Json { ignoreUnknownKeys = true }
 
     suspend fun authorize(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
-        return withContext(Dispatchers.IO) {
-            val config = getConfiguration()
+        val config = getConfiguration()
 
-            val authRequest =
-                AuthorizationRequest.Builder(
-                    config,
-                    clientId,
-                    ResponseTypeValues.CODE,
-                    Uri.parse("io.fusionauth.app:/oauth2redirect"),
-                )
-                    .setScope("openid offline_access")
-                    .build()
+        val authRequest =
+            AuthorizationRequest.Builder(
+                config,
+                clientId,
+                ResponseTypeValues.CODE,
+                Uri.parse("io.fusionauth.app:/oauth2redirect"),
+            )
+                .setScope("openid offline_access")
+                .build()
 
-            val authService = getAuthorizationService()
-            if (cancelIntent == null) {
-                authService.performAuthorizationRequest(
-                    authRequest,
-                    completedIntent,
-                )
-                return@withContext;
-            }
+        val authService = getAuthorizationService()
+        if (cancelIntent == null) {
             authService.performAuthorizationRequest(
                 authRequest,
                 completedIntent,
-                cancelIntent,
             )
+            return
         }
+        authService.performAuthorizationRequest(
+            authRequest,
+            completedIntent,
+            cancelIntent,
+        )
     }
 
     suspend fun handleRedirect(intent: Intent): FusionAuthState {
-        return withContext(Dispatchers.IO) {
+        return withContext(defaultDispatcher) {
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = AuthorizationException.fromIntent(intent)
 
@@ -96,15 +105,19 @@ class OAuthAuthenticationService internal constructor(
 
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun getUserInfo(): UserInfo? {
-        return withContext(Dispatchers.IO) {
+        return withContext(defaultDispatcher) {
             val authState = tokenManager?.getAuthState() ?: return@withContext null
 
             val config = getConfiguration()
 
-            val conn: HttpURLConnection = getConnectionBuilder().openConnection(
-                config.discoveryDoc!!.userinfoEndpoint!!
-            )
-            conn.setRequestProperty("Authorization", "Bearer ${authState!!.accessToken}")
+            val conn: HttpURLConnection = config.discoveryDoc?.userinfoEndpoint.let {
+                if (it == null) {
+                    return@withContext null
+                }
+                getConnectionBuilder().openConnection(it)
+            }
+
+            conn.setRequestProperty("Authorization", "Bearer ${authState.accessToken}")
             conn.instanceFollowRedirects = false
 
             json.decodeFromStream<UserInfo>(conn.inputStream)
@@ -112,37 +125,35 @@ class OAuthAuthenticationService internal constructor(
     }
 
     suspend fun logout(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
-        return withContext(Dispatchers.IO) {
-            val authState = tokenManager?.getAuthState() ?: return@withContext
-            Logger.getLogger("OAuthAuthenticationService").info("Logout request: $authState")
+        val authState = tokenManager?.getAuthState() ?: return
+        Logger.getLogger("OAuthAuthenticationService").info("Logout request: $authState")
 
-            AuthenticationManager.clearState()
+        AuthenticationManager.clearState()
 
-            val config = getConfiguration()
+        val config = getConfiguration()
 
-            val logoutRequest = EndSessionRequest.Builder(
-                config
-            )
-                .setIdTokenHint(authState.idToken)
-                .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.app:/oauth2redirect"))
-                .build()
+        val logoutRequest = EndSessionRequest.Builder(
+            config
+        )
+            .setIdTokenHint(authState.idToken)
+            .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.app:/oauth2redirect"))
+            .build()
 
-            Logger.getLogger("OAuthAuthenticationService").info("Logout request: $logoutRequest")
+        Logger.getLogger("OAuthAuthenticationService").info("Logout request: $logoutRequest")
 
-            val authService = getAuthorizationService()
-            if (cancelIntent == null) {
-                authService.performEndSessionRequest(
-                    logoutRequest,
-                    completedIntent,
-                )
-                return@withContext
-            }
+        val authService = getAuthorizationService()
+        if (cancelIntent == null) {
             authService.performEndSessionRequest(
                 logoutRequest,
                 completedIntent,
-                cancelIntent,
             )
+            return
         }
+        authService.performEndSessionRequest(
+            logoutRequest,
+            completedIntent,
+            cancelIntent,
+        )
     }
 
     private suspend fun performTokenRequest(
@@ -162,7 +173,7 @@ class OAuthAuthenticationService internal constructor(
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
                 } else {
-                    continuation.resumeWithException(exception!!)
+                    continuation.resumeWithException(exception ?: Exception("Unknown error"))
                 }
             }
         }
@@ -173,10 +184,10 @@ class OAuthAuthenticationService internal constructor(
             AuthorizationServiceConfiguration.fetchFromIssuer(
                 Uri.parse(fusionAuthUrl),
                 { configuration, ex ->
-                    if (ex != null) {
-                        continuation.resumeWithException(ex)
+                    if(configuration != null) {
+                        continuation.resume(configuration)
                     } else {
-                        continuation.resume(configuration!!)
+                        continuation.resumeWithException(ex ?: Exception("Unknown error"))
                     }
                 },
                 getConnectionBuilder(),

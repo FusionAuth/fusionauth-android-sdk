@@ -9,8 +9,11 @@ import java.util.concurrent.TimeUnit
 
 object SingletonUnsecureConnectionBuilder : ConnectionBuilder by UnsecureConnectionBuilder()
 
-internal val CONNECTION_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(15).toInt()
-internal val READ_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(10).toInt()
+private const val CONNECTION_TIMEOUT_SECONDS = 1000L
+private const val READ_TIMEOUT_SECONDS = 10L
+
+internal val CONNECTION_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(CONNECTION_TIMEOUT_SECONDS).toInt()
+internal val READ_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(READ_TIMEOUT_SECONDS).toInt()
 
 class UnsecureConnectionBuilder : ConnectionBuilder {
     @Throws(IOException::class)

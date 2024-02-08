@@ -5,8 +5,8 @@ import io.fusionauth.mobilesdk.storage.MemoryStorage
 import io.fusionauth.mobilesdk.storage.Storage
 import kotlinx.serialization.json.Json
 
+@Suppress("TooManyFunctions", "unused")
 object AuthenticationManager {
-    private val isUserAuthenticated: Boolean? = null
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
     private lateinit var configuration: AuthenticationConfiguration
@@ -70,7 +70,7 @@ object AuthenticationManager {
     }
 
     fun isAccessTokenExpired(): Boolean {
-        return tokenManager.getAuthState()?.accessTokenExpirationTime?.let {
+        return getAccessTokenExpirationTime()?.let {
             it < System.currentTimeMillis()
         } ?: true
     }
