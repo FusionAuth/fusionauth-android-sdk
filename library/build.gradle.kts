@@ -1,23 +1,19 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
 }
 
 android {
-    namespace = "io.fusionauth.sdk"
+    namespace = "io.fusionauth.mobilesdk"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.fusionauth.app"
         minSdk = 23
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
 
-        // Make sure this is consistent with the redirect URI used in res/raw/auth_config.json,
-        // or specify additional redirect URIs in AndroidManifest.xml
         manifestPlaceholders["appAuthRedirectScheme"] = "io.fusionauth.app"
     }
 
@@ -26,7 +22,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -37,24 +33,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation(project(":library"))
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("net.openid:appauth:0.11.1")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("androidx.browser:browser:1.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

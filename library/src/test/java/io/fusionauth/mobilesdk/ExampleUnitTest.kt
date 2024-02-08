@@ -1,8 +1,7 @@
-package io.fusionauth.sdk
-
-import org.junit.Test
+package io.fusionauth.mobilesdk
 
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
