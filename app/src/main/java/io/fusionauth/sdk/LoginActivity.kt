@@ -49,13 +49,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthenticationManager.initStorage(SharedPreferencesStorage(this))
         AuthenticationManager.initialize(
             AuthenticationConfiguration(
                 clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
                 fusionAuthUrl = "http://10.168.145.33:9011",
                 allowUnsecureConnection = true
-            )
+            ),
+            SharedPreferencesStorage(this)
         )
 
         if (AuthenticationManager.isAuthenticated()) {

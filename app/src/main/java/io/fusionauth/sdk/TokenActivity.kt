@@ -13,7 +13,6 @@
  */
 package io.fusionauth.sdk
 
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
@@ -47,7 +46,7 @@ import kotlin.math.floor
  * additional post-authorization operations if available, such as fetching user info.
  */
 class TokenActivity : AppCompatActivity() {
-    private val mUserInfoJson = AtomicReference<UserInfo?>()
+    private val mUserInfo = AtomicReference<UserInfo?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +57,8 @@ class TokenActivity : AppCompatActivity() {
                 clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
                 fusionAuthUrl = "http://10.168.145.33:9011",
                 allowUnsecureConnection = true
-            )
+            ),
+            SharedPreferencesStorage(this)
         )
 
         setContentView(R.layout.activity_token)
@@ -84,10 +84,15 @@ class TokenActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             displayLoading("Exchanging authorization code")
-            val authState: FusionAuthState = AuthenticationManager.oAuth(this@TokenActivity)
-                .handleRedirect(intent)
-            Log.i(TAG, authState.toString())
-            fetchUserInfoAndDisplayAuthorized()
+            try {
+                val authState: FusionAuthState = AuthenticationManager.oAuth(this@TokenActivity)
+                    .handleRedirect(intent)
+                Log.i(TAG, authState.toString())
+                fetchUserInfoAndDisplayAuthorized()
+            } catch (ex: Exception) {
+                Log.e(TAG, "Failed to exchange authorization code", ex)
+                displayNotAuthorized("Authorization failed")
+            }
         }
     }
 
@@ -96,8 +101,8 @@ class TokenActivity : AppCompatActivity() {
         // user info is retained to survive activity restarts, such as when rotating the
         // device or switching apps. This isn't essential, but it helps provide a less
         // jarring UX when these events occur - data does not just disappear from the view.
-        if (mUserInfoJson.get() != null) {
-            state.putString(KEY_USER_INFO, mUserInfoJson.toString())
+        if (mUserInfo.get() != null) {
+            state.putString(KEY_USER_INFO, mUserInfo.toString())
         }
     }
 
@@ -113,7 +118,7 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.loading_container).visibility = View.GONE
 
         (findViewById<View>(R.id.explanation) as TextView).text = explanation
-        findViewById<View>(R.id.reauth).setOnClickListener({ view: View? -> signOut() })
+        findViewById<View>(R.id.reauth).setOnClickListener { signOut() }
     }
 
     @MainThread
@@ -130,8 +135,6 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.authorized).visibility = View.VISIBLE
         findViewById<View>(R.id.not_authorized).visibility = View.GONE
         findViewById<View>(R.id.loading_container).visibility = View.GONE
-
-//        val state: AuthState = mStateManager.getCurrent()
 
         val noAccessTokenReturnedView = findViewById<View>(R.id.no_access_token_returned) as TextView
         if (AuthenticationManager.getAccessToken() == null) {
@@ -155,7 +158,7 @@ class TokenActivity : AppCompatActivity() {
         var email = ""
 
         // Retrieving name and email from the /me endpoint response
-        val userInfo = mUserInfoJson.get()
+        val userInfo = mUserInfo.get()
         if (userInfo != null) {
             try {
                 name = userInfo.given_name ?: ""
@@ -176,7 +179,7 @@ class TokenActivity : AppCompatActivity() {
             }
         }
 
-        if (!name.isEmpty()) {
+        if (name.isNotEmpty()) {
             val welcomeView = findViewById<View>(R.id.auth_granted) as TextView
             val welcomeTemplate: String = resources.getString(R.string.auth_granted_name)
             welcomeView.text = String.format(welcomeTemplate, name)
@@ -186,10 +189,10 @@ class TokenActivity : AppCompatActivity() {
     }
 
     private fun fetchUserInfoAndDisplayAuthorized() {
-        lifecycleScope.launch(block = {
+        lifecycleScope.launch {
             try {
                 val userInfo = AuthenticationManager.oAuth(this@TokenActivity).getUserInfo()
-                mUserInfoJson.set(userInfo)
+                mUserInfo.set(userInfo)
             } catch (ioEx: IOException) {
                 Log.e(TAG, "Network error when querying userinfo endpoint", ioEx)
                 showSnackbar("Fetching user info failed")
@@ -199,26 +202,7 @@ class TokenActivity : AppCompatActivity() {
             }
 
             runOnUiThread { this@TokenActivity.displayAuthorized() }
-        })
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == END_SESSION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            signOut()
-            finish()
-        } else {
-            displayEndSessionCancelled()
         }
-    }
-
-    private fun displayEndSessionCancelled() {
-        Snackbar.make(
-            findViewById(R.id.coordinator),
-            "Sign out canceled",
-            Snackbar.LENGTH_SHORT
-        )
-            .show()
     }
 
     @MainThread
@@ -233,8 +217,6 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-//        AuthenticationManager.clearState()
-
         lifecycleScope.launch {
             AuthenticationManager
                 .oAuth(this@TokenActivity)
@@ -257,7 +239,7 @@ class TokenActivity : AppCompatActivity() {
             .toString()
             .trim { it <= ' ' }
 
-        if (value.length == 0) {
+        if (value.isEmpty()) {
             return
         }
 
@@ -295,11 +277,9 @@ class TokenActivity : AppCompatActivity() {
     private class MoneyChangedHandler(editText: EditText) : TextWatcher {
         private val editTextWeakReference: WeakReference<EditText> = WeakReference<EditText>(editText)
 
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-        }
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
 
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        }
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
 
         override fun afterTextChanged(editable: Editable) {
             val editText: EditText = editTextWeakReference.get() ?: return
@@ -326,7 +306,5 @@ class TokenActivity : AppCompatActivity() {
         private const val TAG = "TokenActivity"
 
         private const val KEY_USER_INFO = "userInfo"
-
-        private const val END_SESSION_REQUEST_CODE = 911
     }
 }

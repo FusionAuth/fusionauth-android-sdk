@@ -90,7 +90,7 @@ class OAuthAuthenticationService internal constructor(
      */
     fun isFailed(intent: Intent): Boolean {
         val exception = AuthorizationException.fromIntent(intent)
-
+        Logger.getLogger("OAuthAuthenticationService").info("Authorization failed: $exception")
         return exception != null
     }
 

@@ -34,8 +34,11 @@ object AuthenticationManager {
         this.tokenManager = tokenManager.withStorage(storage)
     }
 
-    fun initialize(configuration: AuthenticationConfiguration) {
+    fun initialize(configuration: AuthenticationConfiguration, storage: Storage? = null) {
         this.configuration = configuration
+        if (storage != null) {
+            initStorage(storage)
+        }
     }
 
     /**
@@ -44,7 +47,7 @@ object AuthenticationManager {
      * @return true if the user is authenticated, false otherwise
      */
     fun isAuthenticated(): Boolean {
-        return isUserAuthenticated != null
+        return !isAccessTokenExpired()
     }
 
     fun oAuth(context: Context): OAuthAuthenticationService {
