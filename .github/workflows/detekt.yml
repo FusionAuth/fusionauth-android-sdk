@@ -72,7 +72,7 @@ jobs:
 
     # Performs analysis using Detekt via Gradle and outputs a Sarif Report
     - name: Run Detekt
-      run: ./gradlew detekt detektReportMergeSarif --continue
+      run: ./gradlew detektMain detektReportMergeSarif --continue
 
     # Uploads Sarif Report to GitHub
     - name: Upload SARIF to GitHub
