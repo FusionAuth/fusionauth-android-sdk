@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import io.fusionauth.mobilesdk.exceptions.AuthenticationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -36,11 +37,17 @@ class OAuthAuthenticationService internal constructor(
     var tenant: String?,
     var tokenManager: TokenManager?,
     var allowUnsecureConnection: Boolean = false,
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
 
-    val json = Json { ignoreUnknownKeys = true }
+    private val json = Json { ignoreUnknownKeys = true }
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 
+    /**
+     * Authorizes the user using OAuth authentication.
+     *
+     * @param completedIntent The PendingIntent to be used when the authorization process is completed.
+     * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
+     */
     suspend fun authorize(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
         val config = getConfiguration()
 
@@ -69,6 +76,13 @@ class OAuthAuthenticationService internal constructor(
         )
     }
 
+    /**
+     * Handles the redirect intent from the authorization process.
+     *
+     * @param intent The intent received from the authorization process.
+     * @return The FusionAuthState object that contains the access token, access token expiration time, and id token.
+     * @throws AuthenticationException If the authorization process failed.
+     */
     suspend fun handleRedirect(intent: Intent): FusionAuthState {
         return withContext(defaultDispatcher) {
             val response = AuthorizationResponse.fromIntent(intent)
@@ -85,7 +99,7 @@ class OAuthAuthenticationService internal constructor(
                 tokenManager?.saveAuthState(authState);
                 authState
             } else {
-                throw exception!!
+                throw exception?.let { AuthenticationException(it) } ?: AuthenticationException("Unknown error")
             }
         }
     }
@@ -103,6 +117,11 @@ class OAuthAuthenticationService internal constructor(
         return exception != null
     }
 
+    /**
+     * Retrieves the user information for the authenticated user.
+     *
+     * @return The user information if available, or null if not authenticated or unable to fetch user info.
+     */
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun getUserInfo(): UserInfo? {
         return withContext(defaultDispatcher) {
@@ -124,9 +143,14 @@ class OAuthAuthenticationService internal constructor(
         }
     }
 
+    /**
+     * Log out the user.
+     *
+     * @param completedIntent The PendingIntent to be used when the logout process is completed.
+     * @param cancelIntent The PendingIntent to be used when the logout process is cancelled. Default is null.
+     */
     suspend fun logout(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
         val authState = tokenManager?.getAuthState() ?: return
-        Logger.getLogger("OAuthAuthenticationService").info("Logout request: $authState")
 
         AuthenticationManager.clearState()
 
@@ -138,8 +162,6 @@ class OAuthAuthenticationService internal constructor(
             .setIdTokenHint(authState.idToken)
             .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.app:/oauth2redirect"))
             .build()
-
-        Logger.getLogger("OAuthAuthenticationService").info("Logout request: $logoutRequest")
 
         val authService = getAuthorizationService()
         if (cancelIntent == null) {
@@ -156,6 +178,13 @@ class OAuthAuthenticationService internal constructor(
         )
     }
 
+    /**
+     * Performs a token request to the authorization service using the given response and exception.
+     *
+     * @param response The authorization response received from the authorization process.
+     * @param ex The authorization exception received from the authorization process, or null if no exception occurred.
+     * @return The token response from the authorization service.
+     */
     private suspend fun performTokenRequest(
         response: AuthorizationResponse,
         ex: AuthorizationException?
@@ -173,21 +202,28 @@ class OAuthAuthenticationService internal constructor(
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
                 } else {
-                    continuation.resumeWithException(exception ?: Exception("Unknown error"))
+                    continuation.resumeWithException(exception?.let { AuthenticationException(it) }
+                        ?: AuthenticationException("Unknown error"))
                 }
             }
         }
     }
 
+    /**
+     * Retrieves the configuration of the authorization service.
+     *
+     * @return The AuthorizationServiceConfiguration object.
+     */
     private suspend fun getConfiguration(): AuthorizationServiceConfiguration {
         return suspendCoroutine { continuation ->
             AuthorizationServiceConfiguration.fetchFromIssuer(
                 Uri.parse(fusionAuthUrl),
                 { configuration, ex ->
-                    if(configuration != null) {
+                    if (configuration != null) {
                         continuation.resume(configuration)
                     } else {
-                        continuation.resumeWithException(ex ?: Exception("Unknown error"))
+                        continuation.resumeWithException(ex?.let { AuthenticationException(it) }
+                            ?: AuthenticationException("Unknown error"))
                     }
                 },
                 getConnectionBuilder(),
@@ -195,6 +231,11 @@ class OAuthAuthenticationService internal constructor(
         }
     }
 
+    /**
+     * Returns the appropriate ConnectionBuilder based on the value of allowUnsecureConnection.
+     *
+     * @return The ConnectionBuilder object to be used for creating connections.
+     */
     private fun getConnectionBuilder(): ConnectionBuilder {
         return if (allowUnsecureConnection) SingletonUnsecureConnectionBuilder else DefaultConnectionBuilder.INSTANCE
     }

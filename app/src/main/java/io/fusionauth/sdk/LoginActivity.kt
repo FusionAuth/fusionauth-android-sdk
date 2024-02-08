@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthenticationConfiguration
 import io.fusionauth.mobilesdk.AuthenticationManager
+import io.fusionauth.mobilesdk.exceptions.AuthenticationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 
@@ -97,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
             displayAuthCancelled()
         } else {
             val intent = Intent(this, TokenActivity::class.java)
-            intent.putExtras(data!!.extras!!)
+            data?.extras?.let { intent.putExtras(it) }
             startActivity(intent)
         }
     }
@@ -129,7 +130,7 @@ class LoginActivity : AppCompatActivity() {
                             PendingIntent.FLAG_MUTABLE
                         )
                     )
-            } catch (e: Exception) {
+            } catch (e: AuthenticationException) {
                 Log.e(TAG, "Error while authorizing", e)
                 displayError(e.message ?: "Error while authorizing", true)
             }

@@ -26,7 +26,12 @@ import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import io.fusionauth.mobilesdk.*
+import io.fusionauth.mobilesdk.AuthenticationConfiguration
+import io.fusionauth.mobilesdk.AuthenticationManager
+import io.fusionauth.mobilesdk.FusionAuthState
+import io.fusionauth.mobilesdk.IdToken
+import io.fusionauth.mobilesdk.UserInfo
+import io.fusionauth.mobilesdk.exceptions.AuthenticationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -45,6 +50,7 @@ import kotlin.math.floor
  * by performing an authorization code exchange if necessary. After this, the activity provides
  * additional post-authorization operations if available, such as fetching user info.
  */
+@Suppress("TooManyFunctions")
 class TokenActivity : AppCompatActivity() {
     private val mUserInfo = AtomicReference<UserInfo?>()
 
@@ -89,7 +95,7 @@ class TokenActivity : AppCompatActivity() {
                     .handleRedirect(intent)
                 Log.i(TAG, authState.toString())
                 fetchUserInfoAndDisplayAuthorized()
-            } catch (ex: Exception) {
+            } catch (ex: AuthenticationException) {
                 Log.e(TAG, "Failed to exchange authorization code", ex)
                 displayNotAuthorized("Authorization failed")
             }
@@ -161,8 +167,8 @@ class TokenActivity : AppCompatActivity() {
         val userInfo = mUserInfo.get()
         if (userInfo != null) {
             try {
-                name = userInfo.given_name ?: ""
-                email = userInfo.email ?: ""
+                name = userInfo.given_name.orEmpty()
+                email = userInfo.email.orEmpty()
             } catch (ex: JSONException) {
                 Log.e(TAG, "Failed to read userinfo JSON", ex)
             }
@@ -172,7 +178,7 @@ class TokenActivity : AppCompatActivity() {
         if ((name.isEmpty()) || (email.isEmpty())) {
             val idToken: IdToken? = AuthenticationManager.getParsedIdToken()
             if (idToken != null) {
-                email = idToken.email ?: ""
+                email = idToken.email.orEmpty()
                 if (name.isEmpty()) {
                     name = email
                 }
@@ -197,7 +203,7 @@ class TokenActivity : AppCompatActivity() {
                 Log.e(TAG, "Network error when querying userinfo endpoint", ioEx)
                 showSnackbar("Fetching user info failed")
             } catch (jsonEx: JSONException) {
-                Log.e(TAG, "Failed to parse userinfo response")
+                Log.e(TAG, "Failed to parse userinfo response", jsonEx)
                 showSnackbar("Failed to parse user info")
             }
 
@@ -232,6 +238,7 @@ class TokenActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("MagicNumber")
     @MainThread
     private fun makeChange() {
         val value: String = (findViewById<View>(R.id.change_text_input) as EditText)
