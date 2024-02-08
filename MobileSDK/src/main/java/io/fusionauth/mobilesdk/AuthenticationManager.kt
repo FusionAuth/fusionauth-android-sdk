@@ -5,7 +5,7 @@ import io.fusionauth.mobilesdk.storage.MemoryStorage
 import io.fusionauth.mobilesdk.storage.Storage
 import kotlinx.serialization.json.Json
 
-@Suppress("TooManyFunctions", "unused")
+@Suppress("TooManyFunctions", "unused", "MemberVisibilityCanBePrivate")
 object AuthenticationManager {
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
@@ -80,7 +80,7 @@ object AuthenticationManager {
     }
 
     fun dispose() {
-        // TODO: Implement
+        // Clear the state
     }
 
     fun getParsedIdToken(): IdToken? {

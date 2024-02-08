@@ -30,6 +30,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+@Suppress("LongParameterList")
 class OAuthAuthenticationService internal constructor(
     var context: Context,
     var fusionAuthUrl: String,
@@ -37,10 +38,10 @@ class OAuthAuthenticationService internal constructor(
     var tenant: String?,
     var tokenManager: TokenManager?,
     var allowUnsecureConnection: Boolean = false,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
     private val json = Json { ignoreUnknownKeys = true }
-    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 
     /**
      * Authorizes the user using OAuth authentication.
@@ -96,7 +97,7 @@ class OAuthAuthenticationService internal constructor(
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
                     idToken = t.idToken
                 )
-                tokenManager?.saveAuthState(authState);
+                tokenManager?.saveAuthState(authState)
                 authState
             } else {
                 throw exception?.let { AuthenticationException(it) } ?: AuthenticationException("Unknown error")

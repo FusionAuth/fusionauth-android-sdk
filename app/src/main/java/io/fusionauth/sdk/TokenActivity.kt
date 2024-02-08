@@ -288,6 +288,7 @@ class TokenActivity : AppCompatActivity() {
 
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
 
+        @Suppress("MagicNumber")
         override fun afterTextChanged(editable: Editable) {
             val editText: EditText = editTextWeakReference.get() ?: return
             val s: String = editable.toString()
