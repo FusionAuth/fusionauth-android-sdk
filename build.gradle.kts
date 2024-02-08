@@ -9,7 +9,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
 
     kotlin("jvm") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
