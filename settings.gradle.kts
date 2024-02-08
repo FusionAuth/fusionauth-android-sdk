@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FusionAuth Mobile SDK"
 include(":app")
-include(":MobileSDK")
+include(":library")
