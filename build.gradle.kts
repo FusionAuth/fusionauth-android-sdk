@@ -8,7 +8,7 @@ plugins {
     id("com.android.library") version "8.2.0" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
 
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.21"
 }
 
