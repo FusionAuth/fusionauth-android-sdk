@@ -55,7 +55,7 @@ jobs:
 
     # Sets up the reviewdog cli
     - name: Setup reviewdog
-      uses: reviewdog/action-setup@v1.2.0
+      uses: reviewdog/action-setup@v1.2.1
 
     - name: Show reviewdog version
       run: reviewdog -version
