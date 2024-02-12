@@ -15,6 +15,9 @@ private const val READ_TIMEOUT_SECONDS = 10L
 internal val CONNECTION_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(CONNECTION_TIMEOUT_SECONDS).toInt()
 internal val READ_TIMEOUT_MS: Int = TimeUnit.SECONDS.toMillis(READ_TIMEOUT_SECONDS).toInt()
 
+/**
+ * Connection Builder that allows for unsecure connections.
+ */
 class UnsecureConnectionBuilder : ConnectionBuilder {
     @Throws(IOException::class)
     override fun openConnection(uri: Uri): HttpURLConnection {
