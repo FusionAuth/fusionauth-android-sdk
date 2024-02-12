@@ -20,7 +20,9 @@ import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.EndSessionRequest
+import net.openid.appauth.GrantTypeValues
 import net.openid.appauth.ResponseTypeValues
+import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenResponse
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
@@ -95,7 +97,8 @@ class OAuthAuthenticationService internal constructor(
                 val authState = FusionAuthState(
                     accessToken = t.accessToken,
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
-                    idToken = t.idToken
+                    idToken = t.idToken,
+                    refreshToken = t.refreshToken,
                 )
                 tokenManager?.saveAuthState(authState)
                 authState
@@ -229,6 +232,53 @@ class OAuthAuthenticationService internal constructor(
                 },
                 getConnectionBuilder(),
             )
+        }
+    }
+
+    /**
+     * Retrieves a fresh access token.
+     *
+     * @return the fresh access token or null if an error occurs
+     * @throws AuthenticationException if the refresh token is not available or an unknown error occurs
+     */
+    suspend fun freshAccessToken(): String? {
+        val config = getConfiguration()
+
+        return suspendCoroutine {
+            val authService = getAuthorizationService()
+
+            val refreshToken = tokenManager?.getAuthState()?.refreshToken
+            if (refreshToken == null) {
+                it.resumeWithException(AuthenticationException("No refresh token available"))
+                return@suspendCoroutine
+            }
+
+            authService.performTokenRequest(
+                TokenRequest.Builder(
+                    config,
+                    clientId
+                )
+                    .setGrantType(GrantTypeValues.REFRESH_TOKEN)
+                    .setRefreshToken(refreshToken)
+                    .build()
+            ) { response, exception ->
+                if (response != null) {
+                    val authState = tokenManager?.getAuthState()
+                    if (authState != null) {
+                        val newAuthState = authState.copy(
+                            accessToken = response.accessToken,
+                            accessTokenExpirationTime = response.accessTokenExpirationTime,
+                            idToken = response.idToken,
+                            refreshToken = response.refreshToken,
+                        )
+                        tokenManager?.saveAuthState(newAuthState)
+                    }
+                    it.resume(response.accessToken)
+                } else {
+                    it.resumeWithException(exception?.let { AuthenticationException(it) }
+                        ?: AuthenticationException("Unknown error"))
+                }
+            }
         }
     }
 

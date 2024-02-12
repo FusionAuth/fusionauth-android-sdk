@@ -61,6 +61,19 @@ object AuthenticationManager {
         )
     }
 
+    /**
+     * Retrieves a fresh access token.
+     *
+     * @param context the Android context
+     * @return the fresh access token or null if an error occurs
+     */
+    suspend fun freshAccessToken(context: Context): String? {
+        if(!isAccessTokenExpired()) return getAccessToken()
+
+        val oAuth = oAuth(context)
+        return oAuth.freshAccessToken()
+    }
+
     fun getAccessToken(): String? {
         return tokenManager.getAuthState()?.accessToken
     }
