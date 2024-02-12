@@ -159,6 +159,9 @@ class TokenActivity : AppCompatActivity() {
             endSession()
         }
         findViewById<View>(R.id.change_button).setOnClickListener { makeChange() }
+        findViewById<View>(R.id.refresh_token).setOnClickListener {
+            refreshToken()
+        }
 
         var name = ""
         var email = ""
@@ -192,6 +195,18 @@ class TokenActivity : AppCompatActivity() {
         }
 
         (findViewById<View>(R.id.auth_granted_email) as TextView).text = email
+    }
+
+    private fun refreshToken() {
+        lifecycleScope.launch {
+            try {
+                val authState = AuthenticationManager.freshAccessToken(this@TokenActivity, true)
+                Log.i(TAG, "Refreshed access token: $authState")
+            } catch (ex: AuthenticationException) {
+                Log.e(TAG, "Failed to refresh token", ex)
+                showSnackbar("Failed to refresh token")
+            }
+        }
     }
 
     private fun fetchUserInfoAndDisplayAuthorized() {

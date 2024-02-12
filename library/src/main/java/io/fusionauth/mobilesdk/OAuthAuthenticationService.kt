@@ -59,6 +59,7 @@ class OAuthAuthenticationService internal constructor(
 
     private val json = Json { ignoreUnknownKeys = true }
     private val authenticationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
+    private val authState = AtomicReference<AuthState?>()
 
     /**
      * Authorizes the user using OAuth authentication.
@@ -106,9 +107,12 @@ class OAuthAuthenticationService internal constructor(
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = AuthorizationException.fromIntent(intent)
 
+            appAuthState.update(response, exception)
+
             if (response != null) {
                 val tokenResponse = async { performTokenRequest(response, exception) }
                 val t = tokenResponse.await()
+                appAuthState.update(t, exception)
                 val authState = FusionAuthState(
                     accessToken = t.accessToken,
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
@@ -211,13 +215,13 @@ class OAuthAuthenticationService internal constructor(
         return suspendCoroutine { continuation ->
             val authService = getAuthorizationService()
 
-            val authState = AuthState()
-            authState.update(response, ex)
+            appAuthState.update(response, ex)
 
             authService.performTokenRequest(
                 response.createTokenExchangeRequest(),
-                authState.clientAuthentication
+                appAuthState.clientAuthentication
             ) { tokenResponse, exception ->
+                appAuthState.update(tokenResponse, exception)
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
                 } else {
@@ -294,7 +298,8 @@ class OAuthAuthenticationService internal constructor(
                 )
                     .setGrantType(GrantTypeValues.REFRESH_TOKEN)
                     .setRefreshToken(refreshToken)
-                    .build()
+                    .build(),
+                appAuthState.clientAuthentication
             ) { response, exception ->
                 if (response != null) {
                     val authState = tokenManager?.getAuthState()
@@ -338,5 +343,17 @@ class OAuthAuthenticationService internal constructor(
                 .build()
         )
     }
+
+    private val appAuthState: AuthState
+        get() {
+            var authState = this.authState.get()
+            if (authState != null) {
+                return authState
+            }
+
+            authState = AuthState()
+            this.authState.set(authState)
+            return authState
+        }
 
 }

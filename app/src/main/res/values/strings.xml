@@ -10,6 +10,7 @@
     <string name="start_authorization">Log in</string>
     <string name="reauthorize">Reauthorize</string>
     <string name="sign_out">Log out</string>
+    <string name="refresh_token">Refresh token</string>
     <string name="changebank_title">We Make Change</string>
     <string name="account_balance">Your account balance is $100.00</string>
     <string name="change_text_input_prepend">Amount in USD: $</string>
