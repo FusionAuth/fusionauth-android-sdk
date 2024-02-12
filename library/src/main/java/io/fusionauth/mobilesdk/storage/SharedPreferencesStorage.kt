@@ -6,11 +6,13 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 /**
- * A class that implements the [Storage] interface for storing data in SharedPreferences.
+ * SharedPreferencesStorage is a class that implements the Storage interface and provides a
+ * storage mechanism using SharedPreferences.
  *
- * @property context The application context.
+ * @param context The context used to access the application's SharedPreferences.
+ * @param fileName The name of the SharedPreferences file. Default value is "_fusionauth_mobile_sdk".
  */
-class SharedPreferencesStorage(context: Context) : Storage {
+class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth_mobile_sdk") : Storage {
 
     private val sharedPreferences: SharedPreferences
 
@@ -22,7 +24,7 @@ class SharedPreferencesStorage(context: Context) : Storage {
         this.sharedPreferences =
             EncryptedSharedPreferences.create(
                 context,
-                "fusionauth-mobile-sdk",
+                fileName,
                 masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
