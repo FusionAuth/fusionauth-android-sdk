@@ -55,7 +55,7 @@ object AuthenticationManager {
             context = context,
             fusionAuthUrl = configuration.fusionAuthUrl,
             clientId = configuration.clientId,
-            tenant = configuration.tenant,
+            tenantId = configuration.tenant,
             tokenManager = tokenManager,
             allowUnsecureConnection = configuration.allowUnsecureConnection,
         )

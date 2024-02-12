@@ -27,23 +27,38 @@ import net.openid.appauth.TokenResponse
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.net.HttpURLConnection
+import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * OAuthAuthenticationService class is responsible for handling OAuth authorization and authentication process.
+ * It provides methods to authorize the user, handle the redirect intent, fetch user information,
+ * perform logout, retrieve fresh access token, and get the authorization service.
+ *
+ * @property context The Android application context.
+ * @property fusionAuthUrl The URL of the FusionAuth server.
+ * @property clientId The client ID registered in the FusionAuth server.
+ * @property tenantId The tenant ID, or null if not applicable.
+ * @property tokenManager The token manager to handle token storage and retrieval, or null if not used.
+ * @property allowUnsecureConnection Boolean value indicating whether unsecure connections are allowed.
+ * @property defaultDispatcher The default coroutine dispatcher. Default is Dispatchers.Default
+ */
 @Suppress("LongParameterList")
 class OAuthAuthenticationService internal constructor(
     var context: Context,
     var fusionAuthUrl: String,
     var clientId: String,
-    var tenant: String?,
+    var tenantId: String?,
     var tokenManager: TokenManager?,
     var allowUnsecureConnection: Boolean = false,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
     private val json = Json { ignoreUnknownKeys = true }
+    private val authenticationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
 
     /**
      * Authorizes the user using OAuth authentication.
@@ -214,16 +229,35 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
-     * Retrieves the configuration of the authorization service.
+     * Retrieves the [AuthorizationServiceConfiguration].
      *
-     * @return The AuthorizationServiceConfiguration object.
+     * @param force Boolean value indicating whether to force fetching a new configuration, even if it already exists.
+     *              Default value is false.
+     * @return The [AuthorizationServiceConfiguration] object.
      */
-    private suspend fun getConfiguration(): AuthorizationServiceConfiguration {
+    private suspend fun getConfiguration(force: Boolean = false): AuthorizationServiceConfiguration {
+        if (!force) {
+            val config = authenticationConfiguration.get()
+            if (config != null) {
+                return config
+            }
+        }
+
+        val uriBuilder = Uri.parse(fusionAuthUrl).buildUpon()
+
+        // If tenant is specified, append it to the URL
+        // See https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#openid-configuration
+        if (tenantId != null) uriBuilder.appendPath(tenantId)
+
+        uriBuilder.appendPath(AuthorizationServiceConfiguration.WELL_KNOWN_PATH)
+            .appendPath(AuthorizationServiceConfiguration.OPENID_CONFIGURATION_RESOURCE)
+
         return suspendCoroutine { continuation ->
-            AuthorizationServiceConfiguration.fetchFromIssuer(
-                Uri.parse(fusionAuthUrl),
+            AuthorizationServiceConfiguration.fetchFromUrl(
+                uriBuilder.build(),
                 { configuration, ex ->
                     if (configuration != null) {
+                        authenticationConfiguration.set(configuration)
                         continuation.resume(configuration)
                     } else {
                         continuation.resumeWithException(ex?.let { AuthenticationException(it) }
