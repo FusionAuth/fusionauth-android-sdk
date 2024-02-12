@@ -7,6 +7,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromHexString
 import kotlinx.serialization.encodeToHexString
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * The TokenManager class handles the storage and retrieval of authentication state tokens.
@@ -16,6 +17,8 @@ import kotlinx.serialization.encodeToHexString
 @OptIn(ExperimentalSerializationApi::class)
 class TokenManager {
     private var storage: Storage? = null
+
+    private val authState = AtomicReference<FusionAuthState?>()
 
     /**
      * Sets the storage implementation to be used for storing data in the TokenManager.
@@ -37,6 +40,10 @@ class TokenManager {
      */
     @Suppress("TooGenericExceptionCaught")
     fun getAuthState(): FusionAuthState? {
+        if (this.authState.get() != null) {
+            return this.authState.get()
+        }
+
         return this.storage?.get("authState")?.let { authState ->
             try {
                 Cbor.decodeFromHexString<FusionAuthState>(authState)
@@ -58,6 +65,7 @@ class TokenManager {
     fun saveAuthState(authState: FusionAuthState) {
         if (this.storage == null) throw StorageException.notSet()
 
+        this.authState.set(authState)
         this.storage?.set("authState", Cbor.encodeToHexString(authState))
     }
 
@@ -69,6 +77,7 @@ class TokenManager {
     fun clearAuthState() {
         if (this.storage == null) throw StorageException.notSet()
 
+        this.authState.set(null)
         this.storage?.remove("authState")
     }
 }
