@@ -20,3 +20,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      gradle-minor-dependencies:
+        update-types:
+          - "minor"
+          - "patch"

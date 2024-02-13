@@ -40,7 +40,7 @@ jobs:
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1.2.0
+        uses: reviewdog/action-setup@v1.2.1
 
       - name: Show reviewdog version
         run: reviewdog -version
@@ -53,7 +53,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.23.1
+        uses: github/codeql-action/upload-sarif@v3.24.0
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json

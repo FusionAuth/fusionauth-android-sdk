@@ -26,6 +26,11 @@ class MemoryStorage : Storage {
         storageMap[key] = content
     }
 
+    /**
+     * Removes the key-value pair associated with the specified key from the storage.
+     *
+     * @param key the key of the key-value pair to remove
+     */
     override fun remove(key: String) {
         storageMap.remove(key)
     }
