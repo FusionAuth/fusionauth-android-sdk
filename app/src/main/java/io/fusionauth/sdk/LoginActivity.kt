@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthenticationConfiguration
 import io.fusionauth.mobilesdk.AuthenticationManager
+import io.fusionauth.mobilesdk.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthenticationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
@@ -113,21 +114,11 @@ class LoginActivity : AppCompatActivity() {
                 AuthenticationManager
                     .oAuth(this@LoginActivity)
                     .authorize(
-                        PendingIntent.getActivity(
-                            this@LoginActivity,
-                            0,
-                            Intent(this@LoginActivity, TokenActivity::class.java)
-                                .putExtra("foo", "bar"),
-                            PendingIntent.FLAG_MUTABLE
-                        ),
-                        PendingIntent.getActivity(
-                            this@LoginActivity,
-                            0,
-                            Intent(this@LoginActivity, LoginActivity::class.java)
-                                .putExtra(EXTRA_FAILED, true)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                .putExtra("foo", "bar"),
-                            PendingIntent.FLAG_MUTABLE
+                        Intent(this@LoginActivity, TokenActivity::class.java),
+                        Intent(this@LoginActivity, LoginActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                        OAuthAuthorizeOptions(
+                            state = "state-${System.currentTimeMillis()}"
                         )
                     )
             } catch (e: AuthenticationException) {

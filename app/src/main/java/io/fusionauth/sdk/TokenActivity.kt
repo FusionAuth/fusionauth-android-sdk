@@ -242,13 +242,8 @@ class TokenActivity : AppCompatActivity() {
             AuthenticationManager
                 .oAuth(this@TokenActivity)
                 .logout(
-                    PendingIntent.getActivity(
-                        this@TokenActivity,
-                        0,
-                        Intent(this@TokenActivity, LoginActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                        PendingIntent.FLAG_MUTABLE
-                    )
+                    Intent(this@TokenActivity, LoginActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 )
         }
     }

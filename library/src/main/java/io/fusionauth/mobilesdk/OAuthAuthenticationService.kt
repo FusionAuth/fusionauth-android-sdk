@@ -71,7 +71,7 @@ class OAuthAuthenticationService internal constructor(
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
      * @param options The options for the authorize request. Default is null.
      */
-    suspend fun authorize(completedIntent: PendingIntent, options: OAuthAuthorizeOptions?) {
+    suspend fun authorize(completedIntent: Intent, options: OAuthAuthorizeOptions?) {
         return authorize(completedIntent, null, options)
     }
 
@@ -83,8 +83,8 @@ class OAuthAuthenticationService internal constructor(
      * @param options The options for the authorize request. Default is null.
      */
     suspend fun authorize(
-        completedIntent: PendingIntent,
-        cancelIntent: PendingIntent? = null,
+        completedIntent: Intent,
+        cancelIntent: Intent? = null,
         options: OAuthAuthorizeOptions? = null
     ) {
         val config = getConfiguration()
@@ -118,8 +118,14 @@ class OAuthAuthenticationService internal constructor(
         options?.loginHint?.let { authRequestBuilder.setLoginHint(it) }
         options?.nonce?.let { authRequestBuilder.setNonce(it) }
 
-        // Set the state for the authorize request
-        options?.state?.let { state.set(it) } ?: state.set(null)
+        val completedPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(completedIntent).also {
+                if (options?.state != null) it.putExtra(EXTRA_STATE, options.state)
+            },
+            PendingIntent.FLAG_MUTABLE
+        )
 
         val authRequest = authRequestBuilder.build()
 
@@ -127,14 +133,20 @@ class OAuthAuthenticationService internal constructor(
         if (cancelIntent == null) {
             authService.performAuthorizationRequest(
                 authRequest,
-                completedIntent,
+                completedPendingIntent,
             )
             return
         }
         authService.performAuthorizationRequest(
             authRequest,
-            completedIntent,
-            cancelIntent,
+            completedPendingIntent,
+            PendingIntent.getActivity(
+                context,
+                0,
+                cancelIntent
+                    .putExtra(EXTRA_FAILED, true),
+                PendingIntent.FLAG_MUTABLE
+            ),
         )
     }
 
@@ -151,10 +163,10 @@ class OAuthAuthenticationService internal constructor(
             val exception = AuthorizationException.fromIntent(intent)
 
             // Validate the state
-            if (state.get().orEmpty() != response?.state.orEmpty()) {
+            val state = intent.getStringExtra(EXTRA_STATE)
+            if (state.orEmpty() != response?.state.orEmpty()) {
                 throw AuthenticationException("State mismatch")
             }
-            state.set(null)
 
             appAuthState.update(response, exception)
 
@@ -222,7 +234,7 @@ class OAuthAuthenticationService internal constructor(
      * @param options The options for the logout request. Default is null.
      */
     suspend fun logout(
-        completedIntent: PendingIntent,
+        completedIntent: Intent,
         options: OAuthLogoutOptions? = null
     ) {
         return logout(completedIntent, null, options)
@@ -236,8 +248,8 @@ class OAuthAuthenticationService internal constructor(
      * @param options The options for the logout request. Default is null.
      */
     suspend fun logout(
-        completedIntent: PendingIntent,
-        cancelIntent: PendingIntent? = null,
+        completedIntent: Intent,
+        cancelIntent: Intent? = null,
         options: OAuthLogoutOptions? = null
     ) {
         val authState = tokenManager?.getAuthState() ?: return
@@ -260,20 +272,35 @@ class OAuthAuthenticationService internal constructor(
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
 
+        val completedPendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(completedIntent).also {
+                if (options?.state != null) it.putExtra(EXTRA_STATE, options.state)
+            },
+            PendingIntent.FLAG_MUTABLE
+        )
+
         val logoutRequest = logoutRequestBuilder.build()
 
         val authService = getAuthorizationService()
         if (cancelIntent == null) {
             authService.performEndSessionRequest(
                 logoutRequest,
-                completedIntent,
+                completedPendingIntent,
             )
             return
         }
         authService.performEndSessionRequest(
             logoutRequest,
-            completedIntent,
-            cancelIntent,
+            completedPendingIntent,
+            PendingIntent.getActivity(
+                context,
+                0,
+                cancelIntent
+                    .putExtra(EXTRA_FAILED, true),
+                PendingIntent.FLAG_MUTABLE
+            ),
         )
     }
 
@@ -442,7 +469,8 @@ class OAuthAuthenticationService internal constructor(
         get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")
 
     companion object {
-        private val state = AtomicReference<String?>()
+        private const val EXTRA_STATE: String = "_fusionauth_mobile_sdk_state"
+        private const val EXTRA_FAILED: String = "_fusionauth_mobile_sdk_failed"
     }
 
 }
