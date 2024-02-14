@@ -447,7 +447,7 @@ class OAuthAuthenticationService internal constructor(
                     }
                     it.resume(response.accessToken)
                 } else {
-                    it.resumeWithException(exception?.let { AuthenticationException(it) }
+                    it.resumeWithException(exception?.let { ex -> AuthenticationException(ex) }
                         ?: AuthenticationException("Unknown error"))
                 }
             }

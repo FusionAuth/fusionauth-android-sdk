@@ -7,7 +7,8 @@ package io.fusionauth.mobilesdk
  * for more information.
  *
  * @property postLogoutRedirectUri The post logout redirect URI to be used for the OAuth logout request.
- * @property state An opaque value used by the client to maintain state between the request and callback. The authorization server includes this value when redirecting the user-agent back to the client.
+ * @property state An opaque value used by the client to maintain state between the request and callback.
+ *                 The authorization server includes this value when redirecting the user-agent back to the client.
  */
 data class OAuthLogoutOptions(
     val postLogoutRedirectUri: String? = null,
