@@ -45,8 +45,10 @@ import kotlin.coroutines.suspendCoroutine
  * @property tokenManager The token manager to handle token storage and retrieval, or null if not used.
  * @property allowUnsecureConnection Boolean value indicating whether unsecure connections are allowed.
  * @property defaultDispatcher The default coroutine dispatcher. Default is Dispatchers.Default
+ * @property additionalScopes Additional scopes to be requested during authentication. Default is empty.
+ * @property locale The locale to be used for authentication. Default is null.
  */
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions", "MemberVisibilityCanBePrivate", "unused")
 class OAuthAuthenticationService internal constructor(
     val context: Context,
     val fusionAuthUrl: String,
@@ -55,6 +57,7 @@ class OAuthAuthenticationService internal constructor(
     val tokenManager: TokenManager?,
     val allowUnsecureConnection: Boolean = false,
     val additionalScopes: Set<String> = emptySet(),
+    val locale: String? = null,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
@@ -66,20 +69,59 @@ class OAuthAuthenticationService internal constructor(
      * Authorizes the user using OAuth authentication.
      *
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
-     * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
+     * @param options The options for the authorize request. Default is null.
      */
-    suspend fun authorize(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
+    suspend fun authorize(completedIntent: PendingIntent, options: OAuthAuthorizeOptions?) {
+        return authorize(completedIntent, null, options)
+    }
+
+    /**
+     * Authorizes the user using OAuth authentication.
+     *
+     * @param completedIntent The PendingIntent to be used when the authorization process is completed.
+     * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
+     * @param options The options for the authorize request. Default is null.
+     */
+    suspend fun authorize(
+        completedIntent: PendingIntent,
+        cancelIntent: PendingIntent? = null,
+        options: OAuthAuthorizeOptions? = null
+    ) {
         val config = getConfiguration()
 
-        val authRequest =
+        // Additional parameters supported by FusionAuth
+        // See https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#authorize
+        val additionalParameters = mutableMapOf<String, String>()
+
+        // Global Options
+        tenantId?.let { additionalParameters["tenantId"] = it }
+        locale?.let { additionalParameters["locale"] = it }
+
+        // Authorize Options
+        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
+        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
+        options?.idpHint?.let { additionalParameters["idp_hint"] = it }
+        options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
+        options?.userCode?.let { additionalParameters["user_code"] = it }
+
+        val authRequestBuilder =
             AuthorizationRequest.Builder(
                 config,
                 clientId,
                 ResponseTypeValues.CODE,
-                Uri.parse("io.fusionauth.app:/oauth2redirect"),
+                Uri.parse(options?.redirectUri ?: "io.fusionauth.app:/oauth2redirect"),
             )
                 .setScope(scopes)
-                .build()
+                .setAdditionalParameters(additionalParameters)
+
+        options?.state?.let { authRequestBuilder.setState(it) }
+        options?.loginHint?.let { authRequestBuilder.setLoginHint(it) }
+        options?.nonce?.let { authRequestBuilder.setNonce(it) }
+
+        // Set the state for the authorize request
+        options?.state?.let { state.set(it) } ?: state.set(null)
+
+        val authRequest = authRequestBuilder.build()
 
         val authService = getAuthorizationService()
         if (cancelIntent == null) {
@@ -107,6 +149,12 @@ class OAuthAuthenticationService internal constructor(
         return withContext(defaultDispatcher) {
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = AuthorizationException.fromIntent(intent)
+
+            // Validate the state
+            if (state.get().orEmpty() != response?.state.orEmpty()) {
+                throw AuthenticationException("State mismatch")
+            }
+            state.set(null)
 
             appAuthState.update(response, exception)
 
@@ -171,21 +219,48 @@ class OAuthAuthenticationService internal constructor(
      * Log out the user.
      *
      * @param completedIntent The PendingIntent to be used when the logout process is completed.
-     * @param cancelIntent The PendingIntent to be used when the logout process is cancelled. Default is null.
+     * @param options The options for the logout request. Default is null.
      */
-    suspend fun logout(completedIntent: PendingIntent, cancelIntent: PendingIntent? = null) {
+    suspend fun logout(
+        completedIntent: PendingIntent,
+        options: OAuthLogoutOptions? = null
+    ) {
+        return logout(completedIntent, null, options)
+    }
+
+    /**
+     * Log out the user.
+     *
+     * @param completedIntent The PendingIntent to be used when the logout process is completed.
+     * @param cancelIntent The PendingIntent to be used when the logout process is cancelled. Default is null.
+     * @param options The options for the logout request. Default is null.
+     */
+    suspend fun logout(
+        completedIntent: PendingIntent,
+        cancelIntent: PendingIntent? = null,
+        options: OAuthLogoutOptions? = null
+    ) {
         val authState = tokenManager?.getAuthState() ?: return
 
         AuthenticationManager.clearState()
 
         val config = getConfiguration()
 
-        val logoutRequest = EndSessionRequest.Builder(
+        val logoutRequestBuilder = EndSessionRequest.Builder(
             config
         )
             .setIdTokenHint(authState.idToken)
-            .setPostLogoutRedirectUri(Uri.parse("io.fusionauth.app:/oauth2redirect"))
-            .build()
+            .setPostLogoutRedirectUri(Uri.parse(options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"))
+            .setAdditionalParameters(
+                mapOf(
+                    "client_id" to clientId,
+                    "tenantId" to tenantId
+                )
+            )
+
+        options?.state?.let { logoutRequestBuilder.setState(it) }
+
+        val logoutRequest = logoutRequestBuilder.build()
 
         val authService = getAuthorizationService()
         if (cancelIntent == null) {
@@ -365,5 +440,9 @@ class OAuthAuthenticationService internal constructor(
      */
     private val scopes: String
         get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")
+
+    companion object {
+        private val state = AtomicReference<String?>()
+    }
 
 }
