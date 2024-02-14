@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import io.fusionauth.mobilesdk.exceptions.AuthenticationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -122,9 +123,12 @@ class OAuthAuthenticationService internal constructor(
             context,
             0,
             Intent(completedIntent).also {
-                if (options?.state != null) it.putExtra(EXTRA_STATE, options.state)
+                replaceExtras(it, Bundle().also { bundle ->
+                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
+                    bundle.putBoolean(EXTRA_AUTHORIZED, true)
+                })
             },
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val authRequest = authRequestBuilder.build()
@@ -143,9 +147,12 @@ class OAuthAuthenticationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent
-                    .putExtra(EXTRA_FAILED, true),
-                PendingIntent.FLAG_MUTABLE
+                cancelIntent.also {
+                    replaceExtras(it, Bundle().also { bundle ->
+                        bundle.putBoolean(EXTRA_CANCELLED, true)
+                    })
+                },
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             ),
         )
     }
@@ -189,16 +196,33 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
-     * Checks if the authorization process has failed by examining the given intent.
-     * This method should be called inside a coroutine.
+     * Checks if the authorization process has been cancelled by examining the given intent.
      *
      * @param intent The intent to examine.
-     * @return `true` if the authorization process has failed, `false` otherwise.
+     * @return `true` if the authorization process has been cancelled, `false` otherwise.
      */
-    fun isFailed(intent: Intent): Boolean {
-        val exception = AuthorizationException.fromIntent(intent)
-        Logger.getLogger("OAuthAuthenticationService").info("Authorization failed: $exception")
-        return exception != null
+    fun isCancelled(intent: Intent): Boolean {
+        return intent.getBooleanExtra(EXTRA_CANCELLED, false)
+    }
+
+    /**
+     * Checks if the logout process has succeeded by examining the given intent.
+     *
+     * @param intent The intent to examine.
+     * @return `true` if the logout process has succeeded, `false` otherwise.
+     */
+    fun isLoggedOut(intent: Intent): Boolean {
+        return intent.getBooleanExtra(EXTRA_LOGGED_OUT, false)
+    }
+
+    /**
+     * Checks if the authorization process has succeeded by examining the given intent.
+     *
+     * @param intent The intent to examine.
+     * @return `true` if the authorization process has succeeded, `false` otherwise.
+     */
+    fun isAuthorized(intent: Intent): Boolean {
+        return intent.getBooleanExtra(EXTRA_AUTHORIZED, false)
     }
 
     /**
@@ -258,17 +282,18 @@ class OAuthAuthenticationService internal constructor(
 
         val config = getConfiguration()
 
+        val additionalParameters = mutableMapOf<String, String>(
+            "client_id" to clientId,
+        )
+        tenantId?.let { additionalParameters["tenantId"] = it }
+
+
         val logoutRequestBuilder = EndSessionRequest.Builder(
             config
         )
             .setIdTokenHint(authState.idToken)
             .setPostLogoutRedirectUri(Uri.parse(options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"))
-            .setAdditionalParameters(
-                mapOf(
-                    "client_id" to clientId,
-                    "tenantId" to tenantId
-                )
-            )
+            .setAdditionalParameters(additionalParameters)
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
 
@@ -276,9 +301,12 @@ class OAuthAuthenticationService internal constructor(
             context,
             0,
             Intent(completedIntent).also {
-                if (options?.state != null) it.putExtra(EXTRA_STATE, options.state)
+                replaceExtras(it, Bundle().also { bundle ->
+                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
+                    bundle.putBoolean(EXTRA_LOGGED_OUT, true)
+                })
             },
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val logoutRequest = logoutRequestBuilder.build()
@@ -297,9 +325,12 @@ class OAuthAuthenticationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent
-                    .putExtra(EXTRA_FAILED, true),
-                PendingIntent.FLAG_MUTABLE
+                cancelIntent.also {
+                    replaceExtras(it, Bundle().also { bundle ->
+                        bundle.putBoolean(EXTRA_CANCELLED, true)
+                    })
+                },
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             ),
         )
     }
@@ -468,9 +499,22 @@ class OAuthAuthenticationService internal constructor(
     private val scopes: String
         get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")
 
+    /**
+     * Replaces the internal extras on the intent with the given extras.
+     */
+    private fun replaceExtras(intent: Intent, extras: Bundle): Intent {
+        EXTRAS.forEach { intent.removeExtra(it) }
+        intent.putExtras(extras)
+        return intent
+    }
+
     companion object {
-        private const val EXTRA_STATE: String = "_fusionauth_mobile_sdk_state"
-        private const val EXTRA_FAILED: String = "_fusionauth_mobile_sdk_failed"
+        private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
+        const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
+        const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
+        const val EXTRA_LOGGED_OUT: String = "io.fusionauth.mobilesdk.logged_out"
+
+        private val EXTRAS = setOf(EXTRA_STATE, EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
     }
 
 }

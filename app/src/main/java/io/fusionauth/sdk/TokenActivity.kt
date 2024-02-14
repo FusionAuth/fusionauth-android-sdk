@@ -82,6 +82,11 @@ class TokenActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        if (intent.getBooleanExtra("endSession", false)) {
+            Log.i(TAG, "Ending session")
+            return
+        }
+
         Logger.getLogger(TAG).info("Checking for authorization response")
         if (AuthenticationManager.isAuthenticated()) {
             fetchUserInfoAndDisplayAuthorized(/*authState.getAccessToken()*/)
@@ -239,6 +244,7 @@ class TokenActivity : AppCompatActivity() {
     @MainThread
     private fun endSession() {
         lifecycleScope.launch {
+            intent.putExtra("endSession", true)
             AuthenticationManager
                 .oAuth(this@TokenActivity)
                 .logout(

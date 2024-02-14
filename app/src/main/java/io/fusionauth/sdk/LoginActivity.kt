@@ -13,8 +13,6 @@
  */
 package io.fusionauth.sdk
 
-import android.app.Activity
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -76,10 +74,14 @@ class LoginActivity : AppCompatActivity() {
             startAuth()
         }
 
-        if (AuthenticationManager.oAuth(this@LoginActivity).isFailed(intent) ||
-            intent.getBooleanExtra(EXTRA_FAILED, false)
-        ) {
+        if (AuthenticationManager.oAuth(this@LoginActivity)
+            .isCancelled(intent)) {
             displayAuthCancelled()
+        }
+
+        if(AuthenticationManager.oAuth(this@LoginActivity)
+            .isLoggedOut(intent)) {
+            displayLoggedOut()
         }
 
         displayAuthOptions()
@@ -89,19 +91,6 @@ class LoginActivity : AppCompatActivity() {
         super.onDestroy()
 
         AuthenticationManager.dispose()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        displayAuthOptions()
-        if (resultCode == Activity.RESULT_CANCELED) {
-            displayAuthCancelled()
-        } else {
-            val intent = Intent(this, TokenActivity::class.java)
-            data?.extras?.let { intent.putExtras(it) }
-            startActivity(intent)
-        }
     }
 
     @MainThread
@@ -163,8 +152,16 @@ class LoginActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun displayLoggedOut() {
+        Snackbar.make(
+            findViewById<View>(R.id.coordinator),
+            "Logged out",
+            Snackbar.LENGTH_SHORT
+        )
+            .show()
+    }
+
     companion object {
         private const val TAG = "LoginActivity"
-        private const val EXTRA_FAILED = "failed"
     }
 }
