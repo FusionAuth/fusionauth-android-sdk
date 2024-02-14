@@ -48,12 +48,13 @@ import kotlin.coroutines.suspendCoroutine
  */
 @Suppress("LongParameterList")
 class OAuthAuthenticationService internal constructor(
-    var context: Context,
-    var fusionAuthUrl: String,
-    var clientId: String,
-    var tenantId: String?,
-    var tokenManager: TokenManager?,
-    var allowUnsecureConnection: Boolean = false,
+    val context: Context,
+    val fusionAuthUrl: String,
+    val clientId: String,
+    val tenantId: String?,
+    val tokenManager: TokenManager?,
+    val allowUnsecureConnection: Boolean = false,
+    val additionalScopes: Set<String> = emptySet(),
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
@@ -77,7 +78,7 @@ class OAuthAuthenticationService internal constructor(
                 ResponseTypeValues.CODE,
                 Uri.parse("io.fusionauth.app:/oauth2redirect"),
             )
-                .setScope("openid offline_access")
+                .setScope(scopes)
                 .build()
 
         val authService = getAuthorizationService()
@@ -344,6 +345,9 @@ class OAuthAuthenticationService internal constructor(
         )
     }
 
+    /**
+     * Internal AppAuthState
+     */
     private val appAuthState: AuthState
         get() {
             var authState = this.authState.get()
@@ -355,5 +359,11 @@ class OAuthAuthenticationService internal constructor(
             this.authState.set(authState)
             return authState
         }
+
+    /**
+     * This property represents the scopes used for OAuth authentication.
+     */
+    private val scopes: String
+        get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")
 
 }

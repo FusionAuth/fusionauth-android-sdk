@@ -82,6 +82,7 @@ object AuthenticationManager {
             tenantId = configuration.tenant,
             tokenManager = tokenManager,
             allowUnsecureConnection = configuration.allowUnsecureConnection,
+            additionalScopes = configuration.additionalScopes
         )
     }
 
