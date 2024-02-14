@@ -7,6 +7,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.10" apply false
     id("com.android.library") version "8.2.0" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
+    id("com.mooltiverse.oss.nyx") version "2.5.1"
 
     kotlin("jvm") version "1.9.21"
     kotlin("plugin.serialization") version "1.9.21"
