@@ -56,7 +56,6 @@ class TokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthorizationManager.initStorage(SharedPreferencesStorage(this))
         AuthorizationManager.initialize(
             AuthorizationConfiguration(
                 clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",

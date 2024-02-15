@@ -36,17 +36,6 @@ object AuthorizationManager {
     }
 
     /**
-     * Initializes the storage and token manager for the application.
-     *
-     * @param storage The storage implementation to be used for storing data.
-     * @see Storage
-     */
-    fun initStorage(storage: Storage) {
-        this.storage = storage
-        this.tokenManager = tokenManager.withStorage(storage)
-    }
-
-    /**
      * Initializes the authorization manager with the given configuration and optional storage.
      *
      * @param configuration The authorization configuration to be used.
@@ -54,9 +43,8 @@ object AuthorizationManager {
      */
     fun initialize(configuration: AuthorizationConfiguration, storage: Storage? = null) {
         this.configuration = configuration
-        if (storage != null) {
-            initStorage(storage)
-        }
+        this.storage = storage ?: MemoryStorage()
+        this.tokenManager = tokenManager.withStorage(this.storage)
     }
 
     /**
