@@ -74,13 +74,11 @@ class LoginActivity : AppCompatActivity() {
             startAuth()
         }
 
-        if (AuthorizationManager.oAuth(this@LoginActivity)
-            .isCancelled(intent)) {
+        if (AuthorizationManager.oAuth(this@LoginActivity).isCancelled(intent)) {
             displayAuthCancelled()
         }
 
-        if(AuthorizationManager.oAuth(this@LoginActivity)
-            .isLoggedOut(intent)) {
+        if (AuthorizationManager.oAuth(this@LoginActivity).isLoggedOut(intent)) {
             displayLoggedOut()
         }
 
@@ -104,9 +102,9 @@ class LoginActivity : AppCompatActivity() {
                     .oAuth(this@LoginActivity)
                     .authorize(
                         Intent(this@LoginActivity, TokenActivity::class.java),
-                        Intent(this@LoginActivity, LoginActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
                         OAuthAuthorizeOptions(
+                            cancelIntent = Intent(this@LoginActivity, LoginActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
                             state = "state-${System.currentTimeMillis()}"
                         )
                     )
