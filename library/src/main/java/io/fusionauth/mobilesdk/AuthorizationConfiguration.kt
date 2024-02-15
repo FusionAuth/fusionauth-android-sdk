@@ -4,18 +4,18 @@ import kotlinx.serialization.Serializable
 import java.util.logging.Logger
 
 /**
- * AuthenticationConfiguration is a data class that represents the configuration for authentication.
+ * AuthorizationConfiguration is a data class that represents the configuration for authorization.
  *
- * @property clientId The client ID used for authentication.
+ * @property clientId The client ID used for authorization.
  * @property fusionAuthUrl The URL of the FusionAuth server.
  * @property tenant The tenant ID for the FusionAuth server. (Optional)
  * @property allowUnsecureConnection Flag to allow unsecure connections. Default is false.
- * @property additionalScopes Additional scopes to be requested during authentication. Default is empty.
- * @property locale The locale to be used for authentication. (Optional)
+ * @property additionalScopes Additional scopes to be requested during authorization. Default is empty.
+ * @property locale The locale to be used for authorization. (Optional)
  */
 @Suppress("unused")
 @Serializable
-data class AuthenticationConfiguration(
+data class AuthorizationConfiguration(
     val clientId: String,
     val fusionAuthUrl: String,
     val tenant: String? = null,
@@ -30,7 +30,7 @@ data class AuthenticationConfiguration(
         }
     }
 
-    fun withAdditionalScopes(scopes: Set<String>): AuthenticationConfiguration {
+    fun withAdditionalScopes(scopes: Set<String>): AuthorizationConfiguration {
         return this.copy(additionalScopes = scopes)
     }
 }

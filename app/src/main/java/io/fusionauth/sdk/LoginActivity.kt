@@ -22,10 +22,10 @@ import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import io.fusionauth.mobilesdk.AuthenticationConfiguration
-import io.fusionauth.mobilesdk.AuthenticationManager
+import io.fusionauth.mobilesdk.AuthorizationConfiguration
+import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.OAuthAuthorizeOptions
-import io.fusionauth.mobilesdk.exceptions.AuthenticationException
+import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 
@@ -49,8 +49,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthenticationManager.initialize(
-            AuthenticationConfiguration(
+        AuthorizationManager.initialize(
+            AuthorizationConfiguration(
                 clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
                 fusionAuthUrl = "http://10.168.145.33:9011",
                 allowUnsecureConnection = true
@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
             SharedPreferencesStorage(this)
         )
 
-        if (AuthenticationManager.isAuthenticated()) {
+        if (AuthorizationManager.isAuthenticated()) {
             Log.i(TAG, "User is already authenticated, proceeding to token activity")
             startActivity(Intent(this, TokenActivity::class.java))
             finish()
@@ -74,12 +74,12 @@ class LoginActivity : AppCompatActivity() {
             startAuth()
         }
 
-        if (AuthenticationManager.oAuth(this@LoginActivity)
+        if (AuthorizationManager.oAuth(this@LoginActivity)
             .isCancelled(intent)) {
             displayAuthCancelled()
         }
 
-        if(AuthenticationManager.oAuth(this@LoginActivity)
+        if(AuthorizationManager.oAuth(this@LoginActivity)
             .isLoggedOut(intent)) {
             displayLoggedOut()
         }
@@ -90,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        AuthenticationManager.dispose()
+        AuthorizationManager.dispose()
     }
 
     @MainThread
@@ -100,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 displayLoading("Making authorization request")
-                AuthenticationManager
+                AuthorizationManager
                     .oAuth(this@LoginActivity)
                     .authorize(
                         Intent(this@LoginActivity, TokenActivity::class.java),
@@ -110,7 +110,7 @@ class LoginActivity : AppCompatActivity() {
                             state = "state-${System.currentTimeMillis()}"
                         )
                     )
-            } catch (e: AuthenticationException) {
+            } catch (e: AuthorizationException) {
                 Log.e(TAG, "Error while authorizing", e)
                 displayError(e.message ?: "Error while authorizing", true)
             }

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import io.fusionauth.mobilesdk.exceptions.AuthenticationException
+import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -15,7 +15,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
-import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
@@ -34,7 +33,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * OAuthAuthenticationService class is responsible for handling OAuth authorization and authentication process.
+ * OAuthAuthorizationService class is responsible for handling OAuth authorization and authorization process.
  * It provides methods to authorize the user, handle the redirect intent, fetch user information,
  * perform logout, retrieve fresh access token, and get the authorization service.
  *
@@ -45,11 +44,11 @@ import kotlin.coroutines.suspendCoroutine
  * @property tokenManager The token manager to handle token storage and retrieval, or null if not used.
  * @property allowUnsecureConnection Boolean value indicating whether unsecure connections are allowed.
  * @property defaultDispatcher The default coroutine dispatcher. Default is Dispatchers.Default
- * @property additionalScopes Additional scopes to be requested during authentication. Default is empty.
- * @property locale The locale to be used for authentication. Default is null.
+ * @property additionalScopes Additional scopes to be requested during authorization. Default is empty.
+ * @property locale The locale to be used for authorization. Default is null.
  */
 @Suppress("LongParameterList", "TooManyFunctions", "MemberVisibilityCanBePrivate", "unused")
-class OAuthAuthenticationService internal constructor(
+class OAuthAuthorizationService internal constructor(
     val context: Context,
     val fusionAuthUrl: String,
     val clientId: String,
@@ -62,11 +61,11 @@ class OAuthAuthenticationService internal constructor(
 ) {
 
     private val json = Json { ignoreUnknownKeys = true }
-    private val authenticationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
+    private val authorizationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
     private val authState = AtomicReference<AuthState?>()
 
     /**
-     * Authorizes the user using OAuth authentication.
+     * Authorizes the user using OAuth authorization.
      *
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
      * @param options The options for the authorize request. Default is null.
@@ -76,7 +75,7 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
-     * Authorizes the user using OAuth authentication.
+     * Authorizes the user using OAuth authorization.
      *
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
      * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
@@ -161,17 +160,17 @@ class OAuthAuthenticationService internal constructor(
      *
      * @param intent The intent received from the authorization process.
      * @return The FusionAuthState object that contains the access token, access token expiration time, and id token.
-     * @throws AuthenticationException If the authorization process failed.
+     * @throws AuthorizationException If the authorization process failed.
      */
     suspend fun handleRedirect(intent: Intent): FusionAuthState {
         return withContext(defaultDispatcher) {
             val response = AuthorizationResponse.fromIntent(intent)
-            val exception = AuthorizationException.fromIntent(intent)
+            val exception = net.openid.appauth.AuthorizationException.fromIntent(intent)
 
             // Validate the state
             val state = intent.getStringExtra(EXTRA_STATE)
             if (state.orEmpty() != response?.state.orEmpty()) {
-                throw AuthenticationException("State mismatch")
+                throw AuthorizationException("State mismatch")
             }
 
             appAuthState.update(response, exception)
@@ -189,7 +188,7 @@ class OAuthAuthenticationService internal constructor(
                 tokenManager?.saveAuthState(authState)
                 authState
             } else {
-                throw exception?.let { AuthenticationException(it) } ?: AuthenticationException("Unknown error")
+                throw exception?.let { AuthorizationException(it) } ?: AuthorizationException("Unknown error")
             }
         }
     }
@@ -277,7 +276,7 @@ class OAuthAuthenticationService internal constructor(
     ) {
         val authState = tokenManager?.getAuthState() ?: return
 
-        AuthenticationManager.clearState()
+        AuthorizationManager.clearState()
 
         val config = getConfiguration()
 
@@ -343,7 +342,7 @@ class OAuthAuthenticationService internal constructor(
      */
     private suspend fun performTokenRequest(
         response: AuthorizationResponse,
-        ex: AuthorizationException?
+        ex: net.openid.appauth.AuthorizationException?
     ): TokenResponse {
         return suspendCoroutine { continuation ->
             val authService = getAuthorizationService()
@@ -358,8 +357,8 @@ class OAuthAuthenticationService internal constructor(
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
                 } else {
-                    continuation.resumeWithException(exception?.let { AuthenticationException(it) }
-                        ?: AuthenticationException("Unknown error"))
+                    continuation.resumeWithException(exception?.let { AuthorizationException(it) }
+                        ?: AuthorizationException("Unknown error"))
                 }
             }
         }
@@ -374,7 +373,7 @@ class OAuthAuthenticationService internal constructor(
      */
     private suspend fun getConfiguration(force: Boolean = false): AuthorizationServiceConfiguration {
         if (!force) {
-            val config = authenticationConfiguration.get()
+            val config = authorizationConfiguration.get()
             if (config != null) {
                 return config
             }
@@ -394,11 +393,11 @@ class OAuthAuthenticationService internal constructor(
                 uriBuilder.build(),
                 { configuration, ex ->
                     if (configuration != null) {
-                        authenticationConfiguration.set(configuration)
+                        authorizationConfiguration.set(configuration)
                         continuation.resume(configuration)
                     } else {
-                        continuation.resumeWithException(ex?.let { AuthenticationException(it) }
-                            ?: AuthenticationException("Unknown error"))
+                        continuation.resumeWithException(ex?.let { AuthorizationException(it) }
+                            ?: AuthorizationException("Unknown error"))
                     }
                 },
                 getConnectionBuilder(),
@@ -410,7 +409,7 @@ class OAuthAuthenticationService internal constructor(
      * Retrieves a fresh access token.
      *
      * @return the fresh access token or null if an error occurs
-     * @throws AuthenticationException if the refresh token is not available or an unknown error occurs
+     * @throws AuthorizationException if the refresh token is not available or an unknown error occurs
      */
     suspend fun freshAccessToken(): String? {
         val config = getConfiguration()
@@ -420,7 +419,7 @@ class OAuthAuthenticationService internal constructor(
 
             val refreshToken = tokenManager?.getAuthState()?.refreshToken
             if (refreshToken == null) {
-                it.resumeWithException(AuthenticationException("No refresh token available"))
+                it.resumeWithException(AuthorizationException("No refresh token available"))
                 return@suspendCoroutine
             }
 
@@ -447,8 +446,8 @@ class OAuthAuthenticationService internal constructor(
                     }
                     it.resume(response.accessToken)
                 } else {
-                    it.resumeWithException(exception?.let { ex -> AuthenticationException(ex) }
-                        ?: AuthenticationException("Unknown error"))
+                    it.resumeWithException(exception?.let { ex -> AuthorizationException(ex) }
+                        ?: AuthorizationException("Unknown error"))
                 }
             }
         }
@@ -464,7 +463,7 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
-     * Retrieves the authorization service used for OAuth authentication.
+     * Retrieves the authorization service used for OAuth authorization.
      *
      * @return The authorization service instance.
      */
@@ -493,7 +492,7 @@ class OAuthAuthenticationService internal constructor(
         }
 
     /**
-     * This property represents the scopes used for OAuth authentication.
+     * This property represents the scopes used for OAuth authorization.
      */
     private val scopes: String
         get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")

@@ -3,7 +3,7 @@ package io.fusionauth.mobilesdk
 import kotlinx.serialization.Serializable
 
 /**
- * Represents the user information retrieved from the authentication service.
+ * Represents the user information retrieved from the authorization service.
  * More information about the user info can be found in the
  * [FusionAuth documentation](https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#userinfo)
  *
