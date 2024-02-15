@@ -63,7 +63,6 @@ class OAuthAuthorizationService internal constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
-    private val json = Json { ignoreUnknownKeys = true }
     private val authorizationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
     private val authState = AtomicReference<AuthState?>()
 
@@ -539,6 +538,7 @@ class OAuthAuthorizationService internal constructor(
 
     companion object {
         private val deferredRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+        private val json = Json { ignoreUnknownKeys = true }
 
         private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
