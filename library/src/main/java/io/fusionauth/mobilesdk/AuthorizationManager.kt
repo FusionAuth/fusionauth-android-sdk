@@ -90,8 +90,12 @@ object AuthorizationManager {
     /**
      * Retrieves a fresh access token.
      *
+     * If the current access token is not expired, it will be returned. Otherwise, a fresh access token will be
+     * obtained using the refresh token.
+     *
      * @param context The application context.
-     * @param force Flag indicating whether to force obtaining a fresh access token even if the current one is not expired. Default is false.
+     * @param force Flag indicating whether to force obtaining a fresh access token even if the current one is not
+     *              expired.
      * @return The fresh access token or null if an error occurs.
      */
     suspend fun freshAccessToken(context: Context, force: Boolean = false): String? {

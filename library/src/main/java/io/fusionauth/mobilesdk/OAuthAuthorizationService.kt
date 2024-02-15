@@ -7,8 +7,11 @@ import android.net.Uri
 import android.os.Bundle
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -412,6 +415,34 @@ class OAuthAuthorizationService internal constructor(
      * @throws AuthorizationException if the refresh token is not available or an unknown error occurs
      */
     suspend fun freshAccessToken(): String? {
+        // If we already started a refresh, we don't want to start another one
+        deferredRef.get()?.let { deferred ->
+            if (!deferred.isCompleted) {
+                return deferred.await()
+            }
+        }
+
+        // Create and store a new deferred, so we can check if it's completed later
+        val deferred = deferredRef.updateAndGet {
+            CoroutineScope(defaultDispatcher).async {
+                freshAccessTokenInternal()
+            }
+        }
+
+        // Start the deferred
+        deferred!!.start()
+
+        // Return the result
+        return deferred.await()
+    }
+
+    /**
+     * Retrieves a fresh access token.
+     *
+     * @return the fresh access token or null if an error occurs
+     * @throws AuthorizationException if the refresh token is not available or an unknown error occurs
+     */
+    private suspend fun freshAccessTokenInternal(): String? {
         val config = getConfiguration()
 
         return suspendCoroutine {
@@ -507,6 +538,8 @@ class OAuthAuthorizationService internal constructor(
     }
 
     companion object {
+        private val deferredRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+
         private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
         const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
