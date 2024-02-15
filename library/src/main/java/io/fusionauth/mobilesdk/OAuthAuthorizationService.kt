@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -368,19 +367,40 @@ class OAuthAuthorizationService internal constructor(
 
     /**
      * Retrieves the [AuthorizationServiceConfiguration].
+     * If the configuration is already available, it will be returned immediately.
      *
-     * @param force Boolean value indicating whether to force fetching a new configuration, even if it already exists.
-     *              Default value is false.
+     * @param force Flag indicating whether to force fetching the configuration even if it's already available.
      * @return The [AuthorizationServiceConfiguration] object.
      */
     private suspend fun getConfiguration(force: Boolean = false): AuthorizationServiceConfiguration {
-        if (!force) {
-            val config = authorizationConfiguration.get()
-            if (config != null) {
-                return config
+        // If we already started a fetch, we don't want to start another one
+        // Except if force is true, then we want to start a new one
+        deferredFetchConfigurationRef.get()?.let {
+            if (!force) {
+                return it.await()
             }
         }
 
+        // Create and store a new deferred, so we can check if it's completed later
+        val deferred = deferredFetchConfigurationRef.updateAndGet {
+            CoroutineScope(defaultDispatcher).async {
+                fetchConfiguration()
+            }
+        }
+
+        // Start the deferred
+        deferred!!.start()
+
+        // Return the result
+        return deferred.await()
+    }
+
+    /**
+     * Retrieves the [AuthorizationServiceConfiguration].
+     *
+     * @return The [AuthorizationServiceConfiguration] object.
+     */
+    private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration {
         val uriBuilder = Uri.parse(fusionAuthUrl).buildUpon()
 
         // If tenant is specified, append it to the URL
@@ -415,14 +435,14 @@ class OAuthAuthorizationService internal constructor(
      */
     suspend fun freshAccessToken(): String? {
         // If we already started a refresh, we don't want to start another one
-        deferredRef.get()?.let { deferred ->
+        deferredTokenRefreshRef.get()?.let { deferred ->
             if (!deferred.isCompleted) {
                 return deferred.await()
             }
         }
 
         // Create and store a new deferred, so we can check if it's completed later
-        val deferred = deferredRef.updateAndGet {
+        val deferred = deferredTokenRefreshRef.updateAndGet {
             CoroutineScope(defaultDispatcher).async {
                 freshAccessTokenInternal()
             }
@@ -537,7 +557,9 @@ class OAuthAuthorizationService internal constructor(
     }
 
     companion object {
-        private val deferredRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+        private val deferredFetchConfigurationRef: AtomicReference<Deferred<AuthorizationServiceConfiguration>?> =
+            AtomicReference(null)
         private val json = Json { ignoreUnknownKeys = true }
 
         private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
