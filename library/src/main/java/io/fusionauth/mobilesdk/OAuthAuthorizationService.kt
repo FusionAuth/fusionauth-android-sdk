@@ -71,20 +71,8 @@ class OAuthAuthorizationService internal constructor(
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
      * @param options The options for the authorize request. Default is null.
      */
-    suspend fun authorize(completedIntent: Intent, options: OAuthAuthorizeOptions?) {
-        return authorize(completedIntent, null, options)
-    }
-
-    /**
-     * Authorizes the user using OAuth authorization.
-     *
-     * @param completedIntent The PendingIntent to be used when the authorization process is completed.
-     * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
-     * @param options The options for the authorize request. Default is null.
-     */
     suspend fun authorize(
         completedIntent: Intent,
-        cancelIntent: Intent? = null,
         options: OAuthAuthorizeOptions? = null
     ) {
         val config = getConfiguration()
@@ -133,7 +121,7 @@ class OAuthAuthorizationService internal constructor(
         val authRequest = authRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (cancelIntent == null) {
+        if (options?.cancelIntent == null) {
             authService.performAuthorizationRequest(
                 authRequest,
                 completedPendingIntent,
@@ -146,7 +134,7 @@ class OAuthAuthorizationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent.also {
+                options.cancelIntent.also {
                     replaceExtras(it, Bundle().also { bundle ->
                         bundle.putBoolean(EXTRA_CANCELLED, true)
                     })
@@ -260,28 +248,13 @@ class OAuthAuthorizationService internal constructor(
         completedIntent: Intent,
         options: OAuthLogoutOptions? = null
     ) {
-        return logout(completedIntent, null, options)
-    }
-
-    /**
-     * Log out the user.
-     *
-     * @param completedIntent The PendingIntent to be used when the logout process is completed.
-     * @param cancelIntent The PendingIntent to be used when the logout process is cancelled. Default is null.
-     * @param options The options for the logout request. Default is null.
-     */
-    suspend fun logout(
-        completedIntent: Intent,
-        cancelIntent: Intent? = null,
-        options: OAuthLogoutOptions? = null
-    ) {
         val authState = tokenManager?.getAuthState() ?: return
 
         AuthorizationManager.clearState()
 
         val config = getConfiguration()
 
-        val additionalParameters = mutableMapOf<String, String>(
+        val additionalParameters = mutableMapOf(
             "client_id" to clientId,
         )
         tenantId?.let { additionalParameters["tenantId"] = it }
@@ -311,7 +284,7 @@ class OAuthAuthorizationService internal constructor(
         val logoutRequest = logoutRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (cancelIntent == null) {
+        if (options?.cancelIntent == null) {
             authService.performEndSessionRequest(
                 logoutRequest,
                 completedPendingIntent,
@@ -324,7 +297,7 @@ class OAuthAuthorizationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent.also {
+                options.cancelIntent.also {
                     replaceExtras(it, Bundle().also { bundle ->
                         bundle.putBoolean(EXTRA_CANCELLED, true)
                     })

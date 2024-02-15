@@ -1,5 +1,7 @@
 package io.fusionauth.mobilesdk
 
+import android.content.Intent
+
 /**
  * OAuthAuthorizeOptions is a data class that represents the options for the OAuth authorize request.
  *
@@ -19,6 +21,7 @@ package io.fusionauth.mobilesdk
  * @property state An opaque value used by the client to maintain state between the request and callback. The
  *                 authorization server includes this value when redirecting the user-agent back to the client.
  * @property userCode The end-user verification code.
+ * @property cancelIntent An optional intent to be used when the user cancels the OAuth authorize request.
  */
 data class OAuthAuthorizeOptions(
     val redirectUri: String = "io.fusionauth.app:/oauth2redirect",
@@ -32,4 +35,5 @@ data class OAuthAuthorizeOptions(
     // val responseType: String? = null,
     val state: String? = null,
     val userCode: String? = null,
+    val cancelIntent: Intent? = null,
 )
