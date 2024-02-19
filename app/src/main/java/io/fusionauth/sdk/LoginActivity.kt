@@ -24,7 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthorizationConfiguration
 import io.fusionauth.mobilesdk.AuthorizationManager
-import io.fusionauth.mobilesdk.OAuthAuthorizeOptions
+import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch

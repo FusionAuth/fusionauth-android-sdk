@@ -1,10 +1,15 @@
-package io.fusionauth.mobilesdk
+package io.fusionauth.mobilesdk.oauth
 
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import io.fusionauth.mobilesdk.AuthorizationManager
+import io.fusionauth.mobilesdk.FusionAuthState
+import io.fusionauth.mobilesdk.SingletonUnsecureConnectionBuilder
+import io.fusionauth.mobilesdk.TokenManager
+import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
