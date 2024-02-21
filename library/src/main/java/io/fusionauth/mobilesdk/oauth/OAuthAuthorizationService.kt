@@ -225,9 +225,8 @@ class OAuthAuthorizationService internal constructor(
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun getUserInfo(): UserInfo? {
         return withContext(defaultDispatcher) {
-            val authState = tokenManager?.getAuthState() ?: return@withContext null
-
             val config = getConfiguration()
+            val accessToken = AuthorizationManager.freshAccessToken(context) ?: return@withContext null
 
             val conn: HttpURLConnection = config.discoveryDoc?.userinfoEndpoint.let {
                 if (it == null) {
@@ -236,7 +235,7 @@ class OAuthAuthorizationService internal constructor(
                 getConnectionBuilder().openConnection(it)
             }
 
-            conn.setRequestProperty("Authorization", "Bearer ${authState.accessToken}")
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.instanceFollowRedirects = false
 
             json.decodeFromStream<UserInfo>(conn.inputStream)
