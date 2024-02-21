@@ -4,14 +4,14 @@
 # documentation.
 
 # This workflow performs a static analysis of your Kotlin source code using
-# ktlint.
+# Android Lint.
 #
 # Scans are triggered:
 # 1. On every push to default and protected branches
 # 2. On every Pull Request targeting the default branch
 # 3. Manually, on demand, via the "workflow_dispatch" event
 
-name: Check Code Quality with ktlint
+name: Check Code Quality with Android Lint
 
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
@@ -26,7 +26,7 @@ on:
 jobs:
   # This workflow contains a single job called "scan"
   scan-library:
-    name: ktlint Check for library
+    name: Android Lint Check for library
 
     permissions:
       # required for all workflows
@@ -58,14 +58,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
       
-      # Sets up Gradle as a prerequisite to run ktlint
+      # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.1.0
         with:
           gradle-home-cache-cleanup: true
       
-      # Performs analysis using ktlint via Gradle and outputs a Sarif Report
-      - name: Run ktlint
+      # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
+      - name: Run Android Lint
         run: ./gradlew lint --continue
 
       # Uploads Sarif Report for the library to GitHub
@@ -75,15 +75,15 @@ jobs:
         with:
           sarif_file: library/build/reports/lint-results-debug.sarif
 
-      # Process checkstyle Report file from ktlint with reviewdog cli
+      # Process checkstyle Report file from Android Lint with reviewdog cli
       - name: Run reviewdog for library
         if: success() || failure()
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="ktlint" -reporter=github-pr-check < library/build/reports/lint-results-debug.sarif
+        run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="lint" -reporter=github-pr-check < library/build/reports/lint-results-debug.sarif
 
   scan-app:
-    name: ktlint Check for app
+    name: Android Lint Check for app
 
     permissions:
       # required for all workflows
@@ -115,14 +115,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
 
-      # Sets up Gradle as a prerequisite to run ktlint
+      # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3.1.0
         with:
           gradle-home-cache-cleanup: true
 
-      # Performs analysis using ktlint via Gradle and outputs a Sarif Report
-      - name: Run ktlint
+      # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
+      - name: Run Android Lint
         run: ./gradlew :app:lint --continue
 
       # Uploads Sarif Report for the app to GitHub
@@ -132,9 +132,9 @@ jobs:
         with:
           sarif_file: app/build/reports/lint-results-debug.sarif
 
-      # Process checkstyle Report file from ktlint with reviewdog cli
+      # Process checkstyle Report file from Android Lint with reviewdog cli
       - name: Run reviewdog for app
         if: success() || failure()
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="ktlint" -reporter=github-pr-check < app/build/reports/lint-results-debug.sarif
+        run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="lint" -reporter=github-pr-check < app/build/reports/lint-results-debug.sarif
