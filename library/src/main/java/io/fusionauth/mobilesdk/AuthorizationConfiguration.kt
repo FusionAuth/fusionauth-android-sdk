@@ -1,5 +1,6 @@
 package io.fusionauth.mobilesdk
 
+import android.content.Context
 import kotlinx.serialization.Serializable
 import java.util.logging.Logger
 
@@ -32,5 +33,21 @@ data class AuthorizationConfiguration(
 
     fun withAdditionalScopes(scopes: Set<String>): AuthorizationConfiguration {
         return this.copy(additionalScopes = scopes)
+    }
+
+    companion object {
+
+        /**
+         * Reads a JSON file from resources and converts it into an AuthorizationConfiguration object.
+         *
+         * @param context The context used to access resources.
+         * @param resource The resource ID of the JSON file.
+         * @return The AuthorizationConfiguration object created from the JSON file.
+         */
+        fun fromResources(context: Context, resource: Int): AuthorizationConfiguration {
+            val json = context.resources.openRawResource(resource).bufferedReader().use { it.readText() }
+            return kotlinx.serialization.json.Json.decodeFromString(json)
+        }
+
     }
 }

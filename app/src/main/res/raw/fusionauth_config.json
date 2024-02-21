@@ -1,4 +1,5 @@
 {
-  "fusionAuthUrl": "http://10.168.145.33:9011",
-  "clientId": "21e13847-4f30-4477-a2d9-33c3a80bd15a"
+  "fusionAuthUrl": "http://10.0.2.2:9011",
+  "clientId": "21e13847-4f30-4477-a2d9-33c3a80bd15a",
+  "allowUnsecureConnection": true
 }

@@ -50,11 +50,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         AuthorizationManager.initialize(
-            AuthorizationConfiguration(
-                clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
-                fusionAuthUrl = "http://10.168.145.33:9011",
-                allowUnsecureConnection = true
-            ),
+            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
             SharedPreferencesStorage(this)
         )
 
