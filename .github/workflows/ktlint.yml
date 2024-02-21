@@ -25,8 +25,8 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "scan"
-  scan:
-    name: ktlint Check
+  scan-library:
+    name: ktlint Check for library
 
     permissions:
       # required for all workflows
@@ -75,19 +75,62 @@ jobs:
         with:
           sarif_file: library/build/reports/lint-results-debug.sarif
 
-      # Uploads Sarif Report for the app to GitHub
-      - name: Upload kotlin app report
-        uses: github/codeql-action/upload-sarif@v3.24.3
-        if: success() || failure()
-        with:
-          sarif_file: app/build/reports/lint-results-debug.sarif
-
       # Process checkstyle Report file from ktlint with reviewdog cli
       - name: Run reviewdog for library
         if: success() || failure()
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="ktlint" -reporter=github-pr-check < library/build/reports/lint-results-debug.sarif
+
+  scan-app:
+    name: ktlint Check for app
+
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Sets up JDK as a prerequisite to run Gradle
+      - name: Setup Java
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      # Sets up the reviewdog cli
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1.2.1
+
+      - name: Show reviewdog version
+        run: reviewdog -version
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      # Sets up Gradle as a prerequisite to run ktlint
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.1.0
+        with:
+          gradle-home-cache-cleanup: true
+
+      # Performs analysis using ktlint via Gradle and outputs a Sarif Report
+      - name: Run ktlint
+        run: ./gradlew :app:lint --continue
+
+      # Uploads Sarif Report for the app to GitHub
+      - name: Upload kotlin app report
+        uses: github/codeql-action/upload-sarif@v3.24.3
+        if: success() || failure()
+        with:
+          sarif_file: app/build/reports/lint-results-debug.sarif
 
       # Process checkstyle Report file from ktlint with reviewdog cli
       - name: Run reviewdog for app
