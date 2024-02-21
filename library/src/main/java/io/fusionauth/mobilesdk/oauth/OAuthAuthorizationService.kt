@@ -84,18 +84,7 @@ class OAuthAuthorizationService internal constructor(
 
         // Additional parameters supported by FusionAuth
         // See https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#authorize
-        val additionalParameters = mutableMapOf<String, String>()
-
-        // Global Options
-        tenantId?.let { additionalParameters["tenantId"] = it }
-        locale?.let { additionalParameters["locale"] = it }
-
-        // Authorize Options
-        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
-        options?.idpHint?.let { additionalParameters["idp_hint"] = it }
-        options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
-        options?.userCode?.let { additionalParameters["user_code"] = it }
+        val additionalParameters = buildAdditionalParametersForAuthorize(options)
 
         val authRequestBuilder =
             AuthorizationRequest.Builder(
@@ -147,6 +136,28 @@ class OAuthAuthorizationService internal constructor(
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             ),
         )
+    }
+
+    /**
+     * Builds additional parameters for the OAuth authorize request.
+     *
+     * @param options The options for the authorize request. Default is null.
+     * @return The additional parameters as a mutable map of string key-value pairs.
+     */
+    private fun buildAdditionalParametersForAuthorize(options: OAuthAuthorizeOptions?): MutableMap<String, String> {
+        val additionalParameters = mutableMapOf<String, String>()
+
+        // Global Options
+        tenantId?.let { additionalParameters["tenantId"] = it }
+        locale?.let { additionalParameters["locale"] = it }
+
+        // Authorize Options
+        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
+        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
+        options?.idpHint?.let { additionalParameters["idp_hint"] = it }
+        options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
+        options?.userCode?.let { additionalParameters["user_code"] = it }
+        return additionalParameters
     }
 
     /**
@@ -365,8 +376,10 @@ class OAuthAuthorizationService internal constructor(
             }
         }
 
+        checkNotNull(deferred) { "Unable to create deferred" }
+
         // Start the deferred
-        deferred!!.start()
+        deferred.start()
 
         // Return the result
         return deferred.await()
@@ -425,8 +438,10 @@ class OAuthAuthorizationService internal constructor(
             }
         }
 
+        checkNotNull(deferred) { "Unable to create deferred" }
+
         // Start the deferred
-        deferred!!.start()
+        deferred.start()
 
         // Return the result
         return deferred.await()
