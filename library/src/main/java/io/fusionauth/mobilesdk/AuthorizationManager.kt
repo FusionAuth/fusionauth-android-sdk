@@ -1,27 +1,28 @@
 package io.fusionauth.mobilesdk
 
 import android.content.Context
+import io.fusionauth.mobilesdk.oauth.OAuthAuthorizationService
 import io.fusionauth.mobilesdk.storage.MemoryStorage
 import io.fusionauth.mobilesdk.storage.Storage
 import kotlinx.serialization.json.Json
 
 /**
- * AuthenticationManager is a singleton object that manages the authentication state of the user.
- * It provides methods to initialize the authentication manager, check if the user is authenticated,
- * retrieve access tokens, refresh access tokens, and clear the authentication state.
+ * AuthorizationManager is a singleton object that manages the authorization state of the user.
+ * It provides methods to initialize the authorization manager, check if the user is authenticated,
+ * retrieve access tokens, refresh access tokens, and clear the authorization state.
  *
- * AuthenticationManager uses a TokenManager to manage the access tokens and a Storage implementation
- * to store the authentication state.
+ * AuthorizationManager uses a TokenManager to manage the access tokens and a Storage implementation
+ * to store the authorization state.
  *
  * @see TokenManager
  * @see Storage
- * @see AuthenticationConfiguration
+ * @see AuthorizationConfiguration
  */
 @Suppress("TooManyFunctions", "unused", "MemberVisibilityCanBePrivate")
-object AuthenticationManager {
+object AuthorizationManager {
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
-    private lateinit var configuration: AuthenticationConfiguration
+    private lateinit var configuration: AuthorizationConfiguration
 
     /**
      * Initializes the storage and token manager for the application.
@@ -36,27 +37,15 @@ object AuthenticationManager {
     }
 
     /**
-     * Initializes the storage and token manager for the application.
+     * Initializes the authorization manager with the given configuration and optional storage.
      *
-     * @param storage The storage implementation to be used for storing data.
-     * @see Storage
-     */
-    fun initStorage(storage: Storage) {
-        this.storage = storage
-        this.tokenManager = tokenManager.withStorage(storage)
-    }
-
-    /**
-     * Initializes the authentication manager with the given configuration and optional storage.
-     *
-     * @param configuration The authentication configuration to be used.
+     * @param configuration The authorization configuration to be used.
      * @param storage The storage implementation to be used for storing data. (Optional)
      */
-    fun initialize(configuration: AuthenticationConfiguration, storage: Storage? = null) {
+    fun initialize(configuration: AuthorizationConfiguration, storage: Storage? = null) {
         this.configuration = configuration
-        if (storage != null) {
-            initStorage(storage)
-        }
+        this.storage = storage ?: MemoryStorage()
+        this.tokenManager = tokenManager.withStorage(this.storage)
     }
 
     /**
@@ -69,13 +58,13 @@ object AuthenticationManager {
     }
 
     /**
-     * Creates an instance of the [OAuthAuthenticationService] using the provided [context].
+     * Creates an instance of the [OAuthAuthorizationService] using the provided [context].
      *
      * @param context The application context.
-     * @return An instance of the [OAuthAuthenticationService].
+     * @return An instance of the [OAuthAuthorizationService].
      */
-    fun oAuth(context: Context): OAuthAuthenticationService {
-        return OAuthAuthenticationService(
+    fun oAuth(context: Context): OAuthAuthorizationService {
+        return OAuthAuthorizationService(
             context = context,
             fusionAuthUrl = configuration.fusionAuthUrl,
             clientId = configuration.clientId,
@@ -90,8 +79,12 @@ object AuthenticationManager {
     /**
      * Retrieves a fresh access token.
      *
+     * If the current access token is not expired, it will be returned. Otherwise, a fresh access token will be
+     * obtained using the refresh token.
+     *
      * @param context The application context.
-     * @param force Flag indicating whether to force obtaining a fresh access token even if the current one is not expired. Default is false.
+     * @param force Flag indicating whether to force obtaining a fresh access token even if the current one is not
+     *              expired.
      * @return The fresh access token or null if an error occurs.
      */
     suspend fun freshAccessToken(context: Context, force: Boolean = false): String? {
@@ -141,7 +134,7 @@ object AuthenticationManager {
     }
 
     /**
-     * Clears the state of the authentication manager.
+     * Clears the state of the authorization manager.
      */
     fun dispose() {
         // Clear the state
@@ -159,9 +152,9 @@ object AuthenticationManager {
     }
 
     /**
-     * Clears the state of the authentication.
+     * Clears the state of the authorization.
      *
-     * This method clears the authentication state by removing the "authState" key from the storage.
+     * This method clears the authorization state by removing the "authState" key from the storage.
      */
     fun clearState() {
         tokenManager.clearAuthState()

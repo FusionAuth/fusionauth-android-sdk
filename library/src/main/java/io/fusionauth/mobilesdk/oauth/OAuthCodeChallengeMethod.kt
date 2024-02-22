@@ -1,4 +1,4 @@
-package io.fusionauth.mobilesdk
+package io.fusionauth.mobilesdk.oauth
 
 /**
  * Code Challenge Method for PKCE.

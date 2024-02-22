@@ -10,7 +10,7 @@ import kotlinx.serialization.encodeToHexString
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * The TokenManager class handles the storage and retrieval of authentication state tokens.
+ * The TokenManager class handles the storage and retrieval of authorization state tokens.
  *
  * @constructor Creates a TokenManager instance.
  */
@@ -33,10 +33,10 @@ class TokenManager {
     }
 
     /**
-     * Retrieves the authentication state from the storage.
+     * Retrieves the authorization state from the storage.
      *
-     * @return The authentication state if available, or null if not present or unable to decode from storage.
-     * @throws StorageException if an error occurs while decoding the authentication state.
+     * @return The authorization state if available, or null if not present or unable to decode from storage.
+     * @throws StorageException if an error occurs while decoding the authorization state.
      */
     @Suppress("TooGenericExceptionCaught")
     fun getAuthState(): FusionAuthState? {
@@ -57,9 +57,9 @@ class TokenManager {
     }
 
     /**
-     * Saves the authentication state to the storage.
+     * Saves the authorization state to the storage.
      *
-     * @param authState The authentication state to be saved.
+     * @param authState The authorization state to be saved.
      * @throws NullPointerException if `storage` is null.
      */
     fun saveAuthState(authState: FusionAuthState) {
@@ -70,7 +70,7 @@ class TokenManager {
     }
 
     /**
-     * Clears the authentication state by removing the "authState" key from the storage.
+     * Clears the authorization state by removing the "authState" key from the storage.
      *
      * @throws StorageException if the storage implementation is not set.
      */

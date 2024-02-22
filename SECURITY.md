@@ -17,15 +17,15 @@ We use [Semantic Versioning 2.0.0](https://semver.org/) with the following relea
 
 ### Major
 
-When the Authentication / Token Manager API is changed in a non-backwards compatible way.
+When the Authorization / Token Manager API is changed in a non-backwards compatible way.
 
 ### Minor
 
-When the Authentication / Token Manager API is extended with new functionality in a backwards compatible way.
+When the Authorization / Token Manager API is extended with new functionality in a backwards compatible way.
 
 ### Patch
 
-When the Authentication / Token Manager API is not changed, but an internal bug is fixed.
+When the Authorization / Token Manager API is not changed, but an internal bug is fixed.
 
 ### FusionAuth Server Compatibility
 

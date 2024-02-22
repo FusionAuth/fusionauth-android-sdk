@@ -3,7 +3,7 @@ package io.fusionauth.mobilesdk
 import kotlinx.serialization.Serializable
 
 /**
- * Represents the state of FusionAuth authentication.
+ * Represents the state of FusionAuth authorization.
  *
  * @property accessToken The access token string.
  * @property accessTokenExpirationTime The expiration time of the access token.

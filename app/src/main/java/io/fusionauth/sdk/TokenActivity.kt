@@ -13,7 +13,6 @@
  */
 package io.fusionauth.sdk
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -26,12 +25,12 @@ import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import io.fusionauth.mobilesdk.AuthenticationConfiguration
-import io.fusionauth.mobilesdk.AuthenticationManager
+import io.fusionauth.mobilesdk.AuthorizationConfiguration
+import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.IdToken
 import io.fusionauth.mobilesdk.UserInfo
-import io.fusionauth.mobilesdk.exceptions.AuthenticationException
+import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -57,13 +56,8 @@ class TokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthenticationManager.initStorage(SharedPreferencesStorage(this))
-        AuthenticationManager.initialize(
-            AuthenticationConfiguration(
-                clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
-                fusionAuthUrl = "http://10.168.145.33:9011",
-                allowUnsecureConnection = true
-            ),
+        AuthorizationManager.initialize(
+            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
             SharedPreferencesStorage(this)
         )
 
@@ -88,7 +82,7 @@ class TokenActivity : AppCompatActivity() {
         }
 
         Logger.getLogger(TAG).info("Checking for authorization response")
-        if (AuthenticationManager.isAuthenticated()) {
+        if (AuthorizationManager.isAuthenticated()) {
             fetchUserInfoAndDisplayAuthorized(/*authState.getAccessToken()*/)
             return
         }
@@ -96,11 +90,11 @@ class TokenActivity : AppCompatActivity() {
         lifecycleScope.launch {
             displayLoading("Exchanging authorization code")
             try {
-                val authState: FusionAuthState = AuthenticationManager.oAuth(this@TokenActivity)
+                val authState: FusionAuthState = AuthorizationManager.oAuth(this@TokenActivity)
                     .handleRedirect(intent)
                 Log.i(TAG, authState.toString())
                 fetchUserInfoAndDisplayAuthorized()
-            } catch (ex: AuthenticationException) {
+            } catch (ex: AuthorizationException) {
                 Log.e(TAG, "Failed to exchange authorization code", ex)
                 displayNotAuthorized("Authorization failed")
             }
@@ -119,7 +113,7 @@ class TokenActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        AuthenticationManager.dispose()
+        AuthorizationManager.dispose()
     }
 
     @MainThread
@@ -148,11 +142,11 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.loading_container).visibility = View.GONE
 
         val noAccessTokenReturnedView = findViewById<View>(R.id.no_access_token_returned) as TextView
-        if (AuthenticationManager.getAccessToken() == null) {
+        if (AuthorizationManager.getAccessToken() == null) {
             noAccessTokenReturnedView.visibility = View.VISIBLE
         } else {
             // Logging out if token is expired
-            if (AuthenticationManager.isAccessTokenExpired()) {
+            if (AuthorizationManager.isAccessTokenExpired()) {
                 signOut()
                 return
             }
@@ -184,7 +178,7 @@ class TokenActivity : AppCompatActivity() {
 
         // Fallback for name and email
         if ((name.isEmpty()) || (email.isEmpty())) {
-            val idToken: IdToken? = AuthenticationManager.getParsedIdToken()
+            val idToken: IdToken? = AuthorizationManager.getParsedIdToken()
             if (idToken != null) {
                 email = idToken.email.orEmpty()
                 if (name.isEmpty()) {
@@ -205,9 +199,9 @@ class TokenActivity : AppCompatActivity() {
     private fun refreshToken() {
         lifecycleScope.launch {
             try {
-                val authState = AuthenticationManager.freshAccessToken(this@TokenActivity, true)
+                val authState = AuthorizationManager.freshAccessToken(this@TokenActivity, true)
                 Log.i(TAG, "Refreshed access token: $authState")
-            } catch (ex: AuthenticationException) {
+            } catch (ex: AuthorizationException) {
                 Log.e(TAG, "Failed to refresh token", ex)
                 showSnackbar("Failed to refresh token")
             }
@@ -217,7 +211,7 @@ class TokenActivity : AppCompatActivity() {
     private fun fetchUserInfoAndDisplayAuthorized() {
         lifecycleScope.launch {
             try {
-                val userInfo = AuthenticationManager.oAuth(this@TokenActivity).getUserInfo()
+                val userInfo = AuthorizationManager.oAuth(this@TokenActivity).getUserInfo()
                 mUserInfo.set(userInfo)
             } catch (ioEx: IOException) {
                 Log.e(TAG, "Network error when querying userinfo endpoint", ioEx)
@@ -245,7 +239,7 @@ class TokenActivity : AppCompatActivity() {
     private fun endSession() {
         lifecycleScope.launch {
             intent.putExtra("endSession", true)
-            AuthenticationManager
+            AuthorizationManager
                 .oAuth(this@TokenActivity)
                 .logout(
                     Intent(this@TokenActivity, LoginActivity::class.java)
@@ -286,7 +280,7 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun signOut() {
-        AuthenticationManager.clearState()
+        AuthorizationManager.clearState()
 
         val mainIntent = Intent(this, LoginActivity::class.java)
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

@@ -1,12 +1,19 @@
-package io.fusionauth.mobilesdk
+package io.fusionauth.mobilesdk.oauth
 
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import io.fusionauth.mobilesdk.exceptions.AuthenticationException
+import io.fusionauth.mobilesdk.AuthorizationManager
+import io.fusionauth.mobilesdk.FusionAuthState
+import io.fusionauth.mobilesdk.SingletonUnsecureConnectionBuilder
+import io.fusionauth.mobilesdk.TokenManager
+import io.fusionauth.mobilesdk.UserInfo
+import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -15,7 +22,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
-import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
@@ -29,13 +35,12 @@ import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.net.HttpURLConnection
 import java.util.concurrent.atomic.AtomicReference
-import java.util.logging.Logger
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * OAuthAuthenticationService class is responsible for handling OAuth authorization and authentication process.
+ * OAuthAuthorizationService class is responsible for handling OAuth authorization and authorization process.
  * It provides methods to authorize the user, handle the redirect intent, fetch user information,
  * perform logout, retrieve fresh access token, and get the authorization service.
  *
@@ -46,11 +51,11 @@ import kotlin.coroutines.suspendCoroutine
  * @property tokenManager The token manager to handle token storage and retrieval, or null if not used.
  * @property allowUnsecureConnection Boolean value indicating whether unsecure connections are allowed.
  * @property defaultDispatcher The default coroutine dispatcher. Default is Dispatchers.Default
- * @property additionalScopes Additional scopes to be requested during authentication. Default is empty.
- * @property locale The locale to be used for authentication. Default is null.
+ * @property additionalScopes Additional scopes to be requested during authorization. Default is empty.
+ * @property locale The locale to be used for authorization. Default is null.
  */
 @Suppress("LongParameterList", "TooManyFunctions", "MemberVisibilityCanBePrivate", "unused")
-class OAuthAuthenticationService internal constructor(
+class OAuthAuthorizationService internal constructor(
     val context: Context,
     val fusionAuthUrl: String,
     val clientId: String,
@@ -62,48 +67,24 @@ class OAuthAuthenticationService internal constructor(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
-    private val json = Json { ignoreUnknownKeys = true }
-    private val authenticationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
+    private val authorizationConfiguration = AtomicReference<AuthorizationServiceConfiguration?>()
     private val authState = AtomicReference<AuthState?>()
 
     /**
-     * Authorizes the user using OAuth authentication.
+     * Authorizes the user using OAuth authorization.
      *
      * @param completedIntent The PendingIntent to be used when the authorization process is completed.
-     * @param options The options for the authorize request. Default is null.
-     */
-    suspend fun authorize(completedIntent: Intent, options: OAuthAuthorizeOptions?) {
-        return authorize(completedIntent, null, options)
-    }
-
-    /**
-     * Authorizes the user using OAuth authentication.
-     *
-     * @param completedIntent The PendingIntent to be used when the authorization process is completed.
-     * @param cancelIntent The PendingIntent to be used when the authorization process is cancelled. Default is null.
      * @param options The options for the authorize request. Default is null.
      */
     suspend fun authorize(
         completedIntent: Intent,
-        cancelIntent: Intent? = null,
         options: OAuthAuthorizeOptions? = null
     ) {
         val config = getConfiguration()
 
         // Additional parameters supported by FusionAuth
         // See https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#authorize
-        val additionalParameters = mutableMapOf<String, String>()
-
-        // Global Options
-        tenantId?.let { additionalParameters["tenantId"] = it }
-        locale?.let { additionalParameters["locale"] = it }
-
-        // Authorize Options
-        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
-        options?.idpHint?.let { additionalParameters["idp_hint"] = it }
-        options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
-        options?.userCode?.let { additionalParameters["user_code"] = it }
+        val additionalParameters = buildAdditionalParametersForAuthorize(options)
 
         val authRequestBuilder =
             AuthorizationRequest.Builder(
@@ -134,7 +115,7 @@ class OAuthAuthenticationService internal constructor(
         val authRequest = authRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (cancelIntent == null) {
+        if (options?.cancelIntent == null) {
             authService.performAuthorizationRequest(
                 authRequest,
                 completedPendingIntent,
@@ -147,7 +128,7 @@ class OAuthAuthenticationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent.also {
+                options.cancelIntent.also {
                     replaceExtras(it, Bundle().also { bundle ->
                         bundle.putBoolean(EXTRA_CANCELLED, true)
                     })
@@ -158,21 +139,43 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
+     * Builds additional parameters for the OAuth authorize request.
+     *
+     * @param options The options for the authorize request. Default is null.
+     * @return The additional parameters as a mutable map of string key-value pairs.
+     */
+    private fun buildAdditionalParametersForAuthorize(options: OAuthAuthorizeOptions?): MutableMap<String, String> {
+        val additionalParameters = mutableMapOf<String, String>()
+
+        // Global Options
+        tenantId?.let { additionalParameters["tenantId"] = it }
+        locale?.let { additionalParameters["locale"] = it }
+
+        // Authorize Options
+        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
+        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
+        options?.idpHint?.let { additionalParameters["idp_hint"] = it }
+        options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
+        options?.userCode?.let { additionalParameters["user_code"] = it }
+        return additionalParameters
+    }
+
+    /**
      * Handles the redirect intent from the authorization process.
      *
      * @param intent The intent received from the authorization process.
      * @return The FusionAuthState object that contains the access token, access token expiration time, and id token.
-     * @throws AuthenticationException If the authorization process failed.
+     * @throws AuthorizationException If the authorization process failed.
      */
     suspend fun handleRedirect(intent: Intent): FusionAuthState {
         return withContext(defaultDispatcher) {
             val response = AuthorizationResponse.fromIntent(intent)
-            val exception = AuthorizationException.fromIntent(intent)
+            val exception = net.openid.appauth.AuthorizationException.fromIntent(intent)
 
             // Validate the state
             val state = intent.getStringExtra(EXTRA_STATE)
             if (state.orEmpty() != response?.state.orEmpty()) {
-                throw AuthenticationException("State mismatch")
+                throw AuthorizationException("State mismatch")
             }
 
             appAuthState.update(response, exception)
@@ -190,7 +193,7 @@ class OAuthAuthenticationService internal constructor(
                 tokenManager?.saveAuthState(authState)
                 authState
             } else {
-                throw exception?.let { AuthenticationException(it) } ?: AuthenticationException("Unknown error")
+                throw exception?.let { AuthorizationException(it) } ?: AuthorizationException("Unknown error")
             }
         }
     }
@@ -233,9 +236,8 @@ class OAuthAuthenticationService internal constructor(
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun getUserInfo(): UserInfo? {
         return withContext(defaultDispatcher) {
-            val authState = tokenManager?.getAuthState() ?: return@withContext null
-
             val config = getConfiguration()
+            val accessToken = AuthorizationManager.freshAccessToken(context) ?: return@withContext null
 
             val conn: HttpURLConnection = config.discoveryDoc?.userinfoEndpoint.let {
                 if (it == null) {
@@ -244,7 +246,7 @@ class OAuthAuthenticationService internal constructor(
                 getConnectionBuilder().openConnection(it)
             }
 
-            conn.setRequestProperty("Authorization", "Bearer ${authState.accessToken}")
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.instanceFollowRedirects = false
 
             json.decodeFromStream<UserInfo>(conn.inputStream)
@@ -261,28 +263,13 @@ class OAuthAuthenticationService internal constructor(
         completedIntent: Intent,
         options: OAuthLogoutOptions? = null
     ) {
-        return logout(completedIntent, null, options)
-    }
-
-    /**
-     * Log out the user.
-     *
-     * @param completedIntent The PendingIntent to be used when the logout process is completed.
-     * @param cancelIntent The PendingIntent to be used when the logout process is cancelled. Default is null.
-     * @param options The options for the logout request. Default is null.
-     */
-    suspend fun logout(
-        completedIntent: Intent,
-        cancelIntent: Intent? = null,
-        options: OAuthLogoutOptions? = null
-    ) {
         val authState = tokenManager?.getAuthState() ?: return
 
-        AuthenticationManager.clearState()
+        AuthorizationManager.clearState()
 
         val config = getConfiguration()
 
-        val additionalParameters = mutableMapOf<String, String>(
+        val additionalParameters = mutableMapOf(
             "client_id" to clientId,
         )
         tenantId?.let { additionalParameters["tenantId"] = it }
@@ -312,7 +299,7 @@ class OAuthAuthenticationService internal constructor(
         val logoutRequest = logoutRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (cancelIntent == null) {
+        if (options?.cancelIntent == null) {
             authService.performEndSessionRequest(
                 logoutRequest,
                 completedPendingIntent,
@@ -325,7 +312,7 @@ class OAuthAuthenticationService internal constructor(
             PendingIntent.getActivity(
                 context,
                 0,
-                cancelIntent.also {
+                options.cancelIntent.also {
                     replaceExtras(it, Bundle().also { bundle ->
                         bundle.putBoolean(EXTRA_CANCELLED, true)
                     })
@@ -344,7 +331,7 @@ class OAuthAuthenticationService internal constructor(
      */
     private suspend fun performTokenRequest(
         response: AuthorizationResponse,
-        ex: AuthorizationException?
+        ex: net.openid.appauth.AuthorizationException?
     ): TokenResponse {
         return suspendCoroutine { continuation ->
             val authService = getAuthorizationService()
@@ -359,8 +346,8 @@ class OAuthAuthenticationService internal constructor(
                 if (tokenResponse != null) {
                     continuation.resume(tokenResponse)
                 } else {
-                    continuation.resumeWithException(exception?.let { AuthenticationException(it) }
-                        ?: AuthenticationException("Unknown error"))
+                    continuation.resumeWithException(exception?.let { AuthorizationException(it) }
+                        ?: AuthorizationException("Unknown error"))
                 }
             }
         }
@@ -368,19 +355,42 @@ class OAuthAuthenticationService internal constructor(
 
     /**
      * Retrieves the [AuthorizationServiceConfiguration].
+     * If the configuration is already available, it will be returned immediately.
      *
-     * @param force Boolean value indicating whether to force fetching a new configuration, even if it already exists.
-     *              Default value is false.
+     * @param force Flag indicating whether to force fetching the configuration even if it's already available.
      * @return The [AuthorizationServiceConfiguration] object.
      */
     private suspend fun getConfiguration(force: Boolean = false): AuthorizationServiceConfiguration {
-        if (!force) {
-            val config = authenticationConfiguration.get()
-            if (config != null) {
-                return config
+        // If we already started a fetch, we don't want to start another one
+        // Except if force is true, then we want to start a new one
+        deferredFetchConfigurationRef.get()?.let {
+            if (!force) {
+                return it.await()
             }
         }
 
+        // Create and store a new deferred, so we can check if it's completed later
+        val deferred = deferredFetchConfigurationRef.updateAndGet {
+            CoroutineScope(defaultDispatcher).async {
+                fetchConfiguration()
+            }
+        }
+
+        checkNotNull(deferred) { "Unable to create deferred" }
+
+        // Start the deferred
+        deferred.start()
+
+        // Return the result
+        return deferred.await()
+    }
+
+    /**
+     * Retrieves the [AuthorizationServiceConfiguration].
+     *
+     * @return The [AuthorizationServiceConfiguration] object.
+     */
+    private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration {
         val uriBuilder = Uri.parse(fusionAuthUrl).buildUpon()
 
         // If tenant is specified, append it to the URL
@@ -395,11 +405,11 @@ class OAuthAuthenticationService internal constructor(
                 uriBuilder.build(),
                 { configuration, ex ->
                     if (configuration != null) {
-                        authenticationConfiguration.set(configuration)
+                        authorizationConfiguration.set(configuration)
                         continuation.resume(configuration)
                     } else {
-                        continuation.resumeWithException(ex?.let { AuthenticationException(it) }
-                            ?: AuthenticationException("Unknown error"))
+                        continuation.resumeWithException(ex?.let { AuthorizationException(it) }
+                            ?: AuthorizationException("Unknown error"))
                     }
                 },
                 getConnectionBuilder(),
@@ -411,9 +421,39 @@ class OAuthAuthenticationService internal constructor(
      * Retrieves a fresh access token.
      *
      * @return the fresh access token or null if an error occurs
-     * @throws AuthenticationException if the refresh token is not available or an unknown error occurs
+     * @throws AuthorizationException if the refresh token is not available or an unknown error occurs
      */
     suspend fun freshAccessToken(): String? {
+        // If we already started a refresh, we don't want to start another one
+        deferredTokenRefreshRef.get()?.let { deferred ->
+            if (!deferred.isCompleted) {
+                return deferred.await()
+            }
+        }
+
+        // Create and store a new deferred, so we can check if it's completed later
+        val deferred = deferredTokenRefreshRef.updateAndGet {
+            CoroutineScope(defaultDispatcher).async {
+                freshAccessTokenInternal()
+            }
+        }
+
+        checkNotNull(deferred) { "Unable to create deferred" }
+
+        // Start the deferred
+        deferred.start()
+
+        // Return the result
+        return deferred.await()
+    }
+
+    /**
+     * Retrieves a fresh access token.
+     *
+     * @return the fresh access token or null if an error occurs
+     * @throws AuthorizationException if the refresh token is not available or an unknown error occurs
+     */
+    private suspend fun freshAccessTokenInternal(): String? {
         val config = getConfiguration()
 
         return suspendCoroutine {
@@ -421,7 +461,7 @@ class OAuthAuthenticationService internal constructor(
 
             val refreshToken = tokenManager?.getAuthState()?.refreshToken
             if (refreshToken == null) {
-                it.resumeWithException(AuthenticationException("No refresh token available"))
+                it.resumeWithException(AuthorizationException("No refresh token available"))
                 return@suspendCoroutine
             }
 
@@ -448,8 +488,8 @@ class OAuthAuthenticationService internal constructor(
                     }
                     it.resume(response.accessToken)
                 } else {
-                    it.resumeWithException(exception?.let { AuthenticationException(it) }
-                        ?: AuthenticationException("Unknown error"))
+                    it.resumeWithException(exception?.let { ex -> AuthorizationException(ex) }
+                        ?: AuthorizationException("Unknown error"))
                 }
             }
         }
@@ -465,7 +505,7 @@ class OAuthAuthenticationService internal constructor(
     }
 
     /**
-     * Retrieves the authorization service used for OAuth authentication.
+     * Retrieves the authorization service used for OAuth authorization.
      *
      * @return The authorization service instance.
      */
@@ -494,7 +534,7 @@ class OAuthAuthenticationService internal constructor(
         }
 
     /**
-     * This property represents the scopes used for OAuth authentication.
+     * This property represents the scopes used for OAuth authorization.
      */
     private val scopes: String
         get() = setOf("openid", "offline_access").union(additionalScopes).joinToString(" ")
@@ -509,6 +549,11 @@ class OAuthAuthenticationService internal constructor(
     }
 
     companion object {
+        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+        private val deferredFetchConfigurationRef: AtomicReference<Deferred<AuthorizationServiceConfiguration>?> =
+            AtomicReference(null)
+        private val json = Json { ignoreUnknownKeys = true }
+
         private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
         const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
