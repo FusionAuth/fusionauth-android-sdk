@@ -30,19 +30,8 @@ import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 
 /**
- * Demonstrates the usage of the AppAuth to authorize a user with an OAuth2 / OpenID Connect
- * provider. Based on the configuration provided in `res/raw/auth_config.json`, the code
- * contained here will:
- *
- * - Retrieve an OpenID Connect discovery document for the provider, or use a local static
- * configuration.
- * - Utilize dynamic client registration, if no static client id is specified.
- * - Initiate the authorization request using the built-in heuristics or a user-selected browser.
- *
- * _NOTE_: From a clean checkout of this project, the authorization service is not configured.
- * Edit `res/raw/auth_config.json` to provide the required configuration properties. See the
- * README.md in the app/ directory for configuration instructions, and the adjacent IDP-specific
- * instructions.
+ * Demonstrates the usage of FusionAuth to authorize a user with an OAuth2 / OpenID Connect
+ * provider. Based on the configuration provided in `res/raw/fusionauth_config.json`.
  */
 class LoginActivity : AppCompatActivity() {
 
@@ -139,7 +128,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun displayAuthCancelled() {
         Snackbar.make(
-            findViewById<View>(R.id.coordinator),
+            findViewById(R.id.coordinator),
             "Authorization canceled",
             Snackbar.LENGTH_SHORT
         )
@@ -148,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun displayLoggedOut() {
         Snackbar.make(
-            findViewById<View>(R.id.coordinator),
+            findViewById(R.id.coordinator),
             "Logged out",
             Snackbar.LENGTH_SHORT
         )
