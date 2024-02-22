@@ -17,4 +17,11 @@
     <string name="change_text_input_placeholder">0.00</string>
     <string name="change_button">Make change</string>
     <string name="change_result_text_view">We can make change for %1$s with %2$d nickels and %3$d pennies!</string>
+    <string name="device_login">Device Login</string>
+    <string name="qr_code_with_link_to_user_code_login">QR Code with link to user code login</string>
+    <string name="device_code_title">Sign in to activate your device</string>
+    <string name="device_code_description">To complete activation, navigate to the following site and enter the
+        following activation code:
+    </string>
+    <string name="device_code_qr_description">Or scan the QR code below to log in.</string>
 </resources>

@@ -24,8 +24,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthorizationConfiguration
 import io.fusionauth.mobilesdk.AuthorizationManager
-import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
+import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 
@@ -68,6 +68,9 @@ class LoginActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.start_auth).setOnClickListener {
             startAuth()
+        }
+        findViewById<View>(R.id.device_login).setOnClickListener {
+            startActivity(Intent(this, DeviceLoginActivity::class.java))
         }
 
         if (AuthorizationManager.oAuth(this@LoginActivity).isCancelled(intent)) {
