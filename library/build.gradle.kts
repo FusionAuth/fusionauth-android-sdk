@@ -139,7 +139,8 @@ signing {
     //useGpgCmd()
 
     // Using in-memory keys https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
-    // Requires ORG_GRADLE_PROJECT_signingKey and ORG_GRADLE_PROJECT_signingPassword environment variables, respectively.
+    // Requires ORG_GRADLE_PROJECT_signingKey and ORG_GRADLE_PROJECT_signingPassword environment variables
+    // The secret key is exported with gpg --output private.pgp --armor --export-secret-key
 
     val signingKey: String? by project
     val signingPassword: String? by project
