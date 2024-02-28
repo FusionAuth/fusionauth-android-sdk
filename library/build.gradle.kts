@@ -70,17 +70,17 @@ publishing {
                 // automatically applied to the pom file). Your library will be
                 // referenced as ${groupId}:${artifactId}.
                 groupId = "io.fusionauth"
-                artifactId = "mobilesdk"
-                version = "1.0"
+                artifactId = "fusionauth-android-sdk"
+                version = "0.1.0"
 
                 // And here are some more properties that go into the pom file.
                 // For a full list of required metadata fields, see:
                 // https://central.sonatype.org/publish/requirements/#sufficient-metadata
                 pom {
                     packaging = "aar"
-                    name.set("foobar")
-                    description.set("This library does things and stuff!")
-                    url.set("https://github.com/example/foobar")
+                    name.set("FusionAuth Android SDK")
+                    description.set("Android SDK for FusionAuth")
+                    url.set("https://github.com/FusionAuth/fusionauth-android-sdk/")
                     licenses {
                         license {
                             name.set("MIT License")
@@ -89,8 +89,8 @@ publishing {
                     }
                     developers {
                         developer {
-                            name.set("Your Name")
-                            email.set("your.name@example.com")
+                            name.set("FusionAuth engineering")
+                            email.set("dev@fusionauth.io")
                         }
                     }
                     scm {
