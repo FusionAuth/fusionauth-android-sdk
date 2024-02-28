@@ -136,7 +136,14 @@ signing {
     //
     // Additionally, for users who have gpg instead of gpg2:
     // signing.gnupg.useLegacyGpg=true
-    useGpgCmd()
+    //useGpgCmd()
+
+    // Using in-memory keys https://docs.gradle.org/current/userguide/signing_plugin.html#sec:in-memory-keys
+    // Requires ORG_GRADLE_PROJECT_signingKey and ORG_GRADLE_PROJECT_signingPassword environment variables, respectively.
+
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
 
     // Since the publication itself was created in `afterEvaluate`, we must
     // do the same here.
