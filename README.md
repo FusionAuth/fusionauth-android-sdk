@@ -161,7 +161,7 @@ See the [FusionAuth Android Quickstart]() for a full tutorial on using FusionAut
 
 ## Documentation
 
-TBD
+[Full library documentation](https://github.com/FusionAuth/fusionauth-android-sdk/blob/main/library/docs/index.md)
 
 <!--
 end::forDocSite[]
