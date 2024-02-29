@@ -24,10 +24,19 @@ tag::forDocSite[]
 
 ## Overview
 
-This SDK allows you to use the OAuth 2.0 Authorization Code Grant in an Android app to authenticate users.
+This SDK allows you to use OAuth 2.0 and OpenId Connect functionality in an Android app with FusionAuth as the
+authorization server.
 It also provides Token Manager to store, refresh and retrieve tokens.
 
-The SDK uses AppAuth under the hood to handle the OAuth 2.0 Authorization Code Grant.
+Following OAuth 2.0 and OpenID Connect functionality are covered:
+- OAuth 2.0 Authorization Code Grant
+- OAuth 2.0 Refresh Token Grant
+- OpenID Connect UserInfo
+- OpenID Connect End Session
+
+[AppAuth-Android](https://github.com/openid/AppAuth-Android) is used for the OAuth 2.0 Authorization Code Grant flow and OpenID Connect functionality.
+
+The SDK is written in Kotlin and is compatible with Java.
 
 ## Getting Started
 
