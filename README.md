@@ -177,7 +177,7 @@ end::forDocSiteUsage[]
 <!--
 tag::forDocSiteExampleApp[]
 -->
-See the [FusionAuth Android SDK Example]() for a functional example of an Android client that utilizes the SDK.
+See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk) for a functional example of an Android client that utilizes the SDK.
 <!--
 end::forDocSiteExampleApp[]
 -->
@@ -187,7 +187,7 @@ end::forDocSiteExampleApp[]
 <!--
 tag::forDocSiteQuickstart[]
 -->
-See the [FusionAuth Android Quickstart]() for a full tutorial on using FusionAuth and Android.
+See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-android-java-native-fusionauth-sdk/) for a full tutorial on using FusionAuth and Android.
 <!--
 end::forDocSiteQuickstart[]
 -->
