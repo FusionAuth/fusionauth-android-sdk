@@ -1,3 +1,8 @@
+[![Latest Release Tag](https://badgen.net/github/tag/fusionauth/fusionauth-android-sdk)](https://github.com/FusionAuth/fusionauth-android-sdk/tags)
+[![Dependabot](https://badgen.net/github/dependabot/fusionauth/fusionauth-android-sdk)](https://github.com/FusionAuth/fusionauth-android-sdk/network/updates)
+[![Open PRs](https://badgen.net/github/open-prs/fusionauth/fusionauth-android-sdk)](https://github.com/FusionAuth/fusionauth-android-sdk/pulls)
+
+
 An SDK for using FusionAuth in Android Apps.
 
 # Table of Contents
@@ -10,23 +15,24 @@ An SDK for using FusionAuth in Android Apps.
 
 - [Example App](#example-app)
 
+- [Quickstart](#quickstart)
+
 - [Documentation](#documentation)
 
 <!--
-this tag, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
+this and following tags, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
 
 Please also use ``` instead of indenting for code blocks. The backticks are translated correctly to adoc format.
 -->
 
-<!--
-tag::forDocSite[]
--->
-
 ## Overview
-
+<!--
+tag::forDocSiteOverview[]
+-->
 This SDK allows you to use OAuth 2.0 and OpenId Connect functionality in an Android app with FusionAuth as the
-authorization server.
-It also provides Token Manager to store, refresh and retrieve tokens.
+authorization server. It also provides Token Manager to store, refresh and retrieve tokens.
+
+It's a highly standardized and simplified starting point for developers to easily integrate FusionAuth in their own custom mobile apps by taking care of all the dependencies.
 
 Following OAuth 2.0 and OpenID Connect functionality are covered:
 - OAuth 2.0 Authorization Code Grant
@@ -37,9 +43,15 @@ Following OAuth 2.0 and OpenID Connect functionality are covered:
 [AppAuth-Android](https://github.com/openid/AppAuth-Android) is used for the OAuth 2.0 Authorization Code Grant flow and OpenID Connect functionality.
 
 The SDK is written in Kotlin and is compatible with Java.
+<!--
+end::forDocSiteOverview[]
+-->
 
 ## Getting Started
 
+<!--
+tag::forDocSiteGettingStarted[]
+-->
 To use the FusionAuth Android SDK, add the following dependency to your `build.gradle` file:
 
 ```dsl
@@ -88,9 +100,15 @@ The `fusionauth_config.json` file should be placed in the `res/raw` directory an
 By default, the SDK uses the `MemoryStorage` for storing tokens. This means that tokens will be lost when the app is
 closed.
 To persist tokens, you can use the `SharedPreferencesStorage` or implement your own `TokenStorage`.
+<!--
+end::forDocSiteGettingStarted[]
+-->
 
 ## Usage
 
+<!--
+tag::forDocSiteUsage[]
+-->
 To start the OAuth 2.0 Authorization Code Grant, you can use the `oAuth()` function on the `AuthorizationManager` to
 retrieve the `OAuthAuthorizationService`:
 
@@ -150,19 +168,36 @@ AuthorizationManager
 ```
 
 If the user is signed out, the `LoginActivity` will be opened.
+<!--
+end::forDocSiteUsage[]
+-->
 
 ## Example App
 
+<!--
+tag::forDocSiteExampleApp[]
+-->
 See the [FusionAuth Android SDK Example]() for a functional example of an Android client that utilizes the SDK.
+<!--
+end::forDocSiteExampleApp[]
+-->
 
 ## Quickstart
 
+<!--
+tag::forDocSiteQuickstart[]
+-->
 See the [FusionAuth Android Quickstart]() for a full tutorial on using FusionAuth and Android.
+<!--
+end::forDocSiteQuickstart[]
+-->
 
 ## Documentation
 
-[Full library documentation](https://github.com/FusionAuth/fusionauth-android-sdk/blob/main/library/docs/index.md)
-
 <!--
-end::forDocSite[]
+tag::forDocSiteDocumentation[]
+-->
+See the latest [Full library documentation](https://github.com/FusionAuth/fusionauth-android-sdk/blob/main/library/docs/index.md) for the complete documentation of the SDK.
+<!--
+end::forDocSiteDocumentation[]
 -->
