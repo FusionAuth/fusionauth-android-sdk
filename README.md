@@ -30,9 +30,9 @@ Please also use ``` instead of indenting for code blocks. The backticks are tran
 tag::forDocSiteOverview[]
 -->
 This SDK allows you to use OAuth 2.0 and OpenId Connect functionality in an Android app with FusionAuth as the
-authorization server. It also provides Token Manager to store, refresh and retrieve tokens.
+authorization server. It also provides a Token Manager to store, refresh, and retrieve tokens.
 
-It's a highly standardized and simplified starting point for developers to easily integrate FusionAuth in their own custom mobile apps by taking care of all the dependencies.
+It's a highly standardized and simplified starting point for developers to easily integrate FusionAuth into their own custom mobile apps by taking care of all the dependencies.
 
 Following OAuth 2.0 and OpenID Connect functionality are covered:
 - OAuth 2.0 Authorization Code Grant
@@ -177,7 +177,7 @@ end::forDocSiteUsage[]
 <!--
 tag::forDocSiteExampleApp[]
 -->
-See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk) for a functional example of an Android client that utilizes the SDK.
+See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk) for a functional example of an Android client that uses the SDK.
 <!--
 end::forDocSiteExampleApp[]
 -->
@@ -206,9 +206,9 @@ end::forDocSiteDocumentation[]
 <!--
 tag::forDocSiteContributing[]
 -->
-We hope you love using FusionAuth Android SDK, but in case you encounter a bug or an issue with the SDK please do let us know.
+We hope you love using FusionAuth Android SDK, but in case you encounter a bug or an issue with the SDK, please do let us know.
 
-Please only report issues for the FusionAuth Android SDK itself, if you have an issue with documentation or a client library follow [these instructions.](https://github.com/FusionAuth/fusionauth-issues)
+Please only report issues for the FusionAuth Android SDK itself if you have an issue with documentation or a client library follow [these instructions.](https://github.com/FusionAuth/fusionauth-issues)
 
 ### Community Guidelines
 
@@ -216,38 +216,38 @@ As part of the FusionAuth community, please abide by [the Code of Conduct](https
 
 ### Reporting an Issue
 
-Before filing an issue, please search through the already open issues to see if you could contribute.
+Before reporting an issue, please search through the already open issues to see if you could contribute.
 
-To report an issue please follow the instructions of the bug, feature and, general issue templates.
+To report an issue, please follow the instructions of the bug, feature and general issue templates.
 
-### Conntributing Features and Fixes
+### Contributing Features and Fixes
 
 Before starting with contributing, you'll want to look at and choose an issue to work on. Here is a basic workflow you want to work from:
 
-1. Search through issues
-2. Find or create a issue you want to work on
-3. Check if someone else has already worked on and made a pull request on said issue
-4. (Optional) Double check pull requests for someone who has worked on the pull request
+1. Search the issue tracker for an issue that you want to work on. If your issue does not exist, please create a new one.
+2. Search GitHub for an open or closed Pull Request that relates to the issue you want to work on. You may find that someone else is already working on it, or that the issue is already resolved in a different branch.
 
-You can find all the open issue [here](https://github.com/FusionAuth/fusionauth-android-sdk/issues).
+You can find all the open issues [here](https://github.com/FusionAuth/fusionauth-android-sdk/issues).
 
-Once you have found an issue you want to work on we suggest to:
+Once you have found an issue you want to work on, we suggest to:
 
 1. Fork the repository to your personal account.
 2. Create a new branch with the name fix/issue-id or feat/issue-id.
-3. And start working in that branch on the issue.
+3. And start working on that branch on the issue.
 
 ### Development Tooling
 
-During development of new features and fixes we suggest to use the following code quality tools in your IDE which are preconfigured for this project:
-* Detekt: `./gradlew clean detektRelease detektTest --continue` or use for example a [IDE plugin](https://plugins.jetbrains.com/plugin/10761-detekt)
+During development of new features and fixes, we suggest using the following code quality tools which are preconfigured for this project:
+* Detekt: `./gradlew clean detektRelease detektTest --continue` or use an [IDE plugin](https://plugins.jetbrains.com/plugin/10761-detekt)
 * Android Lint: `./gradlew clean lint --continue` 
 
 ### Submitting a Pull Request
 
-Within GitHub, visit this main repository and you should see a banner suggesting that you make a pull request from your branch. 
+When you are ready to submit your pull request, visit the main repository on GitHub and click the "Compare & pull request" button. Here you can select the branch you have been working on and create a pull request.
 
-While you're writing up the pull request, you can add `Closes #XXX` in the message body where `#XXX` is the issue you're fixing. Therefore, an example would be Closes #42 would close issue #42.
+If you're creating a pull request for an issue, please include `Closes #XXX` in the message body where `#XXX` is the issue you're fixing. For example, `Closes #42` would close issue #42.
+
+After you have submitted your pull request, several checks will be run to ensure the changes meet the project's guidelines. If they do, the pull request will be reviewed by a maintainer and subsequently merged.
 <!--
 end::forDocSiteContributing[]
 -->
