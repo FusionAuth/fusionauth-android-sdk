@@ -1,5 +1,5 @@
 /**
- * OAuth2.0 support for the FusionAuth Mobile SDK.
+ * OAuth2.0 support for the FusionAuth Android SDK.
  *
  * @since 1.0
  */
