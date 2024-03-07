@@ -26,7 +26,7 @@ data class AuthorizationConfiguration(
 ) {
     init {
         if (!allowUnsecureConnection) {
-            Logger.getLogger("FusionAuth Mobile SDK")
+            Logger.getLogger("FusionAuth Android SDK")
                 .warning("Unsecure connections should only be used for testing")
         }
     }
