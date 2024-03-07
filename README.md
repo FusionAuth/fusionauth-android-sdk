@@ -201,3 +201,53 @@ See the latest [Full library documentation](https://github.com/FusionAuth/fusion
 <!--
 end::forDocSiteDocumentation[]
 -->
+
+## Contributing
+<!--
+tag::forDocSiteContributing[]
+-->
+We hope you love using FusionAuth Android SDK, but in case you encounter a bug or an issue with the SDK please do let us know.
+
+Please only report issues for the FusionAuth Android SDK itself, if you have an issue with documentation or a client library follow [these instructions.](https://github.com/FusionAuth/fusionauth-issues)
+
+### Community Guidelines
+
+As part of the FusionAuth community, please abide by [the Code of Conduct](https://fusionauth.io/community/forum/topic/1000/code-of-conduct).
+
+### Reporting an Issue
+
+Before filing an issue, please search through the already open issues to see if you could contribute.
+
+To report an issue please follow the instructions of the bug, feature and, general issue templates.
+
+### Conntributing Features and Fixes
+
+Before starting with contributing, you'll want to look at and choose an issue to work on. Here is a basic workflow you want to work from:
+
+1. Search through issues
+2. Find or create a issue you want to work on
+3. Check if someone else has already worked on and made a pull request on said issue
+4. (Optional) Double check pull requests for someone who has worked on the pull request
+
+You can find all the open issue [here](https://github.com/FusionAuth/fusionauth-android-sdk/issues).
+
+Once you have found an issue you want to work on we suggest to:
+
+1. Fork the repository to your personal account.
+2. Create a new branch with the name fix/issue-id or feat/issue-id.
+3. And start working in that branch on the issue.
+
+### Development Tooling
+
+During development of new features and fixes we suggest to use the following code quality tools in your IDE which are preconfigured for this project:
+* Detekt: `./gradlew clean detektRelease detektTest --continue` or use for example a [IDE plugin](https://plugins.jetbrains.com/plugin/10761-detekt)
+* Android Lint: `./gradlew clean lint --continue` 
+
+### Submitting a Pull Request
+
+Within GitHub, visit this main repository and you should see a banner suggesting that you make a pull request from your branch. 
+
+While you're writing up the pull request, you can add `Closes #XXX` in the message body where `#XXX` is the issue you're fixing. Therefore, an example would be Closes #42 would close issue #42.
+<!--
+end::forDocSiteContributing[]
+-->
