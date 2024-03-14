@@ -141,7 +141,7 @@ This will retrieve the authorization response, validates the `state` if it was p
 code for an access token.
 The result of the exchange will be stored in the `TokenManager`.
 
-After the user is authorized, you can use `getUserInfo()` to retrieve information about the user:
+After the user is authorized, you can use `getUserInfo()` to retrieve the [User Info](https://openid.net/specs/openid-connect-core-1_0.html#UserInfo):
 
 ```kotlin
 AuthorizationManager.oAuth(this@TokenActivity).getUserInfo()
