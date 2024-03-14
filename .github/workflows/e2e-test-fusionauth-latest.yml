@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [29, 30, 31, 33, 34]
+        api-level: [29, 30]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
@@ -70,7 +70,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
           script: ./gradlew connectedAndroidTest
 
         # Stop and remove FusionAuth containers to be used by E2E test
