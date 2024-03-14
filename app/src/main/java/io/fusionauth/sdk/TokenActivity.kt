@@ -63,14 +63,6 @@ class TokenActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_token)
         displayLoading("Restoring state...")
-
-        if (savedInstanceState != null) {
-            try {
-//                mUserInfoJson.set(JSONObject(savedInstanceState.getString(KEY_USER_INFO)))
-            } catch (ex: JSONException) {
-                Log.e(TAG, "Failed to parse saved user info JSON, discarding", ex)
-            }
-        }
     }
 
     override fun onStart() {
