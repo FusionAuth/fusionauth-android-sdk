@@ -70,6 +70,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: google_apis
           script: ./gradlew connectedAndroidTest
 
         # Stop and remove FusionAuth containers to be used by E2E test
