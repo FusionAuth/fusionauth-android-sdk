@@ -75,10 +75,22 @@ internal class FullEnd2EndTest {
             welcomeToChrome.click()
         }
 
+        // Handle Modal with "Welcome to Chrome"
+        val welcomeToChrome113 = device.findObject(selector.text("Use without an account"))
+        if (welcomeToChrome113.exists()) {
+            welcomeToChrome113.click()
+        }
+
         // Handle Modal with "Sign in to Chrome"
         val signInToChrome = device.findObject(selector.text("No Thanks"))
         if (signInToChrome.exists()) {
             signInToChrome.click()
+        }
+
+        // Handle Modal with "Sign in to Chrome"
+        val signInToChrome83 = device.findObject(selector.text("No thanks"))
+        if (signInToChrome83.exists()) {
+            signInToChrome83.click()
         }
 
         logger.info("Set username")
@@ -134,8 +146,8 @@ internal class FullEnd2EndTest {
     companion object {
         private val logger = Logger.getLogger(FullEnd2EndTest::class.java.name)
 
-        private const val USERNAME = ""
-        private const val PASSWORD = ""
+        private const val USERNAME = "richard@example.com"
+        private const val PASSWORD = "password"
         private const val TIMEOUT_MILLIS = 10_000L
     }
 }
