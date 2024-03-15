@@ -3,7 +3,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# This workflow performs a full End 2 End test of the App
+# This workflow performs a full End 2 End test of the App.
+# It includes all versions of the past 6 months.
+# And uses the oldest still supported Android Target API Level.
+# https://support.google.com/googleplay/android-developer/answer/11926878?sjid=9314081280512290806-EU
 
 name: E2E Test with FusionAuth supported versions
 
@@ -29,7 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [29, 30]
+        api-level: [33]
+        target: [aosp_atd]
+        arch: [x86_64]
         fusionauth-docker-image-version: [1.46.0, 1.47.1, 1.48.1, 1.48.2, 1.48.3, 1.49.1]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -64,6 +69,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
           script: ./gradlew connectedAndroidTest
 
         # Stop and remove FusionAuth containers to be used by E2E test

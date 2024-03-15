@@ -4,8 +4,9 @@
 # documentation.
 
 # This workflow performs a full End 2 End test of the App
+# It runs the test on the last 4 Android releases.
 
-name: E2E Test with FusionAuth 1.49.1
+name: E2E Test with latest FusionAuth (1.49.1)
 
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
@@ -15,9 +16,6 @@ on:
     branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-env:
-  FUSIONAUTH_DOCKER_IMAGE_VERSION: 1.49.1
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,7 +34,27 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [29, 30]
+        api-level: [30]
+        target: [aosp_atd]
+        arch: [x86]
+        fusionauth-docker-image-version: [1.49.1]
+        include:
+          - api-level: 30
+            target: aosp_atd
+            arch: x86
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 31
+            target: google_apis
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 33
+            target: aosp_atd
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 34
+            target: aosp_atd
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
@@ -55,7 +73,7 @@ jobs:
       # it will run the kickstart after that, which takes a moment.
       - name: Start containers
         run: |
-          docker compose -f fusionauth/$FUSIONAUTH_DOCKER_IMAGE_VERSION/docker-compose.yml up -d
+          docker compose -f fusionauth/${{ matrix.fusionauth-docker-image-version }}/docker-compose.yml up -d
           sleep 30
 
       # Setup and start Device Emulator used by E2E test
@@ -70,9 +88,11 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
           script: ./gradlew connectedAndroidTest
 
         # Stop and remove FusionAuth containers to be used by E2E test
       - name: Stop containers
         if: always()
-        run: docker compose -f fusionauth/$FUSIONAUTH_DOCKER_IMAGE_VERSION/docker-compose.yml down -v
+        run: docker compose -f fusionauth/${{ matrix.fusionauth-docker-image-version }}/docker-compose.yml down -v
