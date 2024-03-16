@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [33]
-        target: [aosp_atd]
+        target: [google_apis]
         arch: [x86_64]
         fusionauth-docker-image-version: [1.46.0, 1.47.1, 1.48.1, 1.48.2, 1.48.3, 1.49.1]
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -72,9 +72,22 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
-          script: ./gradlew connectedAndroidTest
+          script: |
+            adb shell pm clear com.android.chrome
+            adb shell am set-debug-app --persistent com.android.chrome
+            adb shell 'echo "chrome --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+            adb emu screenrecord start --time-limit 300 ./recording_video.webm
+            ./gradlew connectedAndroidTest
 
-        # Stop and remove FusionAuth containers to be used by E2E test
+      # Upload E2E Test recording
+      - name: Upload recording
+        uses: actions/upload-artifact@v4.3.1
+        if: ${{ failure() }}
+        with:
+          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
+          path: recording_video.webm
+
+      # Stop and remove FusionAuth containers to be used by E2E test
       - name: Stop containers
         if: always()
         run: docker compose -f fusionauth/${{ matrix.fusionauth-docker-image-version }}/docker-compose.yml down -v

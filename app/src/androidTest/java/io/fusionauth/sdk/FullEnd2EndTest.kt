@@ -69,30 +69,6 @@ internal class FullEnd2EndTest {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val selector = UiSelector()
 
-        // Handle Modal with "Welcome to Chrome"
-        val welcomeToChrome = device.findObject(selector.text("Accept & continue"))
-        if (welcomeToChrome.exists()) {
-            welcomeToChrome.click()
-        }
-
-        // Handle Modal with "Welcome to Chrome"
-        val welcomeToChrome113 = device.findObject(selector.text("Use without an account"))
-        if (welcomeToChrome113.exists()) {
-            welcomeToChrome113.click()
-        }
-
-        // Handle Modal with "Sign in to Chrome"
-        val signInToChrome = device.findObject(selector.text("No Thanks"))
-        if (signInToChrome.exists()) {
-            signInToChrome.click()
-        }
-
-        // Handle Modal with "Sign in to Chrome"
-        val signInToChrome83 = device.findObject(selector.text("No thanks"))
-        if (signInToChrome83.exists()) {
-            signInToChrome83.click()
-        }
-
         logger.info("Set username")
         val userNameInputObject = device.findObject(selector.resourceId("loginId"))
         userNameInputObject.setText(USERNAME)

@@ -35,13 +35,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [30]
-        target: [aosp_atd]
-        arch: [x86]
-        fusionauth-docker-image-version: [1.49.1]
+        api-level: [ 30 ]
+        target: [ google_apis ]
+        arch: [ x86 ]
+        fusionauth-docker-image-version: [ 1.49.1 ]
         include:
           - api-level: 30
-            target: aosp_atd
+            target: google_apis
             arch: x86
             fusionauth-docker-image-version: 1.49.1
           - api-level: 31
@@ -49,11 +49,11 @@ jobs:
             arch: x86_64
             fusionauth-docker-image-version: 1.49.1
           - api-level: 33
-            target: aosp_atd
+            target: google_apis
             arch: x86_64
             fusionauth-docker-image-version: 1.49.1
           - api-level: 34
-            target: aosp_atd
+            target: google_apis
             arch: x86_64
             fusionauth-docker-image-version: 1.49.1
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -91,7 +91,20 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
-          script: ./gradlew connectedAndroidTest
+          script: |
+            adb shell pm clear com.android.chrome
+            adb shell am set-debug-app --persistent com.android.chrome
+            adb shell 'echo "chrome --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+            adb emu screenrecord start --time-limit 300 ./recording_video.webm
+            ./gradlew connectedAndroidTest
+
+      # Upload E2E Test recording
+      - name: Upload recording
+        uses: actions/upload-artifact@v4.3.1
+        if: ${{ failure() }}
+        with:
+          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
+          path: recording_video.webm
 
         # Stop and remove FusionAuth containers to be used by E2E test
       - name: Stop containers
