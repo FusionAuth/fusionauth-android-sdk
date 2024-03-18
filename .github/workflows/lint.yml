@@ -42,21 +42,21 @@ jobs:
     steps:
       # Sets up JDK as a prerequisite to run Gradle
       - name: Setup Java
-        uses: actions/setup-java@v4.1.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: '17'
           distribution: 'zulu'
       
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1.2.1
+        uses: reviewdog/action-setup@v1.3.0
 
       - name: Show reviewdog version
         run: reviewdog -version
       
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
       
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
@@ -70,7 +70,7 @@ jobs:
 
       # Uploads Sarif Report for the library to GitHub
       - name: Upload kotlin library report
-        uses: github/codeql-action/upload-sarif@v3.24.6
+        uses: github/codeql-action/upload-sarif@v3.24.7
         if: success() || failure()
         with:
           sarif_file: library/build/reports/lint-results-debug.sarif
@@ -99,21 +99,21 @@ jobs:
     steps:
       # Sets up JDK as a prerequisite to run Gradle
       - name: Setup Java
-        uses: actions/setup-java@v4.1.0
+        uses: actions/setup-java@v4.2.1
         with:
           java-version: '17'
           distribution: 'zulu'
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1.2.1
+        uses: reviewdog/action-setup@v1.3.0
 
       - name: Show reviewdog version
         run: reviewdog -version
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
@@ -127,7 +127,7 @@ jobs:
 
       # Uploads Sarif Report for the app to GitHub
       - name: Upload kotlin app report
-        uses: github/codeql-action/upload-sarif@v3.24.6
+        uses: github/codeql-action/upload-sarif@v3.24.7
         if: success() || failure()
         with:
           sarif_file: app/build/reports/lint-results-debug.sarif
