@@ -6,10 +6,10 @@
     "clientSecret": "super-secret-secret-that-should-be-regenerated-for-production",
     "newThemeId": "#{UUID()}",
     "defaultTenantId": "d7d09513-a3f5-401c-9685-34ab6c552453",
-    "adminEmail": "admin@example.com",
+    "adminEmail": "admin@example.internal",
     "adminPassword": "password",
     "adminUserId": "00000000-0000-0000-0000-000000000001",
-    "userEmail": "richard@example.com",
+    "userEmail": "richard@example.internal",
     "userPassword": "password",
     "userUserId": "00000000-0000-0000-0000-111111111111"
   },
