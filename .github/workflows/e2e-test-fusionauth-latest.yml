@@ -75,8 +75,8 @@ jobs:
       - name: Start FusionAuth
         uses: fusionauth/fusionauth-github-action@v1
         with:
-          FUSIONAUTH_VERSION: {{ matrix.fusionauth-docker-image-version }}
-          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/{{ matrix.fusionauth-docker-image-version }}/kickstart
+          FUSIONAUTH_VERSION: ${{ matrix.fusionauth-docker-image-version }}
+          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ matrix.fusionauth-docker-image-version }}/kickstart
 
       # Setup and start Device Emulator used by E2E test
       - name: Enable KVM
