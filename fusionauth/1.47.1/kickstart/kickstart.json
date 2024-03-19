@@ -13,7 +13,7 @@
     "userPassword": "password",
     "user2Email": "linda@example.internal",
     "user2Password": "password",
-    "userUserId": "00000000-0000-0000-0000-011111111111"
+    "userUserId": "00000000-0000-0000-0000-011111111111",
     "user2UserId": "00000000-0000-0000-0000-111111111111"
   },
   "apiKeys": [
