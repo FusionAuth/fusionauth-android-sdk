@@ -53,10 +53,11 @@ jobs:
       # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
       # Despite its waiting until the container started with the status healthy,
       # it will run the kickstart after that, which takes a moment.
-      - name: Start containers
-        run: |
-          docker compose -f fusionauth/${{ matrix.fusionauth-docker-image-version }}/docker-compose.yml up -d
-          sleep 30
+      - name: Start FusionAuth
+        uses: fusionauth/fusionauth-github-action@v1
+        with:
+          FUSIONAUTH_VERSION: {{ matrix.fusionauth-docker-image-version }}
+          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/{{ matrix.fusionauth-docker-image-version }}/kickstart
 
       # Setup and start Device Emulator used by E2E test
       - name: Enable KVM
@@ -86,8 +87,3 @@ jobs:
         with:
           name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
           path: recording_video.webm
-
-      # Stop and remove FusionAuth containers to be used by E2E test
-      - name: Stop containers
-        if: always()
-        run: docker compose -f fusionauth/${{ matrix.fusionauth-docker-image-version }}/docker-compose.yml down -v
