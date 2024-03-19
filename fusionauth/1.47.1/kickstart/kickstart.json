@@ -11,7 +11,10 @@
     "adminUserId": "00000000-0000-0000-0000-000000000001",
     "userEmail": "richard@example.internal",
     "userPassword": "password",
-    "userUserId": "00000000-0000-0000-0000-111111111111"
+    "user2Email": "linda@example.internal",
+    "user2Password": "password",
+    "userUserId": "00000000-0000-0000-0000-011111111111"
+    "user2UserId": "00000000-0000-0000-0000-111111111111"
   },
   "apiKeys": [
     {
@@ -87,6 +90,22 @@
           "firstName": "Richard",
           "lastName": "Hendricks",
           "password": "#{userPassword}"
+        },
+        "registration": {
+          "applicationId": "#{applicationId}"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/user/registration/#{user2UserId}",
+      "body": {
+        "user": {
+          "birthDate": "1985-12-23",
+          "email": "#{user2Email}",
+          "firstName": "Linda",
+          "lastName": "Hendricks",
+          "password": "#{user2Password}"
         },
         "registration": {
           "applicationId": "#{applicationId}"
