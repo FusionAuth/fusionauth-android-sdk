@@ -11,6 +11,8 @@
 name: E2E Test with FusionAuth supported versions
 
 on:
+  pull_request:
+    branches: [ "main" ]
   # This version is older than 6 months and will not automatically run.
   # To allow running this workflow manually from the Actions tab we add:
   workflow_dispatch:
