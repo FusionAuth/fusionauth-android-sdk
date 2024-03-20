@@ -1,5 +1,7 @@
 package io.fusionauth.sdk
 
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -41,6 +43,11 @@ internal class FullEnd2EndTest {
         logger.info("Setting up test")
 
         Intents.init()
+
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        val info = automation.serviceInfo
+        info.flags = info.flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+        automation.serviceInfo = info
     }
 
     /**
@@ -69,10 +76,12 @@ internal class FullEnd2EndTest {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val selector = UiSelector()
 
+        closeKeyboardIfOpen()
         logger.info("Set username")
         val userNameInputObject = device.findObject(selector.resourceId("loginId"))
         userNameInputObject.setText(USERNAME)
 
+        closeKeyboardIfOpen()
         logger.info("Set password")
         val passwordInputObject = device.findObject(selector.resourceId("password"))
         passwordInputObject.setText(PASSWORD)
@@ -110,6 +119,24 @@ internal class FullEnd2EndTest {
         logger.info("Check that the login activity is displayed")
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+    }
+
+    /**
+     * Closes the keyboard if it is open on the screen.
+     *
+     * When the (automated test) device has a small vertical resolution, the keyboard may be open and cover the login
+     * form, thus preventing the UISelector from targeting the form fields.
+     *
+     * @throws IllegalStateException if the keyboard cannot be closed.
+     */
+    private fun closeKeyboardIfOpen() {
+        val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+        for (window in automation.windows) {
+            if (window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD) {
+                UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+                return
+            }
+        }
     }
 
     @After
