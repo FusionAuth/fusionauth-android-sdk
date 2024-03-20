@@ -169,7 +169,7 @@ class TokenActivity : AppCompatActivity() {
 
         // Retrieve email from ID token if not available from User Info endpoint
         email.ifEmpty {
-            AuthorizationManager.getParsedIdToken()?.let { it.email.orEmpty() } ?: ""
+            AuthorizationManager.getParsedIdToken()?.email.orEmpty()
         }
 
         // Fallback for name

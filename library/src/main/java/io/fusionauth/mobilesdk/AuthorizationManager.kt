@@ -22,6 +22,7 @@ import kotlin.io.encoding.ExperimentalEncodingApi
  */
 @Suppress("TooManyFunctions", "unused", "MemberVisibilityCanBePrivate")
 object AuthorizationManager {
+    private const val JWT_PARTS = 3
     private val json = Json { ignoreUnknownKeys = true }
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
@@ -152,7 +153,7 @@ object AuthorizationManager {
     fun getParsedIdToken(): IdToken? {
         return tokenManager.getAuthState()?.idToken?.let {
             val parts = it.split(".")
-            require(parts.size == 3) { "Invalid JWT token" }
+            require(parts.size == JWT_PARTS) { "Invalid JWT token" }
             json.decodeFromString<IdToken>(Base64.UrlSafe.decode(parts[1]).decodeToString())
         }
     }
