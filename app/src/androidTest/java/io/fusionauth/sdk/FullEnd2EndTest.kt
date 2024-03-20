@@ -122,7 +122,7 @@ internal class FullEnd2EndTest {
     companion object {
         private val logger = Logger.getLogger(FullEnd2EndTest::class.java.name)
 
-        private const val USERNAME = "richard@example.internal"
+        private const val USERNAME = "richard@example.com"
         private const val PASSWORD = "password"
         private const val TIMEOUT_MILLIS = 10_000L
     }
