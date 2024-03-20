@@ -119,6 +119,43 @@ internal class FullEnd2EndTest {
         logger.info("Check that the login activity is displayed")
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        logger.info("Click login button for second user login")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        logger.info("Waiting for login form to appear")
+
+        closeKeyboardIfOpen()
+        logger.info("Set second username")
+        val userNameInputObject2 = device.findObject(selector.resourceId("loginId"))
+        userNameInputObject2.setText(USERNAME2)
+
+        closeKeyboardIfOpen()
+        logger.info("Set second password")
+        val passwordInputObject2 = device.findObject(selector.resourceId("password"))
+        passwordInputObject2.setText(PASSWORD2)
+
+        // Submit the form by pressing the enter key
+        logger.info("Submit form for second user by pressing enter key")
+        passwordInputObject.click()
+        device.pressEnter()
+
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        logger.info("Token activity displayed for second user")
+
+        // Click the sign-out button
+        logger.info("Click sign out button for second user")
+        onView(withId(R.id.sign_out)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
     }
 
     /**
@@ -151,6 +188,8 @@ internal class FullEnd2EndTest {
 
         private const val USERNAME = "richard@example.com"
         private const val PASSWORD = "password"
+        private const val USERNAME2 = "gilfoyle@example.com"
+        private const val PASSWORD2 = "password"
         private const val TIMEOUT_MILLIS = 10_000L
     }
 }
