@@ -4,7 +4,7 @@
 # documentation.
 
 # This workflow performs a full End 2 End test of the App
-# It runs the test on the last 4 Android releases.
+# It runs the test on the last 5 Android releases.
 
 name: E2E Test with latest FusionAuth (1.49.1)
 
@@ -35,11 +35,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 30 ]
+        api-level: [ 29 ]
         target: [ google_apis ]
         arch: [ x86 ]
         fusionauth-docker-image-version: [ 1.49.1 ]
         include:
+          - api-level: 29
+            target: google_apis
+            arch: x86
+            fusionauth-docker-image-version: 1.49.1
           - api-level: 30
             target: google_apis
             arch: x86
