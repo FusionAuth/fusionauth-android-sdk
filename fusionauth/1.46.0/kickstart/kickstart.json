@@ -70,7 +70,8 @@
             "enabledGrants": [
               "authorization_code",
               "refresh_token"
-            ]
+            ],
+            "requireRegistration" : "true"
           },
           "jwtConfiguration": {
             "enabled": true,
