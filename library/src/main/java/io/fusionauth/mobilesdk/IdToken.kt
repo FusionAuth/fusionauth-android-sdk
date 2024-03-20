@@ -1,6 +1,6 @@
 package io.fusionauth.mobilesdk
 
-import java.util.UUID
+import kotlinx.serialization.Serializable
 
 /**
  * Represents an ID token.
@@ -22,8 +22,9 @@ import java.util.UUID
  * @property sub The subject identifier.
  * @property tid The tenant identifier.
  */
+@Serializable
 @Suppress("PropertyName", "ConstructorParameterNaming")
-data class IdToken (
+data class IdToken(
     val at_hash: String? = null,
     val aud: String? = null,
     val authenticationType: String? = null,
@@ -37,7 +38,8 @@ data class IdToken (
     val jti: String? = null,
     val nonce: String? = null,
     val preferred_username: String? = null,
+    val scope: String? = null,
     val sid: String? = null,
-    val sub: UUID? = null,
-    val tid: UUID? = null,
+    val sub: String? = null,
+    val tid: String? = null,
 )

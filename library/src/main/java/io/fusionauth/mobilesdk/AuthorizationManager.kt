@@ -5,6 +5,8 @@ import io.fusionauth.mobilesdk.oauth.OAuthAuthorizationService
 import io.fusionauth.mobilesdk.storage.MemoryStorage
 import io.fusionauth.mobilesdk.storage.Storage
 import kotlinx.serialization.json.Json
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * AuthorizationManager is a singleton object that manages the authorization state of the user.
@@ -20,6 +22,7 @@ import kotlinx.serialization.json.Json
  */
 @Suppress("TooManyFunctions", "unused", "MemberVisibilityCanBePrivate")
 object AuthorizationManager {
+    private val json = Json { ignoreUnknownKeys = true }
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
     private lateinit var configuration: AuthorizationConfiguration
@@ -145,9 +148,12 @@ object AuthorizationManager {
      *
      * @return The parsed ID token, or null if it cannot be parsed.
      */
+    @OptIn(ExperimentalEncodingApi::class)
     fun getParsedIdToken(): IdToken? {
         return tokenManager.getAuthState()?.idToken?.let {
-            Json.decodeFromString<IdToken>(it)
+            val parts = it.split(".")
+            require(parts.size == 3) { "Invalid JWT token" }
+            json.decodeFromString<IdToken>(Base64.UrlSafe.decode(parts[1]).decodeToString())
         }
     }
 
@@ -159,5 +165,4 @@ object AuthorizationManager {
     fun clearState() {
         tokenManager.clearAuthState()
     }
-
 }
