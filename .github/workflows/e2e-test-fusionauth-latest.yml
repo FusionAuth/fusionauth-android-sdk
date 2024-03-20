@@ -9,9 +9,7 @@
 name: E2E Test with latest FusionAuth (1.49.1)
 
 on:
-  # Triggers the workflow on push or pull request events but only for default and protected branches
-  push:
-    branches: [ "main" ]
+  # Triggers the workflow on pull request events but only for default and protected branches
   pull_request:
     branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
