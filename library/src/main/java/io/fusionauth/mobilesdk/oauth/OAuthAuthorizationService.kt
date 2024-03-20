@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import io.fusionauth.mobilesdk.AuthorizationManager
+import io.fusionauth.mobilesdk.ExperimentalApi
 import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.SingletonUnsecureConnectionBuilder
 import io.fusionauth.mobilesdk.TokenManager
@@ -16,6 +17,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -34,6 +43,8 @@ import net.openid.appauth.TokenResponse
 import net.openid.appauth.connectivity.ConnectionBuilder
 import net.openid.appauth.connectivity.DefaultConnectionBuilder
 import java.net.HttpURLConnection
+import java.net.URLEncoder
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -226,6 +237,130 @@ class OAuthAuthorizationService internal constructor(
      */
     fun isAuthorized(intent: Intent): Boolean {
         return intent.getBooleanExtra(EXTRA_AUTHORIZED, false)
+    }
+
+    /**
+     * Initiates the device authorization process with the OAuth authorization service.
+     *
+     * @throws AuthorizationException if the device authorization is not supported by the service.
+     * @see OAuthDeviceAuthorizationResponse
+     */
+    @ExperimentalApi
+    @OptIn(ExperimentalSerializationApi::class)
+    suspend fun deviceAuthorize(): OAuthDeviceAuthorizationResponse {
+        val config = getConfiguration()
+
+        return withContext(defaultDispatcher) {
+            // If the endpoint allows device authorization, discovery doc must contain the device_authorization_endpoint
+            val deviceAuthorizationEndpoint = config.discoveryDoc?.docJson?.getString("device_authorization_endpoint")
+                ?: throw AuthorizationException("Device authorization is not supported")
+
+            val uri = Uri.parse(deviceAuthorizationEndpoint)
+                .buildUpon()
+                .appendQueryParameter("client_id", clientId)
+                .appendQueryParameter("scope", scopes)
+                .build()
+
+            val conn: HttpURLConnection = getConnectionBuilder()
+                .openConnection(uri)
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            conn.instanceFollowRedirects = false
+
+            json.decodeFromStream<OAuthDeviceAuthorizationResponse>(conn.inputStream)
+        }
+    }
+
+    /**
+     * Retrieves the FusionAuthState for the given OAuthDeviceAuthorizationResponse by performing device authorization
+     * polling.
+     *
+     * @param response The OAuthDeviceAuthorizationResponse received from the device authorization process.
+     * @return The FusionAuthState object that contains the access token, access token expiration time, and id token.
+     */
+    @ExperimentalApi
+    suspend fun getDeviceFusionAuthState(response: OAuthDeviceAuthorizationResponse): FusionAuthState {
+        val flow = deviceAuthorizePolling(response)
+
+        return suspendCoroutine { continuation ->
+            CoroutineScope(defaultDispatcher).launch {
+                flow.collect {
+                    continuation.resume(it)
+                }
+                flow.catch {
+                    continuation.resumeWithException(it)
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the FusionAuthState for the given OAuthDeviceAuthorizationResponse by performing device authorization
+     * polling.
+     *
+     * @param response The OAuthDeviceAuthorizationResponse received from the device authorization process.
+     * @return The FusionAuthState object that contains the access token, access token expiration time, and id token.
+     */
+    @OptIn(ExperimentalSerializationApi::class)
+    private suspend fun deviceAuthorizePolling(response: OAuthDeviceAuthorizationResponse): Flow<FusionAuthState> {
+        val config = getConfiguration()
+
+        return flow {
+            val conn: HttpURLConnection = config.discoveryDoc?.tokenEndpoint?.let {
+                getConnectionBuilder().openConnection(it)
+            } ?: return@flow
+
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            conn.requestMethod = "POST"
+            conn.instanceFollowRedirects = false
+
+            val additionalParameters = mutableMapOf(
+                "client_id" to clientId,
+                "device_code" to response.device_code,
+                "grant_type" to "urn:ietf:params:oauth:grant-type:device_code",
+            )
+
+            val postData = additionalParameters
+                .map { (k, v) -> URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8") }
+                .joinToString("&")
+
+            conn.outputStream.use { os ->
+                os.write(postData.toByteArray())
+            }
+
+            if (conn.responseCode == HttpURLConnection.HTTP_OK) {
+                val tokenResponse = json.decodeFromStream<OAuthTokenResponse>(conn.inputStream)
+
+                val authState = FusionAuthState(
+                    accessToken = tokenResponse.access_token,
+                    accessTokenExpirationTime = System.currentTimeMillis() +
+                            TimeUnit.SECONDS.toMillis(tokenResponse.expires_in),
+                    idToken = tokenResponse.id_token,
+                    refreshToken = tokenResponse.refresh_token,
+                )
+                tokenManager?.saveAuthState(authState)
+                emit(authState)
+            } else if (conn.responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                // Try to parse the error response
+                val errorResponse = json.decodeFromStream<OAuthErrorResponse>(conn.errorStream)
+
+                if (errorResponse.error == "authorization_pending") {
+                    throw AuthorizationPendingException()
+                } else {
+                    throw AuthorizationException(errorResponse.error_description)
+                }
+            }
+        }
+            .cancellable()
+            .retry((response.expires_in / response.interval)) { cause ->
+                if (cause is AuthorizationPendingException) {
+                    delay(TimeUnit.SECONDS.toMillis(response.interval))
+                    return@retry true
+                } else {
+                    return@retry false
+                }
+            }
+            .flowOn(defaultDispatcher)
     }
 
     /**
@@ -562,4 +697,5 @@ class OAuthAuthorizationService internal constructor(
         private val EXTRAS = setOf(EXTRA_STATE, EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
     }
 
+    class AuthorizationPendingException : Exception("Authorization pending")
 }
