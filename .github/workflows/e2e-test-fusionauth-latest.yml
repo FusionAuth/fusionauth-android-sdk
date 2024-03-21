@@ -6,7 +6,7 @@
 # This workflow performs a full End 2 End test of the App
 # It runs the test on the last 5 Android releases.
 
-name: E2E Test with latest FusionAuth (1.49.2)
+name: E2E Test with latest FusionAuth
 
 on:
   # Triggers the workflow on pull request events but only for default and protected branches
@@ -14,6 +14,9 @@ on:
     branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  fusionauth-docker-image-version: "1.49.2"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,28 +39,22 @@ jobs:
         api-level: [ 29 ]
         target: [ google_apis ]
         arch: [ x86 ]
-        fusionauth-docker-image-version: [ 1.49.2 ]
         include:
           - api-level: 29
             target: google_apis
             arch: x86
-            fusionauth-docker-image-version: 1.49.2
           - api-level: 30
             target: google_apis
             arch: x86
-            fusionauth-docker-image-version: 1.49.2
           - api-level: 31
             target: google_apis
             arch: x86_64
-            fusionauth-docker-image-version: 1.49.2
           - api-level: 33
             target: google_apis
             arch: x86_64
-            fusionauth-docker-image-version: 1.49.2
           - api-level: 34
             target: google_apis
             arch: x86_64
-            fusionauth-docker-image-version: 1.49.2
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
@@ -77,8 +74,8 @@ jobs:
       - name: Start FusionAuth
         uses: fusionauth/fusionauth-github-action@v1
         with:
-          FUSIONAUTH_VERSION: ${{ matrix.fusionauth-docker-image-version }}
-          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ matrix.fusionauth-docker-image-version }}/kickstart
+          FUSIONAUTH_VERSION: ${{ env.fusionauth-docker-image-version }}
+          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ env.fusionauth-docker-image-version }}/kickstart
 
       # Setup and start Device Emulator used by E2E test
       - name: Enable KVM
@@ -106,5 +103,5 @@ jobs:
         uses: actions/upload-artifact@v4.3.1
         if: ${{ failure() }}
         with:
-          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
+          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ env.fusionauth-docker-image-version }}'
           path: recording_video.webm
