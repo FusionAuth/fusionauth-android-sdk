@@ -5,11 +5,10 @@ For Responsible Disclosure Program, Discovering Security Vulnerabilities
 
 ## Supported Versions
 
-| SDK Version | Supported FusionAuth Version | Supported          |
-|-------------|------------------------------|--------------------|
-| 0.3.x       | 1.48 or newer                | :white_check_mark: |
-| 0.2.x       | 1.45 - 1.47                  | :white_check_mark: |
-| \< 0.1      | 1.44 - 1.45                  | :x:                |
+| SDK Version | Tested FusionAuth Version | Tested Android API Level | Supported          |
+|-------------|---------------------------|--------------------------|--------------------|
+| 0.2.x       | 1.46 or newer             | 29 - 34                  | :white_check_mark: |
+| \<= 0.1     | \<= 1.45                  |                          | :x:                |
 
 ## Versioning Guidelines
 
