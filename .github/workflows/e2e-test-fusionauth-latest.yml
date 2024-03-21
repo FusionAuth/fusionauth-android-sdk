@@ -1,0 +1,110 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow performs a full End 2 End test of the App
+# It runs the test on the last 5 Android releases.
+
+name: E2E Test with latest FusionAuth (1.49.1)
+
+on:
+  # Triggers the workflow on pull request events but only for default and protected branches
+  pull_request:
+    branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "e2e-test"
+  e2e-test:
+    name: End 2 End Test
+
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [ 29 ]
+        target: [ google_apis ]
+        arch: [ x86 ]
+        fusionauth-docker-image-version: [ 1.49.1 ]
+        include:
+          - api-level: 29
+            target: google_apis
+            arch: x86
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 30
+            target: google_apis
+            arch: x86
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 31
+            target: google_apis
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 33
+            target: google_apis
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
+          - api-level: 34
+            target: google_apis
+            arch: x86_64
+            fusionauth-docker-image-version: 1.49.1
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Sets up JDK as a prerequisite to run Gradle
+      - name: Setup Java
+        uses: actions/setup-java@v4.1.0
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
+      # Despite its waiting until the container started with the status healthy,
+      # it will run the kickstart after that, which takes a moment.
+      - name: Start FusionAuth
+        uses: fusionauth/fusionauth-github-action@v1
+        with:
+          FUSIONAUTH_VERSION: ${{ matrix.fusionauth-docker-image-version }}
+          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ matrix.fusionauth-docker-image-version }}/kickstart
+
+      # Setup and start Device Emulator used by E2E test
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Performs E2E Test using android-emulator-runner
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          script: |
+            adb shell pm clear com.android.chrome
+            adb shell am set-debug-app --persistent com.android.chrome
+            adb shell 'echo "chrome --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+            adb emu screenrecord start --time-limit 300 ./recording_video.webm
+            ./gradlew connectedAndroidTest
+
+      # Upload E2E Test recording
+      - name: Upload recording
+        uses: actions/upload-artifact@v4.3.1
+        if: ${{ failure() }}
+        with:
+          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
+          path: recording_video.webm

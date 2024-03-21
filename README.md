@@ -242,6 +242,7 @@ Once you have found an issue you want to work on, we suggest to:
 During development of new features and fixes, we suggest using the following code quality tools which are preconfigured for this project:
 * Detekt: `./gradlew clean detektRelease detektTest --continue` or use an [IDE plugin](https://plugins.jetbrains.com/plugin/10761-detekt)
 * Android Lint: `./gradlew clean lint --continue` 
+* Android Test: `./gradlew connectedAndroidTest`
 
 ### Submitting a Pull Request
 
