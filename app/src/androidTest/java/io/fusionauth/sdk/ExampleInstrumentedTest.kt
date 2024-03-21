@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("io.fusionauth.sdk", appContext.packageName)
+        assertEquals("io.fusionauth.app", appContext.packageName)
     }
 }

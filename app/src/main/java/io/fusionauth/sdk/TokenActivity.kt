@@ -28,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthorizationConfiguration
 import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.FusionAuthState
-import io.fusionauth.mobilesdk.IdToken
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
@@ -168,16 +167,13 @@ class TokenActivity : AppCompatActivity() {
             }
         }
 
-        // Fallback for name and email
-        if ((name.isEmpty()) || (email.isEmpty())) {
-            val idToken: IdToken? = AuthorizationManager.getParsedIdToken()
-            if (idToken != null) {
-                email = idToken.email.orEmpty()
-                if (name.isEmpty()) {
-                    name = email
-                }
-            }
+        // Retrieve email from ID token if not available from User Info endpoint
+        email.ifEmpty {
+            AuthorizationManager.getParsedIdToken()?.email.orEmpty()
         }
+
+        // Fallback for name
+        name = name.ifEmpty { email }
 
         if (name.isNotEmpty()) {
             val welcomeView = findViewById<View>(R.id.auth_granted) as TextView
