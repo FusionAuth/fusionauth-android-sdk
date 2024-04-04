@@ -49,7 +49,6 @@ android {
     }
 }
 
-
 // Configure the maven-publish plugin.
 publishing {
     publications {
@@ -157,7 +156,6 @@ signing {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")

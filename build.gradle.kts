@@ -8,6 +8,7 @@ plugins {
     id("com.android.library") version "8.2.2" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
     id("org.jetbrains.dokka") version "1.9.20"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.serialization") version "1.9.23"
@@ -35,5 +36,16 @@ allprojects {
 
     detektReportMergeSarif {
         input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://your-server.com/staging"))
+            snapshotRepositoryUrl.set(uri("https://your-server.com/snapshots"))
+            username.set("your-username") // defaults to project.properties["myNexusUsername"]
+            password.set("your-password") // defaults to project.properties["myNexusPassword"]
+        }
     }
 }
