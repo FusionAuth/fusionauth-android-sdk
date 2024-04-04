@@ -34,7 +34,7 @@ jobs:
 
       # Sets up the python as a prerequisites for MobSF
       - name: Setup python
-        uses: actions/setup-python@v5.0.0
+        uses: actions/setup-python@v5.1.0
         with:
           python-version: 3.8
 
@@ -47,13 +47,13 @@ jobs:
 
       # Performs analysis using MobSF and outputs a Sarif Report
       - name: Run mobsfscan
-        uses: MobSF/mobsfscan@e29e85c36fa1aa950d7f1b1064345d94a70b2a28
+        uses: MobSF/mobsfscan@35b2016602af9d6ac52f296becca11be3fe004e8
         with:
           args: . --sarif --output mobsf.sarif.json || true
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.24.8
+        uses: github/codeql-action/upload-sarif@v3.24.9
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json
