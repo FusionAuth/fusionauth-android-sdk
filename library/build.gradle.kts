@@ -41,7 +41,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.3")
