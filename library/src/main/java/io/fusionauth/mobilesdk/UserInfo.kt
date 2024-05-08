@@ -27,7 +27,7 @@ data class UserInfo(
     val applicationId: String? = null,
     val birthdate: String? = null,
     val email: String? = null,
-    val email_verified: Boolean,
+    val email_verified: Boolean? = null,
     val family_name: String? = null,
     val given_name: String? = null,
     val name: String? = null,
