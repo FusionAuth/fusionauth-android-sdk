@@ -69,7 +69,7 @@ the `AuthorizationConfiguration`:
 AuthorizationManager.initialize(
     AuthorizationConfiguration(
         fusionAuthUrl = "http://10.0.2.2:9011",
-        clientId = "21e13847-4f30-4477-a2d9-33c3a80bd15a",
+        clientId = "e9fdb985-9173-4e01-9d73-ac2d60d1dc8e",
         allowUnsecureConnection = true
     )
 )
@@ -94,7 +94,7 @@ The `fusionauth_config.json` file should be placed in the `res/raw` directory an
 ```json
 {
   "fusionAuthUrl": "http://10.0.2.2:9011",
-  "clientId": "21e13847-4f30-4477-a2d9-33c3a80bd15a",
+  "clientId": "e9fdb985-9173-4e01-9d73-ac2d60d1dc8e",
   "allowUnsecureConnection": true
 }
 ```
