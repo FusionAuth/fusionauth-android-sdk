@@ -179,7 +179,7 @@ end::forDocSiteUsage[]
 <!--
 tag::forDocSiteExampleApp[]
 -->
-See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk) for a functional example of an Android client that uses the SDK.
+See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionauth-quickstart-kotlin-android-native) for a functional example of an Android client that uses the SDK.
 <!--
 end::forDocSiteExampleApp[]
 -->
