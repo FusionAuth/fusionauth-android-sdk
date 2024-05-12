@@ -1,6 +1,6 @@
 {
   "variables": {
-    "applicationId": "21e13847-4f30-4477-a2d9-33c3a80bd15a",
+    "applicationId": "e9fdb985-9173-4e01-9d73-ac2d60d1dc8e",
     "application2Id": "cb945244-5646-457c-80ff-35ef55cfd570",
     "apiKey": "this_really_should_be_a_long_random_alphanumeric_value_but_this_still_works",
     "asymmetricKeyId": "#{UUID()}",
