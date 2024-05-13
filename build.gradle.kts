@@ -3,15 +3,15 @@ import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.2.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
-    id("com.android.library") version "8.2.2" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.5"
+    id("com.android.application") version "8.4.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.24" apply false
+    id("com.android.library") version "8.4.0" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
     id("org.jetbrains.dokka") version "1.9.20"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 
-    kotlin("jvm") version "1.9.23"
-    kotlin("plugin.serialization") version "1.9.23"
+    kotlin("jvm") version "1.9.24"
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
