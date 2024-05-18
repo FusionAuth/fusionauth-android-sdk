@@ -71,7 +71,7 @@ publishing {
                 // referenced as ${groupId}:${artifactId}.
                 groupId = "io.fusionauth"
                 artifactId = "fusionauth-android-sdk"
-                version = "0.1.1"
+                version = "0.1.2"
 
                 // And here are some more properties that go into the pom file.
                 // For a full list of required metadata fields, see:
@@ -112,7 +112,11 @@ publishing {
             name = "OSSRH"
 
             // Self-explanatory.
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+            setUrl {
+                val repositoryId =
+                    System.getenv("SONATYPE_REPOSITORY_ID") ?: error("Missing env variable: SONATYPE_REPOSITORY_ID")
+                "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
+            }
 
             // These need to be defined in ~/.gradle/gradle.properties:
             // ossrhUsername=<your sonatype jira username>

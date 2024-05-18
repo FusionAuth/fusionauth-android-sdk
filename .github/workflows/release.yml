@@ -24,7 +24,21 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "scan"
-  scan:
+  create_staging_repository:
+    runs-on: ubuntu-latest
+    name: Create staging repository
+    outputs:
+      repository_id: ${{ steps.create.outputs.repository_id }}
+    steps:
+      - id: create
+        uses: nexus-actions/create-nexus-staging-repo@main
+        with:
+          username: ${{ secrets.NXRM_TOKEN_USERNAME }}
+          password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
+          staging_profile_id: ${{ secrets.NEXUS_ACTIONS_SONATYPE_PROFILE_ID }}
+          description: ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
+
+  publish:
     name: Maven Release
 
     permissions:
@@ -73,3 +87,23 @@ jobs:
         ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
       run: ./gradlew clean publishReleasePublicationToOSSRHRepository
+
+  finalize:
+    runs-on: ubuntu-latest
+    needs: [create_staging_repository,publish]
+    if: ${{ always() && needs.create_staging_repository.result == 'success' }}
+    steps:
+      - name: Discard
+        if: ${{ needs.publish.result != 'success' }}
+        uses: nexus-actions/drop-nexus-staging-repo@main
+        with:
+          username: ${{ secrets.NXRM_TOKEN_USERNAME }}
+          password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
+          staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
+      - name: Release
+        if: ${{ needs.publish.result == 'success' }}
+        uses: nexus-actions/release-nexus-staging-repo@main
+        with:
+          username: ${{ secrets.NXRM_TOKEN_USERNAME }}
+          password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
+          staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
