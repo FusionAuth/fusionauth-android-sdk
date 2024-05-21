@@ -3,17 +3,20 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# This workflow performs a full End 2 End test of the App.
-# It includes all versions of the past 6 months.
-# And uses the Android Target API level requirements for Google Play apps 33.
-# https://support.google.com/googleplay/android-developer/answer/11926878?sjid=9314081280512290806-EU
+# This workflow performs a full End 2 End test of the App
+# It runs the test on the last 5 Android releases.
 
-name: E2E Test with FusionAuth supported versions
+name: Weekly E2E Test with latest FusionAuth and latest Android
 
 on:
-  # This version is older than 6 months and will not automatically run.
-  # To allow running this workflow manually from the Actions tab we add:
+  # Triggers the workflow on pull request events but only for default and protected branches
+  schedule:
+    - cron: '20 6 * * 1'
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  fusionauth-docker-image-version: "latest"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -33,10 +36,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [33]
-        target: [google_apis]
-        arch: [x86_64]
-        fusionauth-docker-image-version: [1.46.0, 1.47.1, 1.48.1, 1.48.2, 1.48.3, 1.49.1, 1.49.2]
+        api-level: [ 33 ]
+        target: [ google_apis ]
+        arch: [ x86_64 ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
@@ -48,7 +50,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4.1.4
 
       # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
       # Despite its waiting until the container started with the status healthy,
@@ -56,8 +58,8 @@ jobs:
       - name: Start FusionAuth
         uses: fusionauth/fusionauth-github-action@v1
         with:
-          FUSIONAUTH_VERSION: ${{ matrix.fusionauth-docker-image-version }}
-          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ matrix.fusionauth-docker-image-version }}/kickstart
+          FUSIONAUTH_VERSION: ${{ env.fusionauth-docker-image-version }}
+          FUSIONAUTH_APP_KICKSTART_DIRECTORY_PATH: fusionauth/${{ env.fusionauth-docker-image-version }}/kickstart
 
       # Setup and start Device Emulator used by E2E test
       - name: Enable KVM
@@ -85,5 +87,5 @@ jobs:
         uses: actions/upload-artifact@v4.3.3
         if: ${{ failure() }}
         with:
-          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
+          name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ env.fusionauth-docker-image-version }}'
           path: recording_video.webm
