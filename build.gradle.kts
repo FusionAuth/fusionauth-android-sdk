@@ -10,7 +10,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.20"
 
     kotlin("jvm") version "1.9.24"
-    kotlin("plugin.serialization") version "1.9.24"
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 val detektReportMergeSarif by tasks.registering(ReportMergeTask::class) {
