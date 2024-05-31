@@ -262,3 +262,23 @@ This library may periodically receive updates with bug fixes, security patches, 
 These releases may also update dependencies, language engines, and operating systems, as we\'ll follow the deprecation and sunsetting policies of the underlying technologies that the libraries use.
 
 This means that after a dependency (e.g. language, framework, or operating system) is deprecated by its maintainer, this library will also be deprecated by us, and may eventually be updated to use a newer version.
+
+## Release Process
+
+The release process is as follows:
+- Update the version in the `library/build.gradle.kts` file according to the [Semantic Versioning](https://semver.org/) guidelines.
+- Update the documentation with `./gradlew dokkaHtml`.
+- Commit the changes with the commit message `chore(release): <version> 🎉`.
+- Create a new tag `v<version>`.
+- Push the changes and the tag to the repository.
+
+A workflow will automatically create a GitHub release, build the library, and publish it to Maven Central.
+
+After the release is published, update the version in the [FusionAuth Android Quickstart Repository](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/):
+- Check out the https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/ repository.
+- Replace the `app/src` directory with the `app/src` of this repository.
+- Update `implementation("io.fusionauth:fusionauth-android-sdk:${version}")` in the `app/build.gradle` file.
+- (Optional) If the `app/build.gradle.kts` file was changed, update the `build.gradle.kts` in the quickstart repository accordingly.
+- Commit the changes with the commit message `chore(release): <version> 🎉`.
+- Create a new tag `v<version>`.
+- Push the changes and the tag to the repository.

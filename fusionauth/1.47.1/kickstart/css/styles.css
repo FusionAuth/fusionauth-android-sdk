@@ -1,13 +1,13 @@
 :root {
   --main-text-color: #424242;
-  --main-accent-color: #083b94;
+  --main-accent-color: #096324;
   --input-background: #fbfbfb;
   --body-background: #f7f7f7;
   --tooltip-background: #e2e2e2;
   --error-color: #ff0000;
   --error-background: #ffe8e8;
   --border-color: #dddddd;
-  --logo-url: url(https://fusionauth.io/assets/img/samplethemes/changebank/changebank.svg);
+  --logo-url: url(https://fusionauth.io/cdn/samplethemes/changebank/changebank.svg);
   --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 body {
@@ -33,7 +33,7 @@ body {
 /* Changes for Powered by FusionAuth div */
 body > main main.page-body {
   min-height: calc(100vh - 3rem); /* to make the Powered by FusionAuth div position at the bottom of the page if the page is shorter than the viewport */
-  padding-top: 5rem;
+  padding-top: 3rem;
 }
 body > main {
   padding-bottom: 2.5rem; /* giving Powered by FusionAuth more space */
@@ -44,15 +44,10 @@ body > main {
 /* End Powered by FusionAuth */
 
 
-/* Uncomment following to hide help bar at top */
-/*
+/* Hiding help bar at top */
 body > main {
   padding-top: 0;
 }
-body > main header.app-header {
-  display: none;
-}
-*/
 /* end help bar */
 
 
@@ -100,7 +95,7 @@ a:visited {
 .button.blue:hover {
   opacity: .8 !important;
   background: var(--main-accent-color) !important;
-} 
+}
 .button.blue:focus {
   background: var(--main-accent-color) !important;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.4),0 0 0 2px rgba(57,152,219,0.4);
@@ -163,9 +158,9 @@ label.checkbox {
   margin: 1rem 0;
   font-weight: 400;
 }
-.input-addon-group, 
-.input-addon-group > :last-child:not(.flat), 
-.input-addon-group > .input:last-child:not(.flat), 
+.input-addon-group,
+.input-addon-group > :last-child:not(.flat),
+.input-addon-group > .input:last-child:not(.flat),
 .input-addon-group > input:last-child:not(.flat) {
   color: var(--main-text-color); /* overriding typical text color for inputs */
 }
@@ -175,18 +170,18 @@ label.checkbox {
 input::placeholder {
   color: var(--main-text-color);
 }
-.input, 
-input[type="email"], 
-input[type="file"], 
-input[type="number"], 
-input[type="search"], 
-input[type="text"], 
-input[type="tel"], 
-input[type="url"], 
-input[type="password"], 
-textarea, 
+.input,
+input[type="email"],
+input[type="file"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
 label.select select
- {
+{
   background: var(--input-background);
   border: 1px solid var(--border-color) !important;
   border-radius: .25rem !important;
@@ -406,7 +401,7 @@ table thead tr {
   background: var(--main-accent-color);
   height: 1rem;
 }
-hr, 
+hr,
 .hr-container hr {
   border: none;
   height: 1px;
@@ -488,7 +483,7 @@ hr,
 #oauth-complete-reg .page-body > .row > .col-sm-8,
 #oauth-complete-reg .page-body > .row > .col-md-6,
 #oauth-complete-reg .page-body > .row > .col-lg-5,
-#oauth-complete-reg .page-body > .row > .col-xl-4, 
+#oauth-complete-reg .page-body > .row > .col-xl-4,
 #oauth-child-reg .page-body > .row > .col-xs,
 #oauth-child-reg .page-body > .row > .col-sm-8,
 #oauth-child-reg .page-body > .row > .col-md-6,
@@ -498,47 +493,47 @@ hr,
 #oauth-child-reg-complete .page-body > .row > .col-sm-8,
 #oauth-child-reg-complete .page-body > .row > .col-md-6,
 #oauth-child-reg-complete .page-body > .row > .col-lg-5,
-#oauth-child-reg-complete .page-body > .row > .col-xl-4, 
+#oauth-child-reg-complete .page-body > .row > .col-xl-4,
 #oauth-not-registered .page-body > .row > .col-xs,
 #oauth-not-registered .page-body > .row > .col-sm-8,
 #oauth-not-registered .page-body > .row > .col-md-6,
 #oauth-not-registered .page-body > .row > .col-lg-5,
-#oauth-not-registered .page-body > .row > .col-xl-4, 
+#oauth-not-registered .page-body > .row > .col-xl-4,
 #oauth-error .page-body > .row > .col-xs,
 #oauth-error .page-body > .row > .col-sm-8,
 #oauth-error .page-body > .row > .col-md-6,
 #oauth-error .page-body > .row > .col-lg-5,
-#oauth-error .page-body > .row > .col-xl-4, 
+#oauth-error .page-body > .row > .col-xl-4,
 #oauthstart-idp-link .page-body > .row > .col-xs,
 #oauthstart-idp-link .page-body > .row > .col-sm-8,
 #oauthstart-idp-link .page-body > .row > .col-md-6,
 #oauthstart-idp-link .page-body > .row > .col-lg-5,
-#oauthstart-idp-link .page-body > .row > .col-xl-4, 
+#oauthstart-idp-link .page-body > .row > .col-xl-4,
 #oauth-wait .page-body > .row > .col-xs,
 #oauth-wait .page-body > .row > .col-sm-8,
 #oauth-wait .page-body > .row > .col-md-6,
 #oauth-wait .page-body > .row > .col-lg-5,
-#oauth-wait .page-body > .row > .col-xl-4, 
+#oauth-wait .page-body > .row > .col-xl-4,
 #email-verification .page-body > .row > .col-xs,
 #email-verification .page-body > .row > .col-sm-8,
 #email-verification .page-body > .row > .col-md-6,
 #email-verification .page-body > .row > .col-lg-5,
-#email-verification .page-body > .row > .col-xl-4, 
+#email-verification .page-body > .row > .col-xl-4,
 #email-ver-required .page-body > .row > .col-xs,
 #email-ver-required .page-body > .row > .col-sm-8,
 #email-ver-required .page-body > .row > .col-md-6,
 #email-ver-required .page-body > .row > .col-lg-5,
-#email-ver-required .page-body > .row > .col-xl-4, 
+#email-ver-required .page-body > .row > .col-xl-4,
 #email-ver-complete .page-body > .row > .col-xs,
 #email-ver-complete .page-body > .row > .col-sm-8,
 #email-ver-complete .page-body > .row > .col-md-6,
 #email-ver-complete .page-body > .row > .col-lg-5,
-#email-ver-complete .page-body > .row > .col-xl-4, 
+#email-ver-complete .page-body > .row > .col-xl-4,
 #email-ver-resent .page-body > .row > .col-xs,
 #email-ver-resent .page-body > .row > .col-sm-8,
 #email-ver-resent .page-body > .row > .col-md-6,
 #email-ver-resent .page-body > .row > .col-lg-5,
-#email-ver-resent .page-body > .row > .col-xl-4, 
+#email-ver-resent .page-body > .row > .col-xl-4,
 #forgot-pwd .page-body > .row > .col-xs,
 #forgot-pwd .page-body > .row > .col-sm-8,
 #forgot-pwd .page-body > .row > .col-md-6,
@@ -572,7 +567,7 @@ hr,
 #acct-2fa-enable .page-body > .row > .col-xs-12,
 #acct-2fa-enable .page-body > .row > .col-sm-12,
 #acct-2fa-enable .page-body > .row > .col-md-10,
-#acct-2fa-enable .page-body > .row > .col-lg-8, 
+#acct-2fa-enable .page-body > .row > .col-lg-8,
 #acct-2fa-disable .page-body > .row > .col-xs-12,
 #acct-2fa-disable .page-body > .row > .col-sm-12,
 #acct-2fa-disable .page-body > .row > .col-md-10,
@@ -583,12 +578,12 @@ hr,
 #unauthorized-page .page-body > .row > .col-xl-5,
 #change-pwd .page-body > .row > .col-xs,
 #change-pwd .page-body > .row > .col-sm-8,
-#change-pwd .page-body > .row > .col-md-6, 
+#change-pwd .page-body > .row > .col-md-6,
 #change-pwd .page-body > .row > .col-lg-5,
 #change-pwd .page-body > .row > .col-xl-4,
 #change-pwd-complete .page-body > .row > .col-xs,
 #change-pwd-complete .page-body > .row > .col-sm-8,
-#change-pwd-complete .page-body > .row > .col-md-6, 
+#change-pwd-complete .page-body > .row > .col-md-6,
 #change-pwd-complete .page-body > .row > .col-lg-5,
 #change-pwd-complete .page-body > .row > .col-xl-4 {
   flex-basis: 33rem;
@@ -640,7 +635,7 @@ hr,
   #oauth-complete-reg .page-body > .row > .col-sm-8,
   #oauth-complete-reg .page-body > .row > .col-md-6,
   #oauth-complete-reg .page-body > .row > .col-lg-5,
-  #oauth-complete-reg .page-body > .row > .col-xl-4, 
+  #oauth-complete-reg .page-body > .row > .col-xl-4,
   #oauth-child-reg .page-body > .row > .col-xs,
   #oauth-child-reg .page-body > .row > .col-sm-8,
   #oauth-child-reg .page-body > .row > .col-md-6,
@@ -650,17 +645,17 @@ hr,
   #oauth-child-reg-complete .page-body > .row > .col-sm-8,
   #oauth-child-reg-complete .page-body > .row > .col-md-6,
   #oauth-child-reg-complete .page-body > .row > .col-lg-5,
-  #oauth-child-reg-complete .page-body > .row > .col-xl-4, 
+  #oauth-child-reg-complete .page-body > .row > .col-xl-4,
   #oauth-not-registered .page-body > .row > .col-xs,
   #oauth-not-registered .page-body > .row > .col-sm-8,
   #oauth-not-registered .page-body > .row > .col-md-6,
   #oauth-not-registered .page-body > .row > .col-lg-5,
-  #oauth-not-registered .page-body > .row > .col-xl-4, 
+  #oauth-not-registered .page-body > .row > .col-xl-4,
   #oauth-error .page-body > .row > .col-xs,
   #oauth-error .page-body > .row > .col-sm-8,
   #oauth-error .page-body > .row > .col-md-6,
   #oauth-error .page-body > .row > .col-lg-5,
-  #oauth-error .page-body > .row > .col-xl-4, 
+  #oauth-error .page-body > .row > .col-xl-4,
   #oauthstart-idp-link .page-body > .row > .col-xs,
   #oauthstart-idp-link .page-body > .row > .col-sm-8,
   #oauthstart-idp-link .page-body > .row > .col-md-6,
@@ -670,27 +665,27 @@ hr,
   #oauth-wait .page-body > .row > .col-sm-8,
   #oauth-wait .page-body > .row > .col-md-6,
   #oauth-wait .page-body > .row > .col-lg-5,
-  #oauth-wait .page-body > .row > .col-xl-4, 
+  #oauth-wait .page-body > .row > .col-xl-4,
   #email-verification .page-body > .row > .col-xs,
   #email-verification .page-body > .row > .col-sm-8,
   #email-verification .page-body > .row > .col-md-6,
   #email-verification .page-body > .row > .col-lg-5,
-  #email-verification .page-body > .row > .col-xl-4, 
+  #email-verification .page-body > .row > .col-xl-4,
   #email-ver-required .page-body > .row > .col-xs,
   #email-ver-required .page-body > .row > .col-sm-8,
   #email-ver-required .page-body > .row > .col-md-6,
   #email-ver-required .page-body > .row > .col-lg-5,
-  #email-ver-required .page-body > .row > .col-xl-4, 
+  #email-ver-required .page-body > .row > .col-xl-4,
   #email-ver-complete .page-body > .row > .col-xs,
   #email-ver-complete .page-body > .row > .col-sm-8,
   #email-ver-complete .page-body > .row > .col-md-6,
   #email-ver-complete .page-body > .row > .col-lg-5,
-  #email-ver-complete .page-body > .row > .col-xl-4, 
+  #email-ver-complete .page-body > .row > .col-xl-4,
   #email-ver-resent .page-body > .row > .col-xs,
   #email-ver-resent .page-body > .row > .col-sm-8,
   #email-ver-resent .page-body > .row > .col-md-6,
   #email-ver-resent .page-body > .row > .col-lg-5,
-  #email-ver-resent .page-body > .row > .col-xl-4, 
+  #email-ver-resent .page-body > .row > .col-xl-4,
   #forgot-pwd .page-body > .row > .col-xs,
   #forgot-pwd .page-body > .row > .col-sm-8,
   #forgot-pwd .page-body > .row > .col-md-6,
@@ -735,12 +730,12 @@ hr,
   #unauthorized-page .page-body > .row > .col-xl-5,
   #change-pwd .page-body > .row > .col-xs,
   #change-pwd .page-body > .row > .col-sm-8,
-  #change-pwd .page-body > .row > .col-md-6, 
+  #change-pwd .page-body > .row > .col-md-6,
   #change-pwd .page-body > .row > .col-lg-5,
   #change-pwd .page-body > .row > .col-xl-4,
   #change-pwd-complete .page-body > .row > .col-xs,
   #change-pwd-complete .page-body > .row > .col-sm-8,
-  #change-pwd-complete .page-body > .row > .col-md-6, 
+  #change-pwd-complete .page-body > .row > .col-md-6,
   #change-pwd-complete .page-body > .row > .col-lg-5,
   #change-pwd-complete .page-body > .row > .col-xl-4  {
     flex-basis: calc(100% - 30px);
@@ -764,7 +759,7 @@ hr,
   #acct-2fa-index .page-body > .row > .col-lg-8 {
     flex-basis: 54.125rem;
     max-width: 54.125rem;
-  } 
+  }
   #acct-2fa-index .page-body > .row.center:last-of-type {
     width: 54.125rem;
   }
@@ -787,10 +782,10 @@ hr,
 #oauth-two-factor-methods .full,
 #oauth-two-factor-methods .blue.button,
 #oauth-authorize .panel > main > form > .form-row:first-of-type,
-#oauth-passwordless .panel > main > .full > .form-row:first-of-type, 
+#oauth-passwordless .panel > main > .full > .form-row:first-of-type,
 #oauth-register .panel > main > .full > .form-row:first-of-type,
 #forgot-pwd .panel > main > .full fieldset,
-#forgot-pwd .panel .grecaptcha-msg, 
+#forgot-pwd .panel .grecaptcha-msg,
 #change-pwd .panel > main .full > .form-row:first-of-type,
 #acct-2fa-index .panel > main > fieldset {
   margin-bottom: 0;
@@ -1000,10 +995,10 @@ hr,
   #acct-index .page-body > .row:first-of-type > .col-lg-8 {
     flex-basis: 54.125rem;
     max-width: 54.125rem;
-  } 
+  }
   #acct-index .page-body > .row.center:last-of-type {
     width: 54.125rem;
-  } 
+  }
   #acct-index .panel:before {
     width: 6.25rem;
   }
@@ -1104,4 +1099,3 @@ hr,
   padding: 0;
 }
 /* End page specific buttons and links */
-
