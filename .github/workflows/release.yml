@@ -17,7 +17,6 @@ name: Maven Release
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
   push:
-    branches: [ main ]
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]'
 
@@ -86,6 +85,7 @@ jobs:
         ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.NXRM_TOKEN_PASSWORD }}
         ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        SONATYPE_REPOSITORY_ID: ${{ needs.create_staging_repository.outputs.repository_id }}
       run: ./gradlew clean publishReleasePublicationToOSSRHRepository
 
   finalize:
