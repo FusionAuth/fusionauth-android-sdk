@@ -50,6 +50,9 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Requires the staging_profile_id
+    needs: create_staging_repository
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Sets up JDK as a prerequisite to run Gradle
