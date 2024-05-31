@@ -35,7 +35,7 @@ jobs:
         with:
           username: ${{ secrets.NXRM_TOKEN_USERNAME }}
           password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
-          staging_profile_id: ${{ secrets.NEXUS_ACTIONS_SONATYPE_PROFILE_ID }}
+          staging_profile_id: ${{ secrets.NXRM_PROFILE_ID }}
           description: ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
 
   publish:
