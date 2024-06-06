@@ -15,7 +15,7 @@
 name: Maven Release
 
 on:
-  # Triggers the workflow on push or pull request events but only for default and protected branches
+  # Triggers the workflow on push request events but only for tag versions
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]'
