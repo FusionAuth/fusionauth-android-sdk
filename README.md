@@ -275,7 +275,7 @@ The release process is as follows:
 A workflow will automatically create a GitHub release, build the library, and publish it to Maven Central.
 
 After the release is published, update the version in the [FusionAuth Android Quickstart Repository](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/):
-- Check out the https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/ repository.
+- Check out the https://github.com/FusionAuth/fusionauth-quickstart-kotlin-android-native repository.
 - Replace the `app/src` directory with the `app/src` of this repository.
 - Update `implementation("io.fusionauth:fusionauth-android-sdk:${version}")` in the `app/build.gradle` file.
 - (Optional) If the `app/build.gradle.kts` and `build.gradle.kts` file was changed, update the according files in the quickstart repository.
