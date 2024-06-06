@@ -266,8 +266,12 @@ This means that after a dependency (e.g. language, framework, or operating syste
 ## Release Process
 
 The release process is as follows:
-- Update the version in the `library/build.gradle.kts` file according to the [Semantic Versioning](https://semver.org/) guidelines.
+- Update the version in the `library/build.gradle.kts` file with a pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
 - Update the documentation with `./gradlew dokkaHtml`.
+- Commit the changes with the commit message `chore(release): <pre-release-version> 🎉`.
+- Create a new tag `v<pre-release-version>`.
+- Make sure all Workflows where successful https://github.com/FusionAuth/fusionauth-android-sdk/actions.
+- Update the version in the `library/build.gradle.kts` file with a release version according to the [Semantic Versioning](https://semver.org/) guidelines.
 - Commit the changes with the commit message `chore(release): <version> 🎉`.
 - Create a new tag `v<version>`.
 - Push the changes and the tag to the repository.
