@@ -36,7 +36,7 @@ authorization server. It also provides a Token Manager to store, refresh, and re
 
 It's a highly standardized and simplified starting point for developers to easily integrate FusionAuth into their own custom mobile apps by taking care of all the dependencies.
 
-Following OAuth 2.0 and OpenID Connect functionality are covered:
+The following OAuth 2.0 and OpenID Connect functionality are covered:
 - OAuth 2.0 Authorization Code Grant
 - OAuth 2.0 Refresh Token Grant
 - OpenID Connect UserInfo
