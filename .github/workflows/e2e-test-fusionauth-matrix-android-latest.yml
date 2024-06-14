@@ -8,16 +8,15 @@
 # And uses the Android Target API level requirements for Google Play apps 33.
 # https://support.google.com/googleplay/android-developer/answer/11926878?sjid=9314081280512290806-EU
 
+# The workflow is reusable by other workflows or can be triggered manually
+
 name: E2E Test with FusionAuth supported versions
 
 on:
   # To allow running this workflow manually from the Actions tab we add:
   workflow_dispatch:
   # Triggers the workflow on push request events but only for tag versions
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]'
-      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
