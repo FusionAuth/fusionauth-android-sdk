@@ -189,7 +189,7 @@ end::forDocSiteExampleApp[]
 <!--
 tag::forDocSiteQuickstart[]
 -->
-See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-android-java-native-fusionauth-sdk/) for a full tutorial on using FusionAuth and Android.
+See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-android-java-native/) for a full tutorial on using FusionAuth and Android.
 <!--
 end::forDocSiteQuickstart[]
 -->
