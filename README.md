@@ -281,6 +281,7 @@ The `pre-release.yml` workflow will automatically create a GitHub release, build
 The release process is as follows:
 - Check if a pre-release exists, if not start with the pre-release process.
 - Update the release version in the `library/build.gradle.kts` file, derived from the pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
+- Update the [SECURITY.md](SECURITY.md) version information with the latest `Supported Versions` according to the current specification E2E test workflows.
 - Commit the changes with the commit message `chore(release): <version> 🎉`.
 - Create a new tag `v<version>`.
 - Push the changes and the tag to the repository.
