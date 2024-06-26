@@ -19,7 +19,11 @@ An SDK for using FusionAuth in Android Apps.
 
 - [Documentation](#documentation)
 
+- [Contributing](#Contributing)
+
 - [Upgrade Policy](#upgrade-policy)
+
+- [Release](#release)
 
 <!--
 this and following tags, and the corresponding end tag, are used to delineate what is pulled into the FusionAuth docs site (the client libraries pages). Don't remove unless you also change the docs site.
@@ -27,7 +31,7 @@ this and following tags, and the corresponding end tag, are used to delineate wh
 Please also use ``` instead of indenting for code blocks. The backticks are translated correctly to adoc format.
 -->
 
-## Overview
+# Overview
 <!--
 tag::forDocSiteOverview[]
 -->
@@ -49,7 +53,7 @@ The SDK is written in Kotlin and is compatible with Java.
 end::forDocSiteOverview[]
 -->
 
-## Getting Started
+# Getting Started
 
 <!--
 tag::forDocSiteGettingStarted[]
@@ -106,7 +110,7 @@ To persist tokens, you can use the `SharedPreferencesStorage` or implement your 
 end::forDocSiteGettingStarted[]
 -->
 
-## Usage
+# Usage
 
 <!--
 tag::forDocSiteUsage[]
@@ -174,7 +178,7 @@ If the user is signed out, the `LoginActivity` will be opened.
 end::forDocSiteUsage[]
 -->
 
-## Example App
+# Example App
 
 <!--
 tag::forDocSiteExampleApp[]
@@ -184,7 +188,7 @@ See the [FusionAuth Android SDK Example](https://github.com/FusionAuth/fusionaut
 end::forDocSiteExampleApp[]
 -->
 
-## Quickstart
+# Quickstart
 
 <!--
 tag::forDocSiteQuickstart[]
@@ -194,7 +198,7 @@ See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/q
 end::forDocSiteQuickstart[]
 -->
 
-## Documentation
+# Documentation
 
 <!--
 tag::forDocSiteDocumentation[]
@@ -204,7 +208,7 @@ See the latest [Full library documentation](https://github.com/FusionAuth/fusion
 end::forDocSiteDocumentation[]
 -->
 
-## Contributing
+# Contributing
 <!--
 tag::forDocSiteContributing[]
 -->
@@ -212,17 +216,17 @@ We hope you love using FusionAuth Android SDK, but in case you encounter a bug o
 
 Please only report issues for the FusionAuth Android SDK itself if you have an issue with documentation or a client library follow [these instructions.](https://github.com/FusionAuth/fusionauth-issues)
 
-### Community Guidelines
+## Community Guidelines
 
 As part of the FusionAuth community, please abide by [the Code of Conduct](https://fusionauth.io/community/forum/topic/1000/code-of-conduct).
 
-### Reporting an Issue
+## Reporting an Issue
 
 Before reporting an issue, please search through the already open issues to see if you could contribute.
 
 To report an issue, please follow the instructions of the bug, feature and general issue templates.
 
-### Contributing Features and Fixes
+## Contributing Features and Fixes
 
 Before starting with contributing, you'll want to look at and choose an issue to work on. Here is a basic workflow you want to work from:
 
@@ -237,14 +241,18 @@ Once you have found an issue you want to work on, we suggest to:
 2. Create a new branch with the name fix/issue-id or feat/issue-id.
 3. And start working on that branch on the issue.
 
-### Development Tooling
+## Development Tooling
 
 During development of new features and fixes, we suggest using the following code quality tools which are preconfigured for this project:
 * Detekt: `./gradlew clean detektRelease detektTest --continue` or use an [IDE plugin](https://plugins.jetbrains.com/plugin/10761-detekt)
 * Android Lint: `./gradlew clean lint --continue` 
 * Android Test: `./gradlew connectedAndroidTest`
 
-### Submitting a Pull Request
+### Testing
+
+See [FusionAuth Android SDK Quickstart Testing](https://github.com/FusionAuth/fusionauth-quickstart-kotlin-android-native/blob/main/TESTING.md) for a full tutorial on Android Test.
+
+## Submitting a Pull Request
 
 When you are ready to submit your pull request, visit the main repository on GitHub and click the "Compare & pull request" button. Here you can select the branch you have been working on and create a pull request.
 
@@ -255,13 +263,17 @@ After you have submitted your pull request, several checks will be run to ensure
 end::forDocSiteContributing[]
 -->
 
-## Upgrade Policy
+# Upgrade Policy
 
 This library may periodically receive updates with bug fixes, security patches, tests, code samples, or documentation changes.
 
 These releases may also update dependencies, language engines, and operating systems, as we\'ll follow the deprecation and sunsetting policies of the underlying technologies that the libraries use.
 
 This means that after a dependency (e.g. language, framework, or operating system) is deprecated by its maintainer, this library will also be deprecated by us, and may eventually be updated to use a newer version.
+
+# Release
+
+The release proceeds through three sequential steps: [Pre-Release Process](#pre-release-process), [Release Process](#release-process) and [Quickstart Release Process](#quickstartr-release-process). Where [Pre-Release Process](#pre-release-process) gets repeated untill a stable release is possible.
 
 ## Pre-Release Process
 
@@ -288,7 +300,7 @@ The release process is as follows:
 
 The `release.yml` workflow will automatically create a GitHub release, build the library, and publish it to Maven Central.
 
-### Release Quickstart Process
+### Quickstart Release Process
 
 After the release is published, update the version in the [FusionAuth Android Quickstart Repository](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/):
 - Check out the https://github.com/FusionAuth/fusionauth-quickstart-kotlin-android-native repository.
