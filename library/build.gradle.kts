@@ -71,7 +71,7 @@ publishing {
                 // referenced as ${groupId}:${artifactId}.
                 groupId = "io.fusionauth"
                 artifactId = "fusionauth-android-sdk"
-                version = "0.1.7-2"
+                version = "0.1.7-3"
 
                 // And here are some more properties that go into the pom file.
                 // For a full list of required metadata fields, see:
