@@ -278,6 +278,7 @@ The release proceeds through three sequential steps: [Pre-Release Process](#pre-
 ## Pre-Release Process
 
 The pre-release process is as follows:
+- Check if the latest FusionAuth version is used in the different jobs and configuraitons.
 - Compare the gradlew version `./gradlew -v` with the latest [gradle release](https://gradle.org/releases/) and update if necessary.
 - Review, test and merge any open [Dependency Pull Requests](https://github.com/FusionAuth/fusionauth-android-sdk/pulls).
 - Update the version in the `library/build.gradle.kts` file with a pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
@@ -304,11 +305,11 @@ The `release.yml` workflow will automatically create a GitHub release, build the
 
 After the release is published, update the version in the [FusionAuth Android Quickstart Repository](https://github.com/FusionAuth/fusionauth-quickstart-java-android-fusionauth-sdk/):
 - Check out the https://github.com/FusionAuth/fusionauth-quickstart-kotlin-android-native repository.
-- Replace the `app/src` directory with the `app/src` of this repository.
+- Replace the `complete-application/app/src` directory with the `app/src` of this repository.
 - Update `implementation("io.fusionauth:fusionauth-android-sdk:${version}")` in the `app/build.gradle` file.
-- (Optional) If the `app/build.gradle.kts` and `build.gradle.kts` file was changed, update the content of the according files in the quickstart repository.
-- (Optional) If the FusionAuth configuration changed, update the according files in the quickstart repository.
-- (Optional) Compare the gradlew version `./gradlew -v` with the version used in the SDK and update if necessary.
+- (Optional) If the `app/build.gradle.kts` and `build.gradle.kts` file was changed, update the content of the according files in `complete-application/` in the quickstart repository.
+- (Optional) If the FusionAuth configuration changed, update the according `docker-compose.yml`, `.env` and `kickstart/` files in the quickstart repository.
+- (Optional) Compare the gradlew version `./gradlew -v` with the version used in the SDK and copy or update if necessary.
 - Commit the changes with the commit message `chore(release): <version> 🎉`.
 - Create a new tag `v<version>`.
 - Push the changes and the tag to the repository.
