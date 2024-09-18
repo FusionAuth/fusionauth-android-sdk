@@ -46,7 +46,7 @@ services:
       - search_net
 
   fusionauth:
-    image: fusionauth/fusionauth-app:1.53.1
+    image: fusionauth/fusionauth-app:1.53.2
     depends_on:
       db:
         condition: service_healthy
