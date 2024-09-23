@@ -53,7 +53,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.26.7
+        uses: github/codeql-action/upload-sarif@v3.26.8
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json
