@@ -63,7 +63,7 @@ jobs:
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout repository
-      uses: actions/checkout@v4.2.0
+      uses: actions/checkout@v4.2.1
 
     # Sets up Gradle as a prerequisite to run Maven Release
     - name: Setup Gradle

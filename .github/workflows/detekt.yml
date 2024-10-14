@@ -62,7 +62,7 @@ jobs:
 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout repository
-      uses: actions/checkout@v4.2.0
+      uses: actions/checkout@v4.2.1
 
     # Sets up Gradle as a prerequisite to run Detekt
     - name: Setup Gradle
@@ -76,7 +76,7 @@ jobs:
 
     # Uploads Sarif Report to GitHub
     - name: Upload SARIF to GitHub
-      uses: github/codeql-action/upload-sarif@v3.26.9
+      uses: github/codeql-action/upload-sarif@v3.26.12
       if: success() || failure()
       with:
         sarif_file: build/reports/detekt/merge.sarif.json
