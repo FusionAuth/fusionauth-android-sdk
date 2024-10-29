@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 33 ]
+        api-level: [ 34 ]
         target: [ google_apis ]
         arch: [ x86_64 ]
     # Steps represent a sequence of tasks that will be executed as part of the job
