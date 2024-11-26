@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "io.fusionauth.sdk"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "io.fusionauth.app"
