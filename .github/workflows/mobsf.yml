@@ -36,7 +36,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5.3.0
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
