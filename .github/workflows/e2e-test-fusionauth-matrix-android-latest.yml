@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 34 ]
+        api-level: [ 35 ]
         target: [ google_apis ]
         arch: [ x86_64 ]
         fusionauth-docker-image-version: [ 1.48.3, 1.49.2, 1.50.1, 1.51.2, 1.52.1, 1.53.3, 1.54.0 ]
