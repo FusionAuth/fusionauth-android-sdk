@@ -13,7 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import io.fusionauth.mobilesdk.AuthorizationManager
 import org.junit.After
@@ -73,22 +72,8 @@ internal class FullEnd2EndTest {
 
         logger.info("Waiting for login form to appear")
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val selector = UiSelector()
 
-        closeKeyboardIfOpen()
-        logger.info("Set username")
-        val userNameInputObject = device.findObject(selector.resourceId("loginId"))
-        userNameInputObject.setText(USERNAME)
-
-        closeKeyboardIfOpen()
-        logger.info("Set password")
-        val passwordInputObject = device.findObject(selector.resourceId("password"))
-        passwordInputObject.setText(PASSWORD)
-
-        // Submit the form by pressing the enter key
-        logger.info("Submit form by pressing enter key")
-        passwordInputObject.click()
-        device.pressEnter()
+        handleFALoginForm(device, USERNAME, PASSWORD)
 
         // Check that the token activity is displayed
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
@@ -125,20 +110,7 @@ internal class FullEnd2EndTest {
 
         logger.info("Waiting for login form to appear")
 
-        closeKeyboardIfOpen()
-        logger.info("Set second username")
-        val userNameInputObject2 = device.findObject(selector.resourceId("loginId"))
-        userNameInputObject2.setText(USERNAME2)
-
-        closeKeyboardIfOpen()
-        logger.info("Set second password")
-        val passwordInputObject2 = device.findObject(selector.resourceId("password"))
-        passwordInputObject2.setText(PASSWORD2)
-
-        // Submit the form by pressing the enter key
-        logger.info("Submit form for second user by pressing enter key")
-        passwordInputObject.click()
-        device.pressEnter()
+        handleFALoginForm(device, USERNAME2, PASSWORD2)
 
         // Check that the token activity is displayed
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
@@ -155,6 +127,41 @@ internal class FullEnd2EndTest {
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
 
+    }
+
+    /**
+     * Sets the username and password on the login form.
+     *
+     * @param device The UiDevice used to interact with the UI.
+     * @param username The username to set on the login form.
+     * @param password The password to set on the login form.
+     */
+    private fun handleFALoginForm(
+        device: UiDevice,
+        username: String,
+        password: String
+    ) {
+        device.wait(
+            Until.findObject(By.clazz("android.webkit.WebView")),
+            TIMEOUT_MILLIS
+        )
+
+        val textFields = device.findObjects(By.clazz("android.widget.EditText"))
+
+        closeKeyboardIfOpen()
+        logger.info("Set username")
+        val userNameInputObject = textFields[0]
+        userNameInputObject.setText(username)
+
+        closeKeyboardIfOpen()
+        logger.info("Set password")
+        val passwordInputObject = textFields[1]
+        passwordInputObject.setText(password)
+
+        // Submit the form by pressing the enter key
+        logger.info("Submit form by pressing enter key")
+        passwordInputObject.click()
+        device.pressEnter()
     }
 
     /**
