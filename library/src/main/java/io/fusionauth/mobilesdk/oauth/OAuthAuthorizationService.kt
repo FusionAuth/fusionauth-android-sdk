@@ -105,7 +105,6 @@ class OAuthAuthorizationService internal constructor(
             0,
             Intent(completedIntent).also {
                 replaceExtras(it, Bundle().also { bundle ->
-                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
                     bundle.putBoolean(EXTRA_AUTHORIZED, true)
                 })
             },
@@ -175,12 +174,6 @@ class OAuthAuthorizationService internal constructor(
             if (exception != null) {
                 appAuthState.update(response, exception)
                 throw AuthorizationException(exception)
-            }
-
-            // Validate the state
-            val state = intent.getStringExtra(EXTRA_STATE)
-            if (state.orEmpty() != response?.state.orEmpty()) {
-                throw AuthorizationException("State mismatch")
             }
 
             appAuthState.update(response, null)
@@ -294,7 +287,6 @@ class OAuthAuthorizationService internal constructor(
             0,
             Intent(completedIntent).also {
                 replaceExtras(it, Bundle().also { bundle ->
-                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
                     bundle.putBoolean(EXTRA_LOGGED_OUT, true)
                 })
             },
@@ -559,12 +551,11 @@ class OAuthAuthorizationService internal constructor(
             AtomicReference(null)
         private val json = Json { ignoreUnknownKeys = true }
 
-        private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
         const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
         const val EXTRA_LOGGED_OUT: String = "io.fusionauth.mobilesdk.logged_out"
 
-        private val EXTRAS = setOf(EXTRA_STATE, EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
+        private val EXTRAS = setOf(EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
     }
 
 }
