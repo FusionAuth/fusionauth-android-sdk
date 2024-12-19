@@ -153,7 +153,9 @@ class OAuthAuthorizationService internal constructor(
 
         // Authorize Options
         options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
+        options?.codeChallengeMethod?.let {
+            additionalParameters["code_challenge_method"] = it.name
+        }
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
@@ -172,18 +174,23 @@ class OAuthAuthorizationService internal constructor(
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = net.openid.appauth.AuthorizationException.fromIntent(intent)
 
+            if (exception != null) {
+                appAuthState.update(response, exception)
+                throw AuthorizationException(exception)
+            }
+
             // Validate the state
             val state = intent.getStringExtra(EXTRA_STATE)
             if (state.orEmpty() != response?.state.orEmpty()) {
                 throw AuthorizationException("State mismatch")
             }
 
-            appAuthState.update(response, exception)
+            appAuthState.update(response, null)
 
             if (response != null) {
-                val tokenResponse = async { performTokenRequest(response, exception) }
+                val tokenResponse = async { performTokenRequest(response, null) }
                 val t = tokenResponse.await()
-                appAuthState.update(t, exception)
+                appAuthState.update(t, null)
                 val authState = FusionAuthState(
                     accessToken = t.accessToken,
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
@@ -193,7 +200,7 @@ class OAuthAuthorizationService internal constructor(
                 tokenManager?.saveAuthState(authState)
                 authState
             } else {
-                throw exception?.let { AuthorizationException(it) } ?: AuthorizationException("Unknown error")
+                throw AuthorizationException("Unknown error")
             }
         }
     }
@@ -237,7 +244,8 @@ class OAuthAuthorizationService internal constructor(
     suspend fun getUserInfo(): UserInfo? {
         return withContext(defaultDispatcher) {
             val config = getConfiguration()
-            val accessToken = AuthorizationManager.freshAccessToken(context) ?: return@withContext null
+            val accessToken =
+                AuthorizationManager.freshAccessToken(context) ?: return@withContext null
 
             val conn: HttpURLConnection = config.discoveryDoc?.userinfoEndpoint.let {
                 if (it == null) {
@@ -279,7 +287,11 @@ class OAuthAuthorizationService internal constructor(
             config
         )
             .setIdTokenHint(authState.idToken)
-            .setPostLogoutRedirectUri(Uri.parse(options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"))
+            .setPostLogoutRedirectUri(
+                Uri.parse(
+                    options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"
+                )
+            )
             .setAdditionalParameters(additionalParameters)
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
@@ -549,7 +561,8 @@ class OAuthAuthorizationService internal constructor(
     }
 
     companion object {
-        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
+        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> =
+            AtomicReference(null)
         private val deferredFetchConfigurationRef: AtomicReference<Deferred<AuthorizationServiceConfiguration>?> =
             AtomicReference(null)
         private val json = Json { ignoreUnknownKeys = true }
