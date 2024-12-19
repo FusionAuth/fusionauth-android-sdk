@@ -153,9 +153,7 @@ class OAuthAuthorizationService internal constructor(
 
         // Authorize Options
         options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let {
-            additionalParameters["code_challenge_method"] = it.name
-        }
+        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
@@ -244,8 +242,7 @@ class OAuthAuthorizationService internal constructor(
     suspend fun getUserInfo(): UserInfo? {
         return withContext(defaultDispatcher) {
             val config = getConfiguration()
-            val accessToken =
-                AuthorizationManager.freshAccessToken(context) ?: return@withContext null
+            val accessToken = AuthorizationManager.freshAccessToken(context) ?: return@withContext null
 
             val conn: HttpURLConnection = config.discoveryDoc?.userinfoEndpoint.let {
                 if (it == null) {
@@ -287,11 +284,7 @@ class OAuthAuthorizationService internal constructor(
             config
         )
             .setIdTokenHint(authState.idToken)
-            .setPostLogoutRedirectUri(
-                Uri.parse(
-                    options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"
-                )
-            )
+            .setPostLogoutRedirectUri(Uri.parse(options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"))
             .setAdditionalParameters(additionalParameters)
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
@@ -561,8 +554,7 @@ class OAuthAuthorizationService internal constructor(
     }
 
     companion object {
-        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> =
-            AtomicReference(null)
+        private val deferredTokenRefreshRef: AtomicReference<Deferred<String?>?> = AtomicReference(null)
         private val deferredFetchConfigurationRef: AtomicReference<Deferred<AuthorizationServiceConfiguration>?> =
             AtomicReference(null)
         private val json = Json { ignoreUnknownKeys = true }
