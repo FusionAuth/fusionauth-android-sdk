@@ -405,6 +405,21 @@ class OAuthAuthorizationService internal constructor(
                 uriBuilder.build(),
                 { configuration, ex ->
                     if (configuration != null) {
+                        // Validate that the issuer of the configuration is a valid URL
+                        // Otherwise we get a NullPointerException, when trying to validate the id token later
+
+                        val issuerScheme = configuration.discoveryDoc?.issuer?.let {
+                            try {
+                                Uri.parse(it).scheme
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        if (issuerScheme != "https" && issuerScheme != "http") {
+                            continuation.resumeWithException(AuthorizationException("Invalid issuer URL"))
+                            return@fetchFromUrl
+                        }
+
                         authorizationConfiguration.set(configuration)
                         continuation.resume(configuration)
                     } else {
