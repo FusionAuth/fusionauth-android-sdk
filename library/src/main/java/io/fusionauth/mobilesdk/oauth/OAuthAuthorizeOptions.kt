@@ -11,8 +11,6 @@ import android.content.Intent
  * @property redirectUri The redirect URI to be used for the OAuth authorize request.
  *                       Default is "io.fusionauth.app:/oauth2redirect".
  * @property idpHint The identity provider hint to be used for the OAuth authorize request.
- * @property codeChallenge The code challenge to be used for the OAuth authorize request.
- * @property codeChallengeMethod The code challenge method to be used for the OAuth authorize request.
  * @property loginHint An optional email address or top level domain that can allow you to bypass the FusionAuth login
  *                     page when using managed domains.
  * @property deviceDescription An optional human-readable description of the device used during login.
@@ -26,8 +24,6 @@ import android.content.Intent
 data class OAuthAuthorizeOptions(
     val redirectUri: String = "io.fusionauth.app:/oauth2redirect",
     val idpHint: String? = null,
-    val codeChallenge: String? = null,
-    val codeChallengeMethod: OAuthCodeChallengeMethod? = null,
     val loginHint: String? = null,
     val deviceDescription: String? = null,
     val nonce: String? = null,

@@ -151,8 +151,6 @@ class OAuthAuthorizationService internal constructor(
         locale?.let { additionalParameters["locale"] = it }
 
         // Authorize Options
-        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
