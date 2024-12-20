@@ -105,7 +105,6 @@ class OAuthAuthorizationService internal constructor(
             0,
             Intent(completedIntent).also {
                 replaceExtras(it, Bundle().also { bundle ->
-                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
                     bundle.putBoolean(EXTRA_AUTHORIZED, true)
                 })
             },
@@ -152,8 +151,6 @@ class OAuthAuthorizationService internal constructor(
         locale?.let { additionalParameters["locale"] = it }
 
         // Authorize Options
-        options?.codeChallenge?.let { additionalParameters["code_challenge"] = it }
-        options?.codeChallengeMethod?.let { additionalParameters["code_challenge_method"] = it.name }
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
@@ -172,18 +169,17 @@ class OAuthAuthorizationService internal constructor(
             val response = AuthorizationResponse.fromIntent(intent)
             val exception = net.openid.appauth.AuthorizationException.fromIntent(intent)
 
-            // Validate the state
-            val state = intent.getStringExtra(EXTRA_STATE)
-            if (state.orEmpty() != response?.state.orEmpty()) {
-                throw AuthorizationException("State mismatch")
+            if (exception != null) {
+                appAuthState.update(response, exception)
+                throw AuthorizationException(exception)
             }
 
-            appAuthState.update(response, exception)
+            appAuthState.update(response, null)
 
             if (response != null) {
-                val tokenResponse = async { performTokenRequest(response, exception) }
+                val tokenResponse = async { performTokenRequest(response, null) }
                 val t = tokenResponse.await()
-                appAuthState.update(t, exception)
+                appAuthState.update(t, null)
                 val authState = FusionAuthState(
                     accessToken = t.accessToken,
                     accessTokenExpirationTime = t.accessTokenExpirationTime,
@@ -193,7 +189,7 @@ class OAuthAuthorizationService internal constructor(
                 tokenManager?.saveAuthState(authState)
                 authState
             } else {
-                throw exception?.let { AuthorizationException(it) } ?: AuthorizationException("Unknown error")
+                throw AuthorizationException("Unknown error")
             }
         }
     }
@@ -289,7 +285,6 @@ class OAuthAuthorizationService internal constructor(
             0,
             Intent(completedIntent).also {
                 replaceExtras(it, Bundle().also { bundle ->
-                    if (options?.state != null) bundle.putString(EXTRA_STATE, options.state)
                     bundle.putBoolean(EXTRA_LOGGED_OUT, true)
                 })
             },
@@ -405,6 +400,21 @@ class OAuthAuthorizationService internal constructor(
                 uriBuilder.build(),
                 { configuration, ex ->
                     if (configuration != null) {
+                        // Validate that the issuer of the configuration is a valid URL
+                        // Otherwise we get a NullPointerException, when trying to validate the id token later
+
+                        val issuerScheme = configuration.discoveryDoc?.issuer?.let {
+                            try {
+                                Uri.parse(it).scheme
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        if (issuerScheme != "https" && issuerScheme != "http") {
+                            continuation.resumeWithException(AuthorizationException("Invalid issuer URL"))
+                            return@fetchFromUrl
+                        }
+
                         authorizationConfiguration.set(configuration)
                         continuation.resume(configuration)
                     } else {
@@ -554,12 +564,11 @@ class OAuthAuthorizationService internal constructor(
             AtomicReference(null)
         private val json = Json { ignoreUnknownKeys = true }
 
-        private const val EXTRA_STATE: String = "io.fusionauth.mobilesdk.state"
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
         const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
         const val EXTRA_LOGGED_OUT: String = "io.fusionauth.mobilesdk.logged_out"
 
-        private val EXTRAS = setOf(EXTRA_STATE, EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
+        private val EXTRAS = setOf(EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
     }
 
 }
