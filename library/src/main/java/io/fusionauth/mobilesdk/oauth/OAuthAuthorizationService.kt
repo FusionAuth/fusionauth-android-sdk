@@ -404,11 +404,7 @@ class OAuthAuthorizationService internal constructor(
                         // Otherwise we get a NullPointerException, when trying to validate the id token later
 
                         val issuerScheme = configuration.discoveryDoc?.issuer?.let {
-                            try {
-                                Uri.parse(it).scheme
-                            } catch (e: Exception) {
-                                null
-                            }
+                            Uri.parse(it).scheme
                         }
                         if (issuerScheme != "https" && issuerScheme != "http") {
                             continuation.resumeWithException(AuthorizationException("Invalid issuer URL"))
