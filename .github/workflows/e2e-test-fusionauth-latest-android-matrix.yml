@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-  fusionauth-docker-image-version: "1.54.0"
+  fusionauth-docker-image-version: "1.55.1"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
