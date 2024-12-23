@@ -30,13 +30,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.2
 
       # Sets up the python as a prerequisites for MobSF
       - name: Setup python
-        uses: actions/setup-python@v5.1.1
+        uses: actions/setup-python@v5.3.0
         with:
-          python-version: 3.8
+          python-version: 3.9
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
@@ -47,13 +47,13 @@ jobs:
 
       # Performs analysis using MobSF and outputs a Sarif Report
       - name: Run mobsfscan
-        uses: MobSF/mobsfscan@849b749e7f3244c7b4f418ff858a9fa4e1406115
+        uses: MobSF/mobsfscan@3d87bc570c4614d705547bddb521395663dba353
         with:
           args: . --sarif --output mobsf.sarif.json || true
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.25.15
+        uses: github/codeql-action/upload-sarif@v3.28.0
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json
