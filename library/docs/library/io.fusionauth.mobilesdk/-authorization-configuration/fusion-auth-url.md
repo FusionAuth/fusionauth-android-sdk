@@ -3,4 +3,4 @@
 # fusionAuthUrl
 
 [androidJvm]\
-val [fusionAuthUrl](fusion-auth-url.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+val [fusionAuthUrl](fusion-auth-url.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)

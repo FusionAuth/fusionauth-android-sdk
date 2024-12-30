@@ -3,4 +3,4 @@
 # sid
 
 [androidJvm]\
-val [sid](sid.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [sid](sid.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

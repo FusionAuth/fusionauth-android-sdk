@@ -3,7 +3,7 @@
 # getAccessTokenExpirationTime
 
 [androidJvm]\
-fun [getAccessTokenExpirationTime](get-access-token-expiration-time.md)(): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)?
+fun [getAccessTokenExpirationTime](get-access-token-expiration-time.md)(): [Long](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html)?
 
 Retrieves the expiration time of the access token.
 

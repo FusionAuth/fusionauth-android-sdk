@@ -3,7 +3,7 @@
 # getIdToken
 
 [androidJvm]\
-fun [getIdToken](get-id-token.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+fun [getIdToken](get-id-token.md)(): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
 
 Retrieves the ID token associated with the authenticated user.
 

@@ -3,7 +3,7 @@
 # isAuthenticated
 
 [androidJvm]\
-fun [isAuthenticated](is-authenticated.md)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+fun [isAuthenticated](is-authenticated.md)(): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)
 
 Checks if the user is authenticated.
 

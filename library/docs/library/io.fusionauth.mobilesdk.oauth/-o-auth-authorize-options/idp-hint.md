@@ -3,4 +3,4 @@
 # idpHint
 
 [androidJvm]\
-val [idpHint](idp-hint.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [idpHint](idp-hint.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

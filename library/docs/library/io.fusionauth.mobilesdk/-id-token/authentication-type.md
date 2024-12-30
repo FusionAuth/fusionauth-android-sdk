@@ -3,4 +3,4 @@
 # authenticationType
 
 [androidJvm]\
-val [authenticationType](authentication-type.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [authenticationType](authentication-type.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

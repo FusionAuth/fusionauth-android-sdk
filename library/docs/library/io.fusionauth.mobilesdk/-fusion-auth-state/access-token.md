@@ -3,4 +3,4 @@
 # accessToken
 
 [androidJvm]\
-var [accessToken](access-token.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+var [accessToken](access-token.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?

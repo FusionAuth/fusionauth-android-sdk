@@ -3,4 +3,4 @@
 # c_hash
 
 [androidJvm]\
-val [c_hash](c_hash.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [c_hash](c_hash.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

@@ -3,4 +3,4 @@
 # idToken
 
 [androidJvm]\
-val [idToken](id-token.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+val [idToken](id-token.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?

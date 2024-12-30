@@ -36,10 +36,8 @@ $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizationService/logout/#
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizationService/tenantId/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorization-service/tenant-id.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizationService/tokenManager/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorization-service/token-manager.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions///PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/index.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/OAuthAuthorizeOptions/#kotlin.String#kotlin.String?#kotlin.String?#io.fusionauth.mobilesdk.oauth.OAuthCodeChallengeMethod?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#android.content.Intent?/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/-o-auth-authorize-options.md
+$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/OAuthAuthorizeOptions/#kotlin.String#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#android.content.Intent?/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/-o-auth-authorize-options.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/cancelIntent/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/cancel-intent.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/codeChallenge/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/code-challenge.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/codeChallengeMethod/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/code-challenge-method.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/deviceDescription/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/device-description.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/idpHint/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/idp-hint.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/loginHint/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/login-hint.md
@@ -47,11 +45,6 @@ $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/nonce/#/Poin
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/redirectUri/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/redirect-uri.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/state/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/state.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthAuthorizeOptions/userCode/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-authorize-options/user-code.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthCodeChallengeMethod.S256///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}library/io.fusionauth.mobilesdk.oauth/-o-auth-code-challenge-method/-s256/index.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthCodeChallengeMethod///PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-code-challenge-method/index.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthCodeChallengeMethod/entries/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-code-challenge-method/entries.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthCodeChallengeMethod/valueOf/#kotlin.String/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-code-challenge-method/value-of.md
-$dokka.location:io.fusionauth.mobilesdk.oauth/OAuthCodeChallengeMethod/values/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-code-challenge-method/values.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions///PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-logout-options/index.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions/OAuthLogoutOptions/#kotlin.String#kotlin.String?#android.content.Intent?/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-logout-options/-o-auth-logout-options.md
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions/cancelIntent/#/PointingToDeclaration/library/io.fusionauth.mobilesdk.oauth/-o-auth-logout-options/cancel-intent.md
@@ -103,7 +96,7 @@ $dokka.location:io.fusionauth.mobilesdk/FusionAuthState/accessTokenExpirationTim
 $dokka.location:io.fusionauth.mobilesdk/FusionAuthState/idToken/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-fusion-auth-state/id-token.md
 $dokka.location:io.fusionauth.mobilesdk/FusionAuthState/refreshToken/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-fusion-auth-state/refresh-token.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken///PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/index.md
-$dokka.location:io.fusionauth.mobilesdk/IdToken/IdToken/#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Long?#kotlin.String?#kotlin.String?#kotlin.Boolean?#kotlin.Long?#kotlin.Long?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#java.util.UUID?#java.util.UUID?/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/-id-token.md
+$dokka.location:io.fusionauth.mobilesdk/IdToken/IdToken/#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Long?#kotlin.String?#kotlin.String?#kotlin.Boolean?#kotlin.Long?#kotlin.Long?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/-id-token.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/at_hash/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/at_hash.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/aud/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/aud.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/auth_time/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/auth_time.md
@@ -117,6 +110,7 @@ $dokka.location:io.fusionauth.mobilesdk/IdToken/iss/#/PointingToDeclaration/lib
 $dokka.location:io.fusionauth.mobilesdk/IdToken/jti/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/jti.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/nonce/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/nonce.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/preferred_username/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/preferred_username.md
+$dokka.location:io.fusionauth.mobilesdk/IdToken/scope/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/scope.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/sid/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/sid.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/sub/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/sub.md
 $dokka.location:io.fusionauth.mobilesdk/IdToken/tid/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-id-token/tid.md
@@ -131,7 +125,7 @@ $dokka.location:io.fusionauth.mobilesdk/UnsecureConnectionBuilder///PointingToDe
 $dokka.location:io.fusionauth.mobilesdk/UnsecureConnectionBuilder/UnsecureConnectionBuilder/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-unsecure-connection-builder/-unsecure-connection-builder.md
 $dokka.location:io.fusionauth.mobilesdk/UnsecureConnectionBuilder/openConnection/#android.net.Uri/PointingToDeclaration/library/io.fusionauth.mobilesdk/-unsecure-connection-builder/open-connection.md
 $dokka.location:io.fusionauth.mobilesdk/UserInfo///PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/index.md
-$dokka.location:io.fusionauth.mobilesdk/UserInfo/UserInfo/#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Boolean#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.collections.List[kotlin.String]?#kotlin.String/PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/-user-info.md
+$dokka.location:io.fusionauth.mobilesdk/UserInfo/UserInfo/#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.Boolean?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.collections.List[kotlin.String]?#kotlin.String/PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/-user-info.md
 $dokka.location:io.fusionauth.mobilesdk/UserInfo/applicationId/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/application-id.md
 $dokka.location:io.fusionauth.mobilesdk/UserInfo/birthdate/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/birthdate.md
 $dokka.location:io.fusionauth.mobilesdk/UserInfo/email/#/PointingToDeclaration/library/io.fusionauth.mobilesdk/-user-info/email.md
@@ -149,4 +143,3 @@ io.fusionauth.mobilesdk
 io.fusionauth.mobilesdk.exceptions
 io.fusionauth.mobilesdk.oauth
 io.fusionauth.mobilesdk.storage
-

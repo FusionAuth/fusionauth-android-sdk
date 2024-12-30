@@ -3,4 +3,4 @@
 # email_verified
 
 [androidJvm]\
-val [email_verified](email_verified.md): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+val [email_verified](email_verified.md): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)? = null

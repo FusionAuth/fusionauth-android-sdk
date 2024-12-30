@@ -3,7 +3,7 @@
 # fromResources
 
 [androidJvm]\
-fun [fromResources](from-resources.md)(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), resource: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): [AuthorizationConfiguration](../index.md)
+fun [fromResources](from-resources.md)(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), resource: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [AuthorizationConfiguration](../index.md)
 
 Reads a JSON file from resources and converts it into an AuthorizationConfiguration object.
 
