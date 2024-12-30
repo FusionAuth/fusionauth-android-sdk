@@ -3,4 +3,4 @@
 # EXTRA_AUTHORIZED
 
 [androidJvm]\
-const val [EXTRA_AUTHORIZED](-e-x-t-r-a_-a-u-t-h-o-r-i-z-e-d.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+const val [EXTRA_AUTHORIZED](-e-x-t-r-a_-a-u-t-h-o-r-i-z-e-d.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)

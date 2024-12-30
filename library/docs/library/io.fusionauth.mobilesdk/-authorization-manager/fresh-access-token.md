@@ -3,7 +3,7 @@
 # freshAccessToken
 
 [androidJvm]\
-suspend fun [freshAccessToken](fresh-access-token.md)(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), force: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+suspend fun [freshAccessToken](fresh-access-token.md)(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), force: [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html) = false): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
 
 Retrieves a fresh access token.
 

@@ -3,4 +3,4 @@
 # picture
 
 [androidJvm]\
-val [picture](picture.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [picture](picture.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

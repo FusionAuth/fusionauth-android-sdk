@@ -3,7 +3,7 @@
 # remove
 
 [androidJvm]\
-open override fun [remove](remove.md)(key: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
+open override fun [remove](remove.md)(key: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html))
 
 Removes the value associated with the given [key](remove.md) from SharedPreferences.
 

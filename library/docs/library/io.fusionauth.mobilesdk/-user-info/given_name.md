@@ -3,4 +3,4 @@
 # given_name
 
 [androidJvm]\
-val [given_name](given_name.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [given_name](given_name.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

@@ -3,4 +3,4 @@
 # locale
 
 [androidJvm]\
-val [locale](locale.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [locale](locale.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null

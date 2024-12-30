@@ -3,7 +3,7 @@
 # isCancelled
 
 [androidJvm]\
-fun [isCancelled](is-cancelled.md)(intent: [Intent](https://developer.android.com/reference/kotlin/android/content/Intent.html)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+fun [isCancelled](is-cancelled.md)(intent: [Intent](https://developer.android.com/reference/kotlin/android/content/Intent.html)): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)
 
 Checks if the authorization process has been cancelled by examining the given intent.
 

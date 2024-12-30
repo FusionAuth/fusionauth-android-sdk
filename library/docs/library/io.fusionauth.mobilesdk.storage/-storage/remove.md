@@ -3,7 +3,7 @@
 # remove
 
 [androidJvm]\
-abstract fun [remove](remove.md)(key: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
+abstract fun [remove](remove.md)(key: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html))
 
 Removes the value associated with the given key from the storage.
 

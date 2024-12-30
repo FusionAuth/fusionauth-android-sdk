@@ -3,4 +3,4 @@
 # auth_time
 
 [androidJvm]\
-val [auth_time](auth_time.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)? = null
+val [auth_time](auth_time.md): [Long](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html)? = null
