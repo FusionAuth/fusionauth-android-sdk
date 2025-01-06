@@ -9,7 +9,7 @@ data class [AuthorizationConfiguration](index.md)(val clientId: [String](https:/
 
 AuthorizationConfiguration is a data class that represents the configuration for authorization.
 
-Make sure that the issuer URL issuer of the FusionAuth Application configuration is a valid URL including http/https which is validated while generating the AuthorizationServiceConfiguration object.
+Make sure the issuer URL of the FusionAuth Application configuration is a valid URL including http/https which is validated while generating the AuthorizationServiceConfiguration object.
 
 ## Constructors
 
