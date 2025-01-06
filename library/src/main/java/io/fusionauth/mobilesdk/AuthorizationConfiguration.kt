@@ -7,6 +7,8 @@ import java.util.logging.Logger
 /**
  * AuthorizationConfiguration is a data class that represents the configuration for authorization.
  *
+ * Make sure that the issuer URL issuer of the FusionAuth Application configuration is a valid URL including http/https which is validated while generating the [AuthorizationServiceConfiguration] object.
+ *
  * @property clientId The client ID used for authorization.
  * @property fusionAuthUrl The URL of the FusionAuth server.
  * @property tenant The tenant ID for the FusionAuth server. (Optional)
