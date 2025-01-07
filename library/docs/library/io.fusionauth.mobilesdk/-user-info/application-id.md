@@ -3,4 +3,6 @@
 # applicationId
 
 [androidJvm]\
-val [applicationId](application-id.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [applicationId](application-id.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The ID of the application.

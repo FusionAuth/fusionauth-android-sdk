@@ -3,7 +3,7 @@
 # SharedPreferencesStorage
 
 [androidJvm]\
-constructor(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), fileName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) = &quot;_fusionauth_mobile_sdk&quot;)
+constructor(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html), fileName: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html) = &quot;_fusionauth_mobile_sdk&quot;)
 
 #### Parameters
 

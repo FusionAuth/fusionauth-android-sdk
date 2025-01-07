@@ -3,4 +3,6 @@
 # accessTokenExpirationTime
 
 [androidJvm]\
-var [accessTokenExpirationTime](access-token-expiration-time.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)?
+var [accessTokenExpirationTime](access-token-expiration-time.md): [Long](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html)?
+
+The expiration time of the access token.

@@ -3,4 +3,6 @@
 # sub
 
 [androidJvm]\
-val [sub](sub.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+val [sub](sub.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)
+
+The subject identifier of the user.

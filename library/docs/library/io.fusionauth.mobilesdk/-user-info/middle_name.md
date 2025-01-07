@@ -3,4 +3,6 @@
 # middle_name
 
 [androidJvm]\
-val [middle_name](middle_name.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [middle_name](middle_name.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The user's middle name.

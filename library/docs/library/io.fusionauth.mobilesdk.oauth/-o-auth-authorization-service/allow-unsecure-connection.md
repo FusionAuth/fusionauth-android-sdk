@@ -3,4 +3,6 @@
 # allowUnsecureConnection
 
 [androidJvm]\
-val [allowUnsecureConnection](allow-unsecure-connection.md): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false
+val [allowUnsecureConnection](allow-unsecure-connection.md): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html) = false
+
+Boolean value indicating whether unsecure connections are allowed.

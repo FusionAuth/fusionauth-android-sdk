@@ -3,4 +3,6 @@
 # iat
 
 [androidJvm]\
-val [iat](iat.md): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)? = null
+val [iat](iat.md): [Long](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html)? = null
+
+The issued at time.

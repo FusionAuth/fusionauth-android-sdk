@@ -3,7 +3,7 @@
 # isLoggedOut
 
 [androidJvm]\
-fun [isLoggedOut](is-logged-out.md)(intent: [Intent](https://developer.android.com/reference/kotlin/android/content/Intent.html)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+fun [isLoggedOut](is-logged-out.md)(intent: [Intent](https://developer.android.com/reference/kotlin/android/content/Intent.html)): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)
 
 Checks if the logout process has succeeded by examining the given intent.
 

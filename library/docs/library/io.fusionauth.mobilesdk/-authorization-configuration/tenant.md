@@ -3,4 +3,6 @@
 # tenant
 
 [androidJvm]\
-val [tenant](tenant.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [tenant](tenant.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The tenant ID for the FusionAuth server. (Optional)

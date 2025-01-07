@@ -3,7 +3,7 @@
 # getAccessToken
 
 [androidJvm]\
-fun [getAccessToken](get-access-token.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+fun [getAccessToken](get-access-token.md)(): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
 
 Retrieves the access token from the token manager.
 

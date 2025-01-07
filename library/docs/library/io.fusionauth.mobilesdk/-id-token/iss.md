@@ -3,4 +3,6 @@
 # iss
 
 [androidJvm]\
-val [iss](iss.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [iss](iss.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The issuer.

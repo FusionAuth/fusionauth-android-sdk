@@ -3,7 +3,7 @@
 # set
 
 [androidJvm]\
-open override fun [set](set.md)(key: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), content: [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html))
+open override fun [set](set.md)(key: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), content: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html))
 
 Sets the value associated with the specified key in the storage.
 

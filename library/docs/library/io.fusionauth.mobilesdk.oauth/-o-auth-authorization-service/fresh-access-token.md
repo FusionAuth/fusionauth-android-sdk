@@ -3,7 +3,7 @@
 # freshAccessToken
 
 [androidJvm]\
-suspend fun [freshAccessToken](fresh-access-token.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
+suspend fun [freshAccessToken](fresh-access-token.md)(): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
 
 Retrieves a fresh access token.
 

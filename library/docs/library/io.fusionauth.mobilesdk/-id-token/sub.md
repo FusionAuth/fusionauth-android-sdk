@@ -3,4 +3,6 @@
 # sub
 
 [androidJvm]\
-val [sub](sub.md): [UUID](https://developer.android.com/reference/kotlin/java/util/UUID.html)? = null
+val [sub](sub.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The subject identifier.

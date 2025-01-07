@@ -3,4 +3,6 @@
 # phone_number
 
 [androidJvm]\
-val [phone_number](phone_number.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [phone_number](phone_number.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The user's phone number.

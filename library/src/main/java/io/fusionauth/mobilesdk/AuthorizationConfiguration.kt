@@ -7,21 +7,35 @@ import java.util.logging.Logger
 /**
  * AuthorizationConfiguration is a data class that represents the configuration for authorization.
  *
- * @property clientId The client ID used for authorization.
- * @property fusionAuthUrl The URL of the FusionAuth server.
- * @property tenant The tenant ID for the FusionAuth server. (Optional)
- * @property allowUnsecureConnection Flag to allow unsecure connections. Default is false.
- * @property additionalScopes Additional scopes to be requested during authorization. Default is empty.
- * @property locale The locale to be used for authorization. (Optional)
+ * Make sure the issuer URL of the FusionAuth Application configuration is a valid URL including
+ * http/https which is validated while generating the [AuthorizationServiceConfiguration] object.
  */
 @Suppress("unused")
 @Serializable
 data class AuthorizationConfiguration(
+    /**
+     * The client ID used for authorization.
+     */
     val clientId: String,
+    /**
+     * The URL of the FusionAuth server.
+     */
     val fusionAuthUrl: String,
+    /**
+     * The tenant ID for the FusionAuth server. (Optional)
+     */
     val tenant: String? = null,
+    /**
+     * Flag to allow unsecure connections. Default is false.
+     */
     val allowUnsecureConnection: Boolean = false,
+    /**
+     * Additional scopes to be requested during authorization. Default is empty.
+     */
     val additionalScopes: Set<String> = emptySet(),
+    /**
+     * The locale to be used for authorization. (Optional)
+     */
     val locale: String? = null
 ) {
     init {

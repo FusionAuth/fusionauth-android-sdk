@@ -19,4 +19,4 @@ androidJvm
 
 | | |
 |---|---|
-| [NullPointerException](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html) | if `storage` is null. |
+| [NullPointerException](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-null-pointer-exception/index.html) | if `storage` is null. |

@@ -3,4 +3,6 @@
 # userCode
 
 [androidJvm]\
-val [userCode](user-code.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null
+val [userCode](user-code.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The end-user verification code.

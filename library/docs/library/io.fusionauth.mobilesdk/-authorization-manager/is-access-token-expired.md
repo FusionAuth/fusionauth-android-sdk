@@ -3,7 +3,7 @@
 # isAccessTokenExpired
 
 [androidJvm]\
-fun [isAccessTokenExpired](is-access-token-expired.md)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+fun [isAccessTokenExpired](is-access-token-expired.md)(): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)
 
 Checks if the access token is expired.
 
