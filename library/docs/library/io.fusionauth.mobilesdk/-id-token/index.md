@@ -32,7 +32,7 @@ Represents an ID token.
 | [jti](jti.md) | [androidJvm]<br>val [jti](jti.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The JSON token identifier. |
 | [nonce](nonce.md) | [androidJvm]<br>val [nonce](nonce.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The nonce. |
 | [preferred_username](preferred_username.md) | [androidJvm]<br>val [preferred_username](preferred_username.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The preferred username. |
-| [scope](scope.md) | [androidJvm]<br>val [scope](scope.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null |
+| [scope](scope.md) | [androidJvm]<br>val [scope](scope.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The scope. |
 | [sid](sid.md) | [androidJvm]<br>val [sid](sid.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The session identifier. |
 | [sub](sub.md) | [androidJvm]<br>val [sub](sub.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The subject identifier. |
 | [tid](tid.md) | [androidJvm]<br>val [tid](tid.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null<br>The tenant identifier. |

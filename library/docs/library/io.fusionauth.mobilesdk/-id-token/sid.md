@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [sid](sid.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The session identifier.

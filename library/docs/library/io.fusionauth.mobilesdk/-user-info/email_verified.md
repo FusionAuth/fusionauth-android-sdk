@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [email_verified](email_verified.md): [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)? = null
+
+Indicates if the user's email address has been verified.

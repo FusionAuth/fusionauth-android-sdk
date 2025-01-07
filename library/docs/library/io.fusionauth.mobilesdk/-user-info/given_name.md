@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [given_name](given_name.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The user's given name.

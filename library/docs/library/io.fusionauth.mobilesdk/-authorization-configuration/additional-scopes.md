@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [additionalScopes](additional-scopes.md): [Set](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html)&lt;[String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)&gt;
+
+Additional scopes to be requested during authorization. Default is empty.

@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [idpHint](idp-hint.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The identity provider hint to be used for the OAuth authorize request.

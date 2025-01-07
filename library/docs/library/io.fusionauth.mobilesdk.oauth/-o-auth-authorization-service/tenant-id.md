@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [tenantId](tenant-id.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
+
+The tenant ID, or null if not applicable.

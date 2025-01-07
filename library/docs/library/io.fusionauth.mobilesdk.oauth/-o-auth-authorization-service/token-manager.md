@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [tokenManager](token-manager.md): [TokenManager](../../io.fusionauth.mobilesdk/-token-manager/index.md)?
+
+The token manager to handle token storage and retrieval, or null if not used.

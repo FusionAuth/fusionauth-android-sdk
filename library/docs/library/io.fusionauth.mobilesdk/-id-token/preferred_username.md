@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [preferred_username](preferred_username.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The preferred username.

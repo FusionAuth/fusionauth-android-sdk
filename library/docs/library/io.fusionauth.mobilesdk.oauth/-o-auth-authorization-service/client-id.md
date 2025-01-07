@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [clientId](client-id.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)
+
+The client ID registered in the FusionAuth server.

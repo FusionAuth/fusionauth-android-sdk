@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [refreshToken](refresh-token.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?
+
+The refresh token string.

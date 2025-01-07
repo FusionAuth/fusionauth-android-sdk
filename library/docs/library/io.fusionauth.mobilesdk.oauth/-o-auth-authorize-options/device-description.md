@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [deviceDescription](device-description.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+An optional human-readable description of the device used during login.

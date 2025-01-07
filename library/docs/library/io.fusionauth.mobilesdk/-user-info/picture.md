@@ -4,3 +4,5 @@
 
 [androidJvm]\
 val [picture](picture.md): [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)? = null
+
+The URL of the user's profile picture.
