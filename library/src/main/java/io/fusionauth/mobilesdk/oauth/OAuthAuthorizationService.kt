@@ -43,27 +43,44 @@ import kotlin.coroutines.suspendCoroutine
  * OAuthAuthorizationService class is responsible for handling OAuth authorization and authorization process.
  * It provides methods to authorize the user, handle the redirect intent, fetch user information,
  * perform logout, retrieve fresh access token, and get the authorization service.
- *
- * @property context The Android application context.
- * @property fusionAuthUrl The URL of the FusionAuth server.
- * @property clientId The client ID registered in the FusionAuth server.
- * @property tenantId The tenant ID, or null if not applicable.
- * @property tokenManager The token manager to handle token storage and retrieval, or null if not used.
- * @property allowUnsecureConnection Boolean value indicating whether unsecure connections are allowed.
- * @property defaultDispatcher The default coroutine dispatcher. Default is Dispatchers.Default
- * @property additionalScopes Additional scopes to be requested during authorization. Default is empty.
- * @property locale The locale to be used for authorization. Default is null.
  */
 @Suppress("LongParameterList", "TooManyFunctions", "MemberVisibilityCanBePrivate", "unused")
 class OAuthAuthorizationService internal constructor(
+    /**
+     * The Android application context.
+     */
     val context: Context,
+    /**
+     * The URL of the FusionAuth server.
+     */
     val fusionAuthUrl: String,
+    /**
+     * The client ID registered in the FusionAuth server.
+     */
     val clientId: String,
+    /**
+     * The tenant ID, or null if not applicable.
+     */
     val tenantId: String?,
+    /**
+     * The token manager to handle token storage and retrieval, or null if not used.
+     */
     val tokenManager: TokenManager?,
+    /**
+     * Boolean value indicating whether unsecure connections are allowed.
+     */
     val allowUnsecureConnection: Boolean = false,
+    /**
+     * Additional scopes to be requested during authorization. Default is empty.
+     */
     val additionalScopes: Set<String> = emptySet(),
+    /**
+     * The locale to be used for authorization. Default is null.
+     */
     val locale: String? = null,
+    /**
+     * The default coroutine dispatcher. Default is Dispatchers.Default
+     */
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
 
