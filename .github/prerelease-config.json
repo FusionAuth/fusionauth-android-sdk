@@ -1,0 +1,11 @@
+{
+  "release-type": "node",
+  "prerelease": true,
+  "prerelease-type": "rc",
+  "versioning": "prerelease",
+  "include-component-in-tag": false,
+  "packages": {
+    ".": {
+    }
+  }
+}
