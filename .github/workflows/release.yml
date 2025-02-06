@@ -6,21 +6,31 @@ on:
     branches:
       - main
 
+# The different jobs of this workflow need the following permissions
 permissions:
+  # The release-please-action requires these permissions to create a github release
   contents: write
+  # The release-please-action requires these permissions to create and modify pull requests
   pull-requests: write
+  # The release-please-action requires these permissions to read pull request labels
   repository-projects: read
-  # only required for workflows in private repositories
+  # This workflow calls and imports multiple other workflows and actions. T
+  # It is only required for workflows in private repositories
   actions: write
+  # The release workflow calls multiple code quality and security workflows which create security output
   security-events: write
-  # required to fetch internal or private CodeQL packs
+  # This is required to fetch internal or private CodeQL packs
   packages: read
 
+# This workflow is part of the release group and will not run concurrently with other workflows in the same group
 concurrency:
   group: release
 
 jobs:
   # This job creates the necessary labels for the release-please PRs:
+  # GitHub introduced a situation where these labels are not created which caused the release-please-action to fail.
+  # googleapis underlying release-please needs to add a check for the existence of these labels,
+  # and create them if they are not present.
   # https://github.com/googleapis/release-please-action/issues/1074
   label-check:
     name: Create release-please PR labels
@@ -50,7 +60,7 @@ jobs:
 
   # This job runs a Lint scan as a prerequisite for the prerelease-prep
   lint:
-    name: Run Prerelease Swiftlint
+    name: Run Prerelease Lint
     uses: ./.github/workflows/lint.yml
 
   # This job runs a CodeQL scan as a prerequisite for the prerelease-prep
@@ -65,12 +75,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ label-check, initial-e2e-test, mobsf, lint, codeql ]
     outputs:
+      # This output is used to determine if a release was created
       releases_created: ${{ steps.release.outputs.releases_created }}
+      # This output is used to determine the tag name of the release
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - id: release
         name: Run prerelease release-please
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v4.1.3
         with:
           config-file: ".github/prerelease-config.json"
           manifest-file: ".github/prerelease-manifest.json"
@@ -79,6 +91,7 @@ jobs:
   prerelease-test:
     name: Run Prerelease Tests
     runs-on: ubuntu-latest
+    # This job runs only if there was no release created
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'false' }}
     needs: [ prerelease-prep ]
     steps:
@@ -90,6 +103,7 @@ jobs:
   prerelease:
     name: Create Prerelease and Release Pull Request
     runs-on: ubuntu-latest
+    # This job runs only if a release was created and the tag name contains 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
     needs: [ prerelease-prep ]
     steps:
@@ -104,7 +118,7 @@ jobs:
           gh workflow run prerelease-publish-local.yml --ref refs/tags/$PRERELEASE_TAG
 
       - name: Run release release-please
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v4.1.3
         with:
           config-file: ".github/release-config.json"
           manifest-file: ".github/release-manifest.json"
@@ -113,6 +127,7 @@ jobs:
     name: Post Prerelease Steps
     runs-on: ubuntu-latest
     needs: [ prerelease ]
+    # This job runs only if a release was created and the tag name contains 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
     steps:
       - name: Post Prerelease Step
@@ -123,6 +138,7 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
+    # This job runs only if a release was created and the tag name does not contain 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && !contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
     needs: [ prerelease-prep ]
     steps:
@@ -156,8 +172,9 @@ jobs:
   post-release:
     name: Post Release Steps
     runs-on: ubuntu-latest
-    needs: [ release ]
+    # This job runs only if a release was created and the tag name does not contain 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && !contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
+    needs: [ release ]
     steps:
       - name: Post Release Step
         run: |
