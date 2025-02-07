@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Add labels to the repository if not present
         env:
@@ -91,9 +91,9 @@ jobs:
   prerelease-test:
     name: Run Prerelease Tests
     runs-on: ubuntu-latest
+    needs: [ prerelease-prep ]
     # This job runs only if there was no release created
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'false' }}
-    needs: [ prerelease-prep ]
     steps:
       - name: End To End Test
         run: |
@@ -103,12 +103,12 @@ jobs:
   prerelease:
     name: Create Prerelease and Release Pull Request
     runs-on: ubuntu-latest
+    needs: [ prerelease-prep ]
     # This job runs only if a release was created and the tag name contains 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
-    needs: [ prerelease-prep ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Prerelease Build Push Deploy
         env:
@@ -138,12 +138,12 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
+    needs: [ prerelease-prep ]
     # This job runs only if a release was created and the tag name does not contain 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && !contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
-    needs: [ prerelease-prep ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Release Build Push Deploy
         env:
@@ -172,9 +172,9 @@ jobs:
   post-release:
     name: Post Release Steps
     runs-on: ubuntu-latest
+    needs: [ release ]
     # This job runs only if a release was created and the tag name does not contain 'rc'
     if: ${{ needs.prerelease-prep.outputs.releases_created == 'true' && !contains(needs.prerelease-prep.outputs.tag_name, 'rc') }}
-    needs: [ release ]
     steps:
       - name: Post Release Step
         run: |
