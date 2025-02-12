@@ -112,7 +112,7 @@ jobs:
 
       - name: Prerelease Build Push Deploy
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           PRERELEASE_TAG: ${{ needs.prerelease-prep.outputs.tag_name }}
         run: |
           gh workflow run prerelease-publish-local.yml --ref refs/tags/$PRERELEASE_TAG
@@ -147,7 +147,7 @@ jobs:
 
       - name: Release Build Push Deploy
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.prerelease-prep.outputs.tag_name }}
         run: |
           gh workflow run release-publish-ossrh.yml --ref refs/tags/$RELEASE_TAG
