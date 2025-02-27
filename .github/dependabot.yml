@@ -27,8 +27,8 @@ updates:
           - "patch"
 
   # Maintain dependencies for Docker
-  - package-ecosystem: "docker"
-    directory: "/fusionauth/"
+  - package-ecosystem: "docker-compose"
+    directory: "/fusionauth/latest/"
     schedule:
       interval: "weekly"
     groups:
