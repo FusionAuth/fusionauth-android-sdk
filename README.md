@@ -54,7 +54,7 @@ end::forDocSiteOverview[]
 <!--
 tag::forDocSiteGettingStarted[]
 -->
-To use the FusionAuth Android SDK, add the following dependency to your `build.gradle` file:
+To use the FusionAuth Android SDK, add the following dependency to your `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
