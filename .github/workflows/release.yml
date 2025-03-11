@@ -48,32 +48,37 @@ jobs:
           gh label create "autorelease: snapshot" -c D4C5F9 -d "release-please PR tagging - Ready for release" || true
           gh label create "autorelease: published" -c 0E8A16 -d "release-please PR tagging - Released" || true
 
+  # This job runs a CodeQL scan as a prerequisite for the prerelease-prep
+  codeql:
+    name: Run Prerelease CodeQL Package Scan
+    uses: ./.github/workflows/codeql.yml
+
+  # This job runs a detekt scan as a prerequisite for the prerelease-prep
+  detekt:
+    name: Run Prerelease CodeQL Package Scan
+    uses: ./.github/workflows/detekt.yml
+
   # This job runs a simple E2E test with the latest FusionAuth and iOS version as a prerequisite for the prerelease-prep
   initial-e2e-test:
     name: Run Prerelease E2E Tests
     uses: ./.github/workflows/e2e-test-fusionauth-latest-android-latest.yml
-
-  # This job runs a MobSF scan as a prerequisite for the prerelease-prep
-  mobsf:
-    name: Run Prerelease MobSF Scan
-    uses: ./.github/workflows/mobsf.yml
 
   # This job runs a Lint scan as a prerequisite for the prerelease-prep
   lint:
     name: Run Prerelease Lint
     uses: ./.github/workflows/lint.yml
 
-  # This job runs a CodeQL scan as a prerequisite for the prerelease-prep
-  codeql:
-    name: Run Prerelease CodeQL Package Scan
-    uses: ./.github/workflows/codeql.yml
+  # This job runs a MobSF scan as a prerequisite for the prerelease-prep
+  mobsf:
+    name: Run Prerelease MobSF Scan
+    uses: ./.github/workflows/mobsf.yml
 
   # This job creates or finalizes a prerelease pull request or finalizes a release pull request
   # and provides the necessary outputs for the subsequent jobs
   prerelease-prep:
     name: Create Prerelease Pull Request
     runs-on: ubuntu-latest
-    needs: [ label-check, initial-e2e-test, mobsf, lint, codeql ]
+    needs: [ label-check, codeql, detekt, initial-e2e-test, lint, mobsf ]
     outputs:
       # This output is used to determine if a release was created
       releases_created: ${{ steps.release.outputs.releases_created }}
