@@ -27,6 +27,8 @@ on:
      - cron: '25 6 * * 1'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Triggers the workflow on call from another workflow
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -76,7 +78,7 @@ jobs:
 
     # Uploads Sarif Report to GitHub
     - name: Upload SARIF to GitHub
-      uses: github/codeql-action/upload-sarif@v3.28.8
+      uses: github/codeql-action/upload-sarif@v3.28.11
       if: success() || failure()
       with:
         sarif_file: build/reports/detekt/merge.sarif.json

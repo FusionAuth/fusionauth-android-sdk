@@ -14,6 +14,8 @@ on:
     branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  # Triggers the workflow on call from another workflow
+  workflow_call:
 
 env:
   fusionauth-docker-image-version: "1.55.1"
@@ -104,7 +106,7 @@ jobs:
 
       # Upload E2E Test recording
       - name: Upload recording
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v4.6.1
         if: ${{ failure() }}
         with:
           name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ env.fusionauth-docker-image-version }}'
