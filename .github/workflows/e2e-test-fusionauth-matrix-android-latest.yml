@@ -15,7 +15,7 @@ name: E2E Test with FusionAuth supported versions
 on:
   # To allow running this workflow manually from the Actions tab we add:
   workflow_dispatch:
-  # Triggers the workflow on push request events but only for tag versions
+  # Triggers the workflow on call from another workflow
   workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
