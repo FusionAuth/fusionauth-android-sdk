@@ -54,9 +54,9 @@ end::forDocSiteOverview[]
 <!--
 tag::forDocSiteGettingStarted[]
 -->
-To use the FusionAuth Android SDK, add the following dependency to your `build.gradle` file:
+To use the FusionAuth Android SDK, add the following dependency to your `build.gradle.kts` file:
 
-```dsl
+```kotlin
 dependencies {
     implementation('io.fusionauth:fusionauth-android-sdk:<latest-version>')
 }
@@ -189,7 +189,7 @@ end::forDocSiteExampleApp[]
 <!--
 tag::forDocSiteQuickstart[]
 -->
-See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-android-kotlin-native/) for a full tutorial on using FusionAuth and Android.
+See the [FusionAuth Android Quickstart](https://fusionauth.io/docs/quickstarts/quickstart-kotlin-android-native) for a full tutorial on using FusionAuth and Android.
 <!--
 end::forDocSiteQuickstart[]
 -->
