@@ -26,13 +26,8 @@ updates:
           - "minor"
           - "patch"
 
-  # Maintain dependencies for Docker
-  - package-ecosystem: "docker"
-    directory: "/fusionauth/"
+  # Maintain dependencies for Docker Compose
+  - package-ecosystem: "docker-compose"
+    directory: "/fusionauth/latest/"
     schedule:
       interval: "weekly"
-    groups:
-      gradle-minor-dependencies:
-        update-types:
-          - "minor"
-          - "patch"
