@@ -6,8 +6,6 @@
 name: Vulnerability Scan with MobSF
 
 on:
-  push:
-    branches: [ "main", "release-please--branches--main"]
   pull_request:
     branches: [ "main" ]
   schedule:

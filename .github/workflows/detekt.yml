@@ -18,13 +18,10 @@
 name: Vulnerability Scan with Detekt
 
 on:
-  # Triggers the workflow on push or pull request events but only for default and protected branches
-  push:
-    branches: [ "main", "release-please--branches--main"]
   pull_request:
     branches: [ "main" ]
   schedule:
-     - cron: '25 6 * * 1'
+    - cron: '25 6 * * 1'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   # Triggers the workflow on call from another workflow
@@ -48,44 +45,44 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Sets up JDK as a prerequisite to run Gradle
-    - name: Setup Java
-      uses: actions/setup-java@v4.7.0
-      with:
-        java-version: '17'
-        distribution: 'zulu'
+      # Sets up JDK as a prerequisite to run Gradle
+      - name: Setup Java
+        uses: actions/setup-java@v4.7.0
+        with:
+          java-version: '17'
+          distribution: 'zulu'
 
-    # Sets up the reviewdog cli
-    - name: Setup reviewdog
-      uses: reviewdog/action-setup@v1.3.0
+      # Sets up the reviewdog cli
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1.3.0
 
-    - name: Show reviewdog version
-      run: reviewdog -version
+      - name: Show reviewdog version
+        run: reviewdog -version
 
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
 
-    # Sets up Gradle as a prerequisite to run Detekt
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4.3.0
-      with:
-        gradle-home-cache-cleanup: true
+      # Sets up Gradle as a prerequisite to run Detekt
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.3.0
+        with:
+          gradle-home-cache-cleanup: true
 
-    # Performs analysis using Detekt via Gradle and outputs a Sarif Report
-    - name: Run Detekt
-      run: ./gradlew detektRelease detektTest detektReportMergeSarif --continue
+      # Performs analysis using Detekt via Gradle and outputs a Sarif Report
+      - name: Run Detekt
+        run: ./gradlew detektRelease detektTest detektReportMergeSarif --continue
 
-    # Uploads Sarif Report to GitHub
-    - name: Upload SARIF to GitHub
-      uses: github/codeql-action/upload-sarif@v3.28.11
-      if: success() || failure()
-      with:
-        sarif_file: build/reports/detekt/merge.sarif.json
+      # Uploads Sarif Report to GitHub
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3.28.11
+        if: success() || failure()
+        with:
+          sarif_file: build/reports/detekt/merge.sarif.json
 
-    # Process Sarif Report file from Detekt with reviewdog cli
-    - name: Run reviewdog
-      if: success() || failure()
-      env:
-        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="detekt" -reporter=github-pr-check < build/reports/detekt/merge.sarif.json
+      # Process Sarif Report file from Detekt with reviewdog cli
+      - name: Run reviewdog
+        if: success() || failure()
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: reviewdog -f=sarif -diff="git diff FETCH_HEAD" -name="detekt" -reporter=github-pr-check < build/reports/detekt/merge.sarif.json

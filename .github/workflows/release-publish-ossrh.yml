@@ -48,50 +48,50 @@ jobs:
     runs-on: ubuntu-latest
 
     # Requires the staging_profile_id and e2e-test job
-    needs: [create_staging_repository,e2e-test]
+    needs: [ create_staging_repository,e2e-test ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Sets up JDK as a prerequisite to run Gradle
-    - name: Setup Java
-      uses: actions/setup-java@v4.7.0
-      with:
-        java-version: '17'
-        distribution: 'zulu'
+      # Sets up JDK as a prerequisite to run Gradle
+      - name: Setup Java
+        uses: actions/setup-java@v4.7.0
+        with:
+          java-version: '17'
+          distribution: 'zulu'
 
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Checkout repository
-      uses: actions/checkout@v4.2.2
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
 
-    # Sets up Gradle as a prerequisite to run Maven Release
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4.3.0
-      with:
-        gradle-home-cache-cleanup: true
+      # Sets up Gradle as a prerequisite to run Maven Release
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.3.0
+        with:
+          gradle-home-cache-cleanup: true
 
-    # Performs a Local Maven Release
-    - name: Run Maven Local Release
-      env:
-        ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
-        ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
-      run: ./gradlew publishReleasePublicationToMavenLocal
+      # Performs a Local Maven Release
+      - name: Run Maven Local Release
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        run: ./gradlew publishReleasePublicationToMavenLocal
 
-    # Performs a Maven Release to oss.sonatype.org
-    - name: Run Maven Release to OSSRH
-      env:
-        ossrhUsername: ${{ secrets.NXRM_TOKEN_USERNAME }}
-        ossrhPassword: ${{ secrets.NXRM_TOKEN_PASSWORD }}
-        ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.NXRM_TOKEN_USERNAME }}
-        ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.NXRM_TOKEN_PASSWORD }}
-        ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
-        ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        SONATYPE_REPOSITORY_ID: ${{ needs.create_staging_repository.outputs.repository_id }}
-      run: ./gradlew clean publishReleasePublicationToOSSRHRepository
+      # Performs a Maven Release to oss.sonatype.org
+      - name: Run Maven Release to OSSRH
+        env:
+          ossrhUsername: ${{ secrets.NXRM_TOKEN_USERNAME }}
+          ossrhPassword: ${{ secrets.NXRM_TOKEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.NXRM_TOKEN_USERNAME }}
+          ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.NXRM_TOKEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+          SONATYPE_REPOSITORY_ID: ${{ needs.create_staging_repository.outputs.repository_id }}
+        run: ./gradlew clean publishReleasePublicationToOSSRHRepository
 
   # The finalize job checks for the success for failure of previous jobs and then either discards or releases the published build
   finalize:
     runs-on: ubuntu-latest
-    needs: [create_staging_repository,publish,e2e-test]
+    needs: [ create_staging_repository,publish,e2e-test ]
     if: ${{ always() && needs.create_staging_repository.result == 'success' }}
     steps:
       - name: Discard

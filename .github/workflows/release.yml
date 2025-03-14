@@ -71,6 +71,7 @@ jobs:
         with:
           config-file: ".github/prerelease-config.json"
           manifest-file: ".github/prerelease-manifest.json"
+          token: ${{ secrets.RELEASE_WORKFLOW_TOKEN }}
 
   # This job runs tests before the creation of the prerelease
   prerelease-test:
@@ -107,6 +108,7 @@ jobs:
         with:
           config-file: ".github/release-config.json"
           manifest-file: ".github/release-manifest.json"
+          token: ${{ secrets.RELEASE_WORKFLOW_TOKEN }}
 
   post-prerelease:
     name: Post Prerelease Steps
