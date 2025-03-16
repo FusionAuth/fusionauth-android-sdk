@@ -139,29 +139,6 @@ jobs:
         run: |
           gh workflow run release-publish-ossrh.yml --ref refs/tags/$RELEASE_TAG
 
-      - name: Sync prerelease manifest
-        env:
-          MANIFEST_PATH: .github/prerelease-manifest.json
-          RELEASE_TAG: ${{ needs.prerelease-prep.outputs.tag_name }}
-        run: |
-          jq --arg tag "${RELEASE_TAG//v/}" '.["."] = $tag' $MANIFEST_PATH > temp.json \
-            && mv temp.json $MANIFEST_PATH
-
-      - name: Commit sync prerelease manifest
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b sync-prerelease-manifest
-          git add . $MANIFEST_PATH
-          git commit -m "chore: sync release manifests"
-          git push --set-upstream origin sync-prerelease-manifest
-
-      - name: Create sync release manifests Pull Request
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr create --title "chore: sync release manifests" --body "This PR syncs the release manifests." --label "autorelease: pending"
-
   # This job runs post-release steps
   post-release:
     name: Post Release Steps
