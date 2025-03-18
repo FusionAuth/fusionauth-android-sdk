@@ -12,6 +12,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# This workflow is part of the release group and will not run concurrently with other workflows in the same group
+concurrency:
+  group: release
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # The e2e-test job first verifies the release with multiple fusionauth versions
