@@ -54,7 +54,7 @@ jobs:
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1.3.0
+        uses: reviewdog/action-setup@v1.3.2
 
       - name: Show reviewdog version
         run: reviewdog -version
@@ -75,7 +75,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3.28.11
+        uses: github/codeql-action/upload-sarif@v3.28.12
         if: success() || failure()
         with:
           sarif_file: build/reports/detekt/merge.sarif.json
