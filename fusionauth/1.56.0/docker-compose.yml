@@ -25,6 +25,7 @@ services:
       plugins.security.disabled: true
       bootstrap.memory_lock: true
       OPENSEARCH_JAVA_OPTS: ${OPENSEARCH_JAVA_OPTS}
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
     healthcheck:
       interval: 10s
       retries: 80
