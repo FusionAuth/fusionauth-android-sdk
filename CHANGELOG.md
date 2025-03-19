@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1-rc](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v0.2.1-rc) (2025-03-19)
+
+
+### Bug Fixes
+
+* **release:** add prerelease-manifest.json to release-config.json ([96859aa](https://github.com/FusionAuth/fusionauth-android-sdk/commit/96859aaf9563092159ef257fc114ee76689591c4))
+* **release:** align release and prerelease-config.json ([1e0c34e](https://github.com/FusionAuth/fusionauth-android-sdk/commit/1e0c34e49b108e01b8d85f7f3ef68dae88e1584e))
+* **release:** remove sync prerelease manifest steps ([3fec835](https://github.com/FusionAuth/fusionauth-android-sdk/commit/3fec8356dd4d9760905b6d767ba31888b3acb8c9))
+
 ## [0.2.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.1.7...v0.2.0) (2025-03-14)
 
 
