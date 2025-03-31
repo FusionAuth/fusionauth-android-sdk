@@ -34,13 +34,13 @@ jobs:
 
       # Sets up the python as a prerequisites for MobSF
       - name: Setup python
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@v5.5.0
         with:
           python-version: 3.9
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1.3.0
+        uses: reviewdog/action-setup@v1.3.2
 
       - name: Show reviewdog version
         run: reviewdog -version
@@ -53,7 +53,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.28.11
+        uses: github/codeql-action/upload-sarif@v3.28.13
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json
