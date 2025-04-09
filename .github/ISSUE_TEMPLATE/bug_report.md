@@ -27,10 +27,10 @@ If applicable, add screenshots to help explain your problem.
 
 ### Platform
 (Please complete the following information)
- - Device: [e.g. Desktop, iPhone X, Pixel 3, etc]
- - OS: [e.g. iOS, macOS, Windows ME]
- - Default Mobile Browser + version [e.g. chrome, safari plus a version]
- - FusionAuth version [e.g. 1.48.3]
+- Device: [e.g. Desktop, Pixel 3, Samsung Galaxy Flip 6, etc]
+- OS: [e.g. Android 10, Android 14, etc.]
+- Default Mobile Browser + version [e.g. chrome, safari plus a version]
+- FusionAuth version [e.g. 1.48.3]
 
 ### Community guidelines
 All issues filed in this repository must abide by the [FusionAuth community guidelines](https://fusionauth.io/community/forum/topic/1000/code-of-conduct).
