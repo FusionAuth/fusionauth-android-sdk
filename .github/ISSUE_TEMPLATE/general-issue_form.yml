@@ -1,0 +1,43 @@
+name: General Issue (Form)
+description: Use this for a general comment or issue you've encountered
+title: "[General]: "
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your issue or comment with us!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a description of the problem you have or leave us a general comment here.
+      placeholder: "Example: I noticed that..."
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Is this a question about how to use FusionAuth? Please consider posting on the [FusionAuth forum](https://fusionauth.io/community/forum/) instead.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context, screenshots, or information that might be helpful.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        #### Community guidelines
+        All issues filed in this repository must abide by the [FusionAuth community guidelines](https://fusionauth.io/community/forum/topic/1000/code-of-conduct).
+
+  - type: markdown
+    attributes:
+      value: |
+        #### How to vote
+        Please give us a thumbs up or thumbs down as a reaction to help us prioritize this feature. Feel free to comment if you have a particular need or comment on how this feature should work.

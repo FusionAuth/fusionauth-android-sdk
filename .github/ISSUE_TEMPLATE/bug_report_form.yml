@@ -1,0 +1,89 @@
+name: Bug Report (Form)
+description: Create a bug report to help us improve this SDK
+title: "[Bug]: "
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. This information helps us identify and fix issues faster!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+      placeholder: "Example: When I try to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: affects-versions
+    attributes:
+      label: Affects versions
+      description: List the version you are running, and any other versions you have attempted.
+      placeholder: "Example: SDK version 1.2.3, also tried with 1.2.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
+
+  - type: textarea
+    id: platform
+    attributes:
+      label: Platform
+      description: Please provide information about your environment.
+      placeholder: |
+        - Device: [e.g. Desktop, Pixel 3, Samsung Galaxy Flip 6, etc]
+        - OS: [e.g. Android 10, Android 14, etc.]
+        - Default Mobile Browser + version [e.g. chrome, safari plus a version]
+        - FusionAuth version [e.g. 1.48.3]
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        #### Community guidelines
+        All issues filed in this repository must abide by the [FusionAuth community guidelines](https://fusionauth.io/community/forum/topic/1000/code-of-conduct).
+
+  - type: markdown
+    attributes:
+      value: |
+        #### How to vote
+        Please give us a thumbs up or thumbs down as a reaction to help us prioritize this feature. Feel free to comment if you have a particular need or comment on how this feature should work.
