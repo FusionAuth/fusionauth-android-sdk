@@ -169,7 +169,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     implementation("net.openid:appauth:0.11.1")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha07")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     testImplementation("junit:junit:4.13.2")
