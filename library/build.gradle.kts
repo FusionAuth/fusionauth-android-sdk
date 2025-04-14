@@ -163,7 +163,7 @@ signing {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.8.1")
