@@ -40,14 +40,14 @@ jobs:
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 #v1.3.2
+        uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 # v1.3.2
 
       - name: Show reviewdog version
         run: reviewdog -version
 
       # Performs analysis using MobSF and outputs a Sarif Report
       - name: Run mobsfscan
-        uses: MobSF/mobsfscan@3d87bc570c4614d705547bddb521395663dba353 #0.4.5
+        uses: MobSF/mobsfscan@3d87bc570c4614d705547bddb521395663dba353 # 0.4.5
         with:
           args: . --sarif --output mobsf.sarif.json || true
 
