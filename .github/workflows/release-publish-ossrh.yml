@@ -30,7 +30,7 @@ jobs:
       repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@main
+        uses: nexus-actions/create-nexus-staging-repo@990063f02160c633c168037b8b3e8585c76469fe #v1.3.0
         with:
           username: ${{ secrets.NXRM_TOKEN_USERNAME }}
           password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
@@ -69,7 +69,7 @@ jobs:
 
       # Sets up Gradle as a prerequisite to run Maven Release
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4.3.0
+        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 #v4.3.1
         with:
           gradle-home-cache-cleanup: true
 
@@ -100,14 +100,14 @@ jobs:
     steps:
       - name: Discard
         if: ${{ needs.publish.result != 'success' }}
-        uses: nexus-actions/drop-nexus-staging-repo@main
+        uses: nexus-actions/drop-nexus-staging-repo@c27212525c2a475b7f87728fefd2f899002183fa #v1.1.0
         with:
           username: ${{ secrets.NXRM_TOKEN_USERNAME }}
           password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
           staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
       - name: Release
         if: ${{ needs.publish.result == 'success' }}
-        uses: nexus-actions/release-nexus-staging-repo@main
+        uses: nexus-actions/release-nexus-staging-repo@6632a81bfab63557b2717e8423b0a620ae5aa414 #v1.3.0
         with:
           username: ${{ secrets.NXRM_TOKEN_USERNAME }}
           password: ${{ secrets.NXRM_TOKEN_PASSWORD }}
