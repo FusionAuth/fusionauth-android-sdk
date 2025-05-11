@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16.8-bookworm
+    image: postgres:16.9-bookworm
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_USER: ${POSTGRES_USER}
@@ -17,7 +17,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   search:
-    image: opensearchproject/opensearch:2.19.1
+    image: opensearchproject/opensearch:2.19.2
     environment:
       cluster.name: fusionauth
       discovery.type: single-node
@@ -47,7 +47,7 @@ services:
       - search_net
 
   fusionauth:
-    image: fusionauth/fusionauth-app:1.57.0
+    image: fusionauth/fusionauth-app:1.57.1
     depends_on:
       db:
         condition: service_healthy
