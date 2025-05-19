@@ -59,7 +59,7 @@ jobs:
       
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 # v4.3.1
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326 # v4.4.0
         with:
           gradle-home-cache-cleanup: true
       
@@ -69,7 +69,7 @@ jobs:
 
       # Uploads Sarif Report for the library to GitHub
       - name: Upload kotlin library report
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.28.18
         if: success() || failure()
         with:
           sarif_file: library/build/reports/lint-results-debug.sarif
@@ -116,7 +116,7 @@ jobs:
 
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 # v4.3.1
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326 # v4.4.0
         with:
           gradle-home-cache-cleanup: true
 
@@ -126,7 +126,7 @@ jobs:
 
       # Uploads Sarif Report for the app to GitHub
       - name: Upload kotlin app report
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.28.18
         if: success() || failure()
         with:
           sarif_file: app/build/reports/lint-results-debug.sarif
