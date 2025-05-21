@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import androidx.core.net.toUri
 
 /**
  * OAuthAuthorizationService class is responsible for handling OAuth authorization and authorization process.
@@ -108,7 +109,7 @@ class OAuthAuthorizationService internal constructor(
                 config,
                 clientId,
                 ResponseTypeValues.CODE,
-                Uri.parse(options?.redirectUri ?: "io.fusionauth.app:/oauth2redirect"),
+                (options?.redirectUri ?: "io.fusionauth.app:/oauth2redirect").toUri(),
             )
                 .setScope(scopes)
                 .setAdditionalParameters(additionalParameters)
@@ -292,7 +293,7 @@ class OAuthAuthorizationService internal constructor(
             config
         )
             .setIdTokenHint(authState.idToken)
-            .setPostLogoutRedirectUri(Uri.parse(options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect"))
+            .setPostLogoutRedirectUri((options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect").toUri())
             .setAdditionalParameters(additionalParameters)
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
@@ -403,7 +404,7 @@ class OAuthAuthorizationService internal constructor(
      * @return The [AuthorizationServiceConfiguration] object.
      */
     private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration {
-        val uriBuilder = Uri.parse(fusionAuthUrl).buildUpon()
+        val uriBuilder = fusionAuthUrl.toUri().buildUpon()
 
         // If tenant is specified, append it to the URL
         // See https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/endpoints#openid-configuration
@@ -420,9 +421,7 @@ class OAuthAuthorizationService internal constructor(
                         // Validate that the issuer of the configuration is a valid URL
                         // Otherwise we get a NullPointerException, when trying to validate the id token later
 
-                        val issuerScheme = configuration.discoveryDoc?.issuer?.let {
-                            Uri.parse(it).scheme
-                        }
+                        val issuerScheme = configuration.discoveryDoc?.issuer?.toUri()?.scheme
                         if (issuerScheme != "https" && issuerScheme != "http") {
                             continuation.resumeWithException(AuthorizationException("Invalid issuer URL"))
                             return@fetchFromUrl
