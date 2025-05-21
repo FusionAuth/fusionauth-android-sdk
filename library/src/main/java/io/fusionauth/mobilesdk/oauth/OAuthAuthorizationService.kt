@@ -109,7 +109,7 @@ class OAuthAuthorizationService internal constructor(
                 config,
                 clientId,
                 ResponseTypeValues.CODE,
-                (options?.redirectUri ?: "io.fusionauth.app:/oauth2redirect").toUri(),
+                options?.redirectUri?.toUri() ?: DEFAULT_REDIRECT_URI,
             )
                 .setScope(scopes)
                 .setAdditionalParameters(additionalParameters)
@@ -293,7 +293,7 @@ class OAuthAuthorizationService internal constructor(
             config
         )
             .setIdTokenHint(authState.idToken)
-            .setPostLogoutRedirectUri((options?.postLogoutRedirectUri ?: "io.fusionauth.app:/oauth2redirect").toUri())
+            .setPostLogoutRedirectUri(options?.postLogoutRedirectUri?.toUri() ?: DEFAULT_REDIRECT_URI)
             .setAdditionalParameters(additionalParameters)
 
         options?.state?.let { logoutRequestBuilder.setState(it) }
@@ -579,6 +579,7 @@ class OAuthAuthorizationService internal constructor(
         const val EXTRA_CANCELLED: String = "io.fusionauth.mobilesdk.cancelled"
         const val EXTRA_AUTHORIZED: String = "io.fusionauth.mobilesdk.logged_in"
         const val EXTRA_LOGGED_OUT: String = "io.fusionauth.mobilesdk.logged_out"
+        val DEFAULT_REDIRECT_URI: Uri = "io.fusionauth.app:/oauth2redirect".toUri()
 
         private val EXTRAS = setOf(EXTRA_CANCELLED, EXTRA_AUTHORIZED, EXTRA_LOGGED_OUT)
     }
