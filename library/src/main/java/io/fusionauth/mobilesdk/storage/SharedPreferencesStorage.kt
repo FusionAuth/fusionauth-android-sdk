@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import androidx.core.content.edit
 
 /**
  * SharedPreferencesStorage is a class that implements the Storage interface and provides a
@@ -51,7 +52,7 @@ class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth
         key: String,
         content: Any,
     ) {
-        this.sharedPreferences.edit().putString(key, content.toString()).apply()
+        this.sharedPreferences.edit { putString(key, content.toString()) }
     }
 
     /**
@@ -60,6 +61,6 @@ class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth
      * @param key The key of the value to be removed.
      */
     override fun remove(key: String) {
-        this.sharedPreferences.edit().remove(key).apply()
+        this.sharedPreferences.edit { remove(key) }
     }
 }
