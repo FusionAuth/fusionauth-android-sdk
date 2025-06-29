@@ -165,7 +165,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.2")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("net.openid:appauth:0.11.1")
