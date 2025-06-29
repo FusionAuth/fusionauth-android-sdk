@@ -62,9 +62,7 @@ jobs:
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
-        with:
-          gradle-home-cache-cleanup: true
-      
+
       # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
       - name: Run Android Lint
         run: ./gradlew lint --continue
@@ -119,8 +117,6 @@ jobs:
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
-        with:
-          gradle-home-cache-cleanup: true
 
       # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
       - name: Run Android Lint

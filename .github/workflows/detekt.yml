@@ -68,8 +68,6 @@ jobs:
       # Sets up Gradle as a prerequisite to run Detekt
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
-        with:
-          gradle-home-cache-cleanup: true
 
       # Performs analysis using Detekt via Gradle and outputs a Sarif Report
       - name: Run Detekt
