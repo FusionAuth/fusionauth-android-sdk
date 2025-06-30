@@ -17,7 +17,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   search:
-    image: opensearchproject/opensearch:2.19.2
+    image: opensearchproject/opensearch:3.1.0
     environment:
       cluster.name: fusionauth
       discovery.type: single-node
