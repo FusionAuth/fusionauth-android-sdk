@@ -166,4 +166,13 @@ object AuthorizationManager {
     fun clearState() {
         tokenManager.clearAuthState()
     }
+
+    /**
+     * Reset the configuration.
+     *
+     * @param configuration The authorization configuration to be used.
+     */
+    fun resetConfiguration(configuration: AuthorizationConfiguration) {
+        this.configuration = configuration
+    }
 }
