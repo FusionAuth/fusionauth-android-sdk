@@ -1,6 +1,7 @@
 package io.fusionauth.mobilesdk
 
 import android.content.Context
+import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.oauth.OAuthAuthorizationService
 import io.fusionauth.mobilesdk.storage.MemoryStorage
 import io.fusionauth.mobilesdk.storage.Storage
@@ -27,6 +28,7 @@ object AuthorizationManager {
     private var tokenManager: TokenManager
     private lateinit var storage: Storage
     private lateinit var configuration: AuthorizationConfiguration
+    private var isInitialized = false
 
     /**
      * Initializes the storage and token manager for the application.
@@ -46,10 +48,12 @@ object AuthorizationManager {
      * @param configuration The authorization configuration to be used.
      * @param storage The storage implementation to be used for storing data. (Optional)
      */
+    @Synchronized
     fun initialize(configuration: AuthorizationConfiguration, storage: Storage? = null) {
         this.configuration = configuration
         this.storage = storage ?: MemoryStorage()
         this.tokenManager = tokenManager.withStorage(this.storage)
+        isInitialized = true
     }
 
     /**
@@ -142,6 +146,7 @@ object AuthorizationManager {
      */
     fun dispose() {
         // Clear the state
+        isInitialized = false
     }
 
     /**
@@ -172,7 +177,15 @@ object AuthorizationManager {
      *
      * @param configuration The authorization configuration to be used.
      */
+    @Synchronized
     fun resetConfiguration(configuration: AuthorizationConfiguration) {
+        ensureInitialized()
         this.configuration = configuration
+    }
+
+    private fun ensureInitialized() {
+        if (!isInitialized) {
+            throw AuthorizationException("AuthorizationManager must be initialized by calling initialize() first.")
+        }
     }
 }
