@@ -9,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verifyNoInteractions
 
@@ -22,7 +23,7 @@ import org.mockito.kotlin.verifyNoInteractions
 class AuthorizationManagerTest {
 
     @Mock
-    private lateinit var mockStorage: Storage
+    private val mockStorage: Storage = Mockito.mock(Storage::class.java)
 
     /**
      * The singleton 'object' AuthorizationManager holds state across test runs.
