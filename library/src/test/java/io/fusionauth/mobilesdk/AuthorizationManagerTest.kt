@@ -13,12 +13,6 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verifyNoInteractions
 
-/**
- * Unit tests for the `resetConfiguration` function in AuthorizationManager, using Mockito.
- *
- * These tests verify the state changes and side effects of resetting the configuration
- * on the singleton AuthorizationManager instance.
- */
 @RunWith(MockitoJUnitRunner::class)
 class AuthorizationManagerTest {
 
@@ -27,7 +21,7 @@ class AuthorizationManagerTest {
 
     /**
      * The singleton 'object' AuthorizationManager holds state across test runs.
-     * It's crucial to reset it before and after each test to ensure test isolation.
+     * Reset it before and after each test to ensure test isolation.
      */
     @Before
     fun setUp() {
@@ -51,7 +45,7 @@ class AuthorizationManagerTest {
 
     @Test
     fun `resetConfiguration when not initialized should throw AuthorizationException`() {
-        // Arrange: AuthorizationManager is in its disposed (uninitialized) state.
+        // Arrange: AuthorizationManager is in an uninitialized state.
 
         // Act & Assert
         val exception = assertThrows(AuthorizationException::class.java) {
