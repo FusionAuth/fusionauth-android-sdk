@@ -76,6 +76,11 @@ class AuthorizationManagerTest {
         // Verify the internal configuration object has been replaced with the new one
         val internalConfigAfter = configurationField.get(AuthorizationManager) as AuthorizationConfiguration
         assertEquals("new-id", internalConfigAfter.clientId)
+
+        // Verify the AuthorizationManager is initialized
+        val isInitialized = AuthorizationManager.getIsInitialized()
+        assertEquals(true, isInitialized)
+
     }
 
     @Test
