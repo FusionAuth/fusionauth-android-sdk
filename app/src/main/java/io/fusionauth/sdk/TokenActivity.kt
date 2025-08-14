@@ -154,6 +154,9 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.refresh_token).setOnClickListener {
             refreshToken()
         }
+        findViewById<View>(R.id.reset_configuration).setOnClickListener {
+            resetConfiguration()
+        }
 
         var name = ""
         var email = ""
