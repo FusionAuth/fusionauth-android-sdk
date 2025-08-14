@@ -53,13 +53,13 @@ internal class FullEnd2EndTest {
      * Executes an end-to-end test for the login functionality. It performs the following steps:
      * 1. Clicks the login button.
      * 2. Waits for the login form to appear.
-     * 4. Sets the username and password on the login form.
-     * 5. Submits the form by pressing the enter key.
-     * 6. Waits for the token activity to be displayed.
-     * 7. Checks the refresh token functionality.
-     * 8. Checks if the token was refreshed.
-     * 9. Clicks the sign-out button.
-     * 10. Waits for the login activity to be displayed.
+     * 3. Sets the username and password on the login form.
+     * 4. Submits the form by pressing the enter key.
+     * 5. Waits for the token activity to be displayed.
+     * 6. Checks the refresh token functionality.
+     * 7. Checks if the token was refreshed.
+     * 8. Clicks the sign-out button.
+     * 9. Waits for the login activity to be displayed.
      *
      * This test is repeated twice to ensure logout was successful and the login form is displayed again.
      */
@@ -130,6 +130,91 @@ internal class FullEnd2EndTest {
     }
 
     /**
+     * Executes an end-to-end test for the login functionality where the configuration is reset to login
+     * to a different tenant.  It performs the following steps:
+     * 1. Clicks the login button.
+     * 2. Waits for the login form to appear.
+     * 3. Sets the username and password on the login form.
+     * 4. Submits the form by pressing the enter key.
+     * 5. Waits for the token activity to be displayed.
+     * 6. Checks the reset configuration functionality.
+     * 7. Waits for the login activity to be displayed.
+     * 8. Clicks the login button.
+     * 9. Waits for the login form to appear.
+     * 10. Sets the username and password on the login form.
+     * 11. Submits the form by pressing the enter key.
+     * 12. Checks the refresh token functionality.
+     * 13. Checks if the token was refreshed.
+     * 14. Clicks the sign-out button.
+     * 15. Waits for the login activity to be displayed.
+     */
+    @Test
+    fun e2eTestResetConfiguration() {
+        logger.info("Click login button")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        logger.info("Waiting for login form to appear")
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+        handleFALoginForm(device, USERNAME, PASSWORD)
+
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        logger.info("Token activity displayed")
+
+        // Check reset configuration functionality
+        logger.info("Check reset configuration")
+        onView(withId(R.id.reset_configuration))
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        logger.info("Click login button for user login")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        logger.info("Waiting for login form to appear")
+
+        handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
+
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        logger.info("Token activity displayed for user in reset configuration tenant")
+
+        // Check refresh token functionality
+        val expirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+        logger.info("Check refresh token")
+        onView(withId(R.id.refresh_token))
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        val newExpirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+
+        logger.info("Token was refreshed (${expirationTime} to ${newExpirationTime})")
+        check(newExpirationTime > expirationTime) { "Token was not refreshed" }
+
+        Thread.sleep(1000)
+
+        // Click the sign-out button
+        logger.info("Click sign out button for second user")
+        onView(withId(R.id.sign_out)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+    }
+
+    /**
      * Sets the username and password on the login form.
      *
      * @param device The UiDevice used to interact with the UI.
@@ -196,6 +281,8 @@ internal class FullEnd2EndTest {
         private const val PASSWORD = "password"
         private const val USERNAME2 = "gilfoyle@example.com"
         private const val PASSWORD2 = "password"
+        private const val USERNAME_RESET_CONFIGURATION = "mike@example.com"
+        private const val PASSWORD_RESET_CONFIGURATION = "password"
         private const val TIMEOUT_MILLIS = 10_000L
     }
 }
