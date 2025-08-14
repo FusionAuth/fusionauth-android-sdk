@@ -25,12 +25,12 @@ class AuthorizationManagerTest {
      */
     @Before
     fun setUp() {
-        AuthorizationManager.dispose()
+        AuthorizationManager.setIsInitialized(false)
     }
 
     @After
     fun tearDown() {
-        AuthorizationManager.dispose()
+        AuthorizationManager.setIsInitialized(false)
     }
 
     /**
@@ -99,7 +99,7 @@ class AuthorizationManagerTest {
     fun `resetConfiguration after dispose should throw AuthorizationException`() {
         // Arrange
         AuthorizationManager.initialize(createTestConfig(), mockStorage)
-        AuthorizationManager.dispose() // Reset the manager to its uninitialized state
+        AuthorizationManager.setIsInitialized(false) // Reset the manager to its uninitialized state
 
         // Act & Assert
         assertThrows(AuthorizationException::class.java) {

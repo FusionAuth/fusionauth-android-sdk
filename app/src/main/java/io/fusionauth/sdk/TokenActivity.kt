@@ -55,10 +55,12 @@ class TokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthorizationManager.initialize(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-            SharedPreferencesStorage(this)
-        )
+        if (!AuthorizationManager.getIsInitialized()) {
+            AuthorizationManager.initialize(
+                AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
+                SharedPreferencesStorage(this)
+            )
+        }
 
         setContentView(R.layout.activity_token)
         displayLoading("Restoring state...")
@@ -225,6 +227,9 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
+        AuthorizationManager.resetConfiguration(
+            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config))
+
         lifecycleScope.launch {
             intent.putExtra("endSession", true)
             AuthorizationManager
@@ -269,6 +274,19 @@ class TokenActivity : AppCompatActivity() {
     @MainThread
     private fun signOut() {
         AuthorizationManager.clearState()
+
+        val mainIntent = Intent(this, LoginActivity::class.java)
+        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(mainIntent)
+        finish()
+    }
+
+    @MainThread
+    private fun resetConfiguration() {
+        AuthorizationManager.clearState()
+
+        AuthorizationManager.resetConfiguration(
+            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config_reset_configuration))
 
         val mainIntent = Intent(this, LoginActivity::class.java)
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

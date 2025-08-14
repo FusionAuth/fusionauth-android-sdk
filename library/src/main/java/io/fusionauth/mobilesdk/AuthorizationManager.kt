@@ -146,7 +146,6 @@ object AuthorizationManager {
      */
     fun dispose() {
         // Clear the state
-        isInitialized = false
     }
 
     /**
@@ -181,6 +180,24 @@ object AuthorizationManager {
     fun resetConfiguration(configuration: AuthorizationConfiguration) {
         ensureInitialized()
         this.configuration = configuration
+    }
+
+    /**
+     * Retrieves the initialization status of the AuthorizationManager.
+     *
+     * @return true if the AuthorizationManager is initialized, false otherwise.
+     */
+    fun getIsInitialized(): Boolean {
+        return isInitialized
+    }
+
+    /**
+     * Sets the initialization status of the AuthorizationManager.
+     *
+     * @param isInitialized A boolean value indicating whether the AuthorizationManager is initialized.
+     */
+    fun setIsInitialized(isInitialized: Boolean) {
+        this.isInitialized = isInitialized
     }
 
     private fun ensureInitialized() {

@@ -38,10 +38,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthorizationManager.initialize(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-            SharedPreferencesStorage(this)
-        )
+        if (!AuthorizationManager.getIsInitialized()) {
+            AuthorizationManager.initialize(
+                AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
+                SharedPreferencesStorage(this)
+            )
+        }
 
         if (AuthorizationManager.isAuthenticated()) {
             Log.i(TAG, "User is already authenticated, proceeding to token activity")
