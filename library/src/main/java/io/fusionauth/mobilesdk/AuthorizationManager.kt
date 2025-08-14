@@ -62,6 +62,7 @@ object AuthorizationManager {
      * @return true if the user is authenticated, false otherwise
      */
     fun isAuthenticated(): Boolean {
+        ensureInitialized()
         return !isAccessTokenExpired()
     }
 
