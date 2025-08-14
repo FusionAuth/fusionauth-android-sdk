@@ -1,7 +1,9 @@
 {
   "variables": {
+    "tenantIdResetConfiguration": "a3138f90-16b5-444f-b5f6-0ca64bc30ca7",
     "applicationId": "e9fdb985-9173-4e01-9d73-ac2d60d1dc8e",
     "application2Id": "cb945244-5646-457c-80ff-35ef55cfd570",
+    "applicationIdResetConfiguration": "2d491002-1b1b-4a59-be2a-1d570c834c7a",
     "apiKey": "this_really_should_be_a_long_random_alphanumeric_value_but_this_still_works",
     "asymmetricKeyId": "#{UUID()}",
     "clientSecret": "super-secret-secret-that-should-be-regenerated-for-production",
@@ -21,7 +23,10 @@
     "user3UserId": "00000000-0000-0000-0000-011111111111",
     "user4Email": "gilfoyle@example.com",
     "user4Password": "password",
-    "user4UserId": "00000000-0000-0000-0000-111111111111"
+    "user4UserId": "00000000-0000-0000-0000-111111111111",
+    "userEmailResetConfiguration": "mike@example.com",
+    "userPasswordResetConfiguration": "password",
+    "userUserIdResetConfiguration": "00000000-0000-0000-0001-111111111111"
   },
   "apiKeys": [
     {
@@ -61,8 +66,46 @@
     },
     {
       "method": "POST",
+      "url": "/api/tenant/#{tenantIdResetConfiguration}",
+      "body": {
+        "tenant": {
+          "name": "reset configuration"
+        }
+      }
+    },
+    {
+      "method": "POST",
       "url": "/api/application/#{applicationId}",
       "tenantId": "#{defaultTenantId}",
+      "body": {
+        "application": {
+          "name": "Example Android App",
+          "oauthConfiguration": {
+            "authorizedRedirectURLs": [
+              "io.fusionauth.app:/oauth2redirect"
+            ],
+            "generateRefreshTokens": true,
+            "clientAuthenticationPolicy": "NotRequired",
+            "proofKeyForCodeExchangePolicy": "NotRequired",
+            "clientSecret": "#{clientSecret}",
+            "enabledGrants": [
+              "authorization_code",
+              "refresh_token"
+            ],
+            "requireRegistration" : "true"
+          },
+          "jwtConfiguration": {
+            "enabled": true,
+            "accessTokenKeyId": "#{asymmetricKeyId}",
+            "idTokenKeyId": "#{asymmetricKeyId}"
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/application/#{applicationIdResetConfiguration}",
+      "tenantId": "#{tenantIdResetConfiguration}",
       "body": {
         "application": {
           "name": "Example Android App",
@@ -181,6 +224,20 @@
     },
     {
       "method": "POST",
+      "url": "/api/user/registration/#{userUserIdResetConfiguration}",
+      "body": {
+        "user": {
+          "birthDate": "1985-12-23",
+          "email": "#{userEmailResetConfiguration}",
+          "password": "#{userPasswordResetConfiguration}"
+        },
+        "registration": {
+          "applicationId": "#{applicationIdResetConfiguration}"
+        }
+      }
+    },
+    {
+      "method": "POST",
       "url": "/api/theme/#{newThemeId}",
       "body": {
         "sourceThemeId": "75a068fd-e94b-451a-9aeb-3ddb9a3b5987",
@@ -201,6 +258,16 @@
     {
       "method": "PATCH",
       "url": "/api/tenant/#{defaultTenantId}",
+      "body": {
+        "tenant": {
+          "themeId": "#{newThemeId}",
+          "issuer": "http://10.0.2.2:9011"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "url": "/api/tenant/#{tenantIdResetConfiguration}",
       "body": {
         "tenant": {
           "themeId": "#{newThemeId}",
