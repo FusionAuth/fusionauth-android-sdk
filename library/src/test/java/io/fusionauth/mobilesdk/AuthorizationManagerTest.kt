@@ -8,14 +8,12 @@ import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verifyNoInteractions
 
 @RunWith(MockitoJUnitRunner::class)
 class AuthorizationManagerTest {
-
     private val mockStorage: Storage = Mockito.mock(Storage::class.java)
 
     /**
