@@ -62,10 +62,7 @@ class AuthorizationManagerTest {
         val initialConfig = createTestConfig(clientId = "initial-id")
         AuthorizationManager.initialize(initialConfig, mockStorage)
 
-        // Use reflection to verify the initial state, since 'configuration' is private
-        val configurationField = AuthorizationManager.javaClass.getDeclaredField("configuration")
-        configurationField.isAccessible = true
-        val internalConfigBefore = configurationField.get(AuthorizationManager) as AuthorizationConfiguration
+        val internalConfigBefore = AuthorizationManager.getConfiguration()
         assertEquals("initial-id", internalConfigBefore.clientId)
 
         // Act
@@ -74,7 +71,7 @@ class AuthorizationManagerTest {
 
         // Assert
         // Verify the internal configuration object has been replaced with the new one
-        val internalConfigAfter = configurationField.get(AuthorizationManager) as AuthorizationConfiguration
+        val internalConfigAfter = AuthorizationManager.getConfiguration()
         assertEquals("new-id", internalConfigAfter.clientId)
 
         // Verify the AuthorizationManager is initialized

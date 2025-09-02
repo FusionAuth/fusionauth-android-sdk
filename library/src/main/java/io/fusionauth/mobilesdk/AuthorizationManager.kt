@@ -201,6 +201,10 @@ object AuthorizationManager {
         this.isInitialized = isInitialized
     }
 
+    internal fun getConfiguration(): AuthorizationConfiguration {
+        ensureInitialized()
+        return configuration
+    }
     private fun ensureInitialized() {
         if (!isInitialized) {
             throw AuthorizationException("AuthorizationManager must be initialized by calling initialize() first.")
