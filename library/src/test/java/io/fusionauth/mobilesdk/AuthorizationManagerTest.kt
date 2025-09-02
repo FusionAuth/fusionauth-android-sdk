@@ -16,7 +16,6 @@ import org.mockito.kotlin.verifyNoInteractions
 @RunWith(MockitoJUnitRunner::class)
 class AuthorizationManagerTest {
 
-    @Mock
     private val mockStorage: Storage = Mockito.mock(Storage::class.java)
 
     /**
@@ -77,7 +76,6 @@ class AuthorizationManagerTest {
         // Verify the AuthorizationManager is initialized
         val isInitialized = AuthorizationManager.getIsInitialized()
         assertEquals(true, isInitialized)
-
     }
 
     @Test
