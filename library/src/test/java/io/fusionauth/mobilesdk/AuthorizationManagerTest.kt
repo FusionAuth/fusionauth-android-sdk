@@ -94,7 +94,7 @@ class AuthorizationManagerTest {
     }
 
     @Test
-    fun `resetConfiguration after dispose should throw AuthorizationException`() {
+    fun `resetConfiguration after uninitialized state should throw AuthorizationException`() {
         // Arrange
         AuthorizationManager.initialize(createTestConfig(), mockStorage)
         AuthorizationManager.setIsInitialized(false) // Reset the manager to its uninitialized state
