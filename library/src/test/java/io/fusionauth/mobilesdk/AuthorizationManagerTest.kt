@@ -5,6 +5,7 @@ import io.fusionauth.mobilesdk.storage.Storage
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,7 +74,7 @@ class AuthorizationManagerTest {
 
         // Verify the AuthorizationManager is initialized
         val isInitialized = AuthorizationManager.getIsInitialized()
-        assertEquals(true, isInitialized)
+        assertTrue(isInitialized)
     }
 
     @Test
