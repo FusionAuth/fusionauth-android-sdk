@@ -197,7 +197,7 @@ object AuthorizationManager {
      *
      * @param isInitialized A boolean value indicating whether the AuthorizationManager is initialized.
      */
-    fun setIsInitialized(isInitialized: Boolean) {
+    internal fun setIsInitialized(isInitialized: Boolean) {
         this.isInitialized = isInitialized
     }
 
