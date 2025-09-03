@@ -230,9 +230,6 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-        AuthorizationManager.resetConfiguration(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config))
-
         lifecycleScope.launch {
             intent.putExtra("endSession", true)
             AuthorizationManager
