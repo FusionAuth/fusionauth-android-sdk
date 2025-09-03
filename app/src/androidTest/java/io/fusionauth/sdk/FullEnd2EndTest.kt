@@ -208,7 +208,7 @@ internal class FullEnd2EndTest {
         Thread.sleep(1000)
 
         // Click the sign-out button
-        logger.info("Click sign out button for second user")
+        logger.info("Click sign out button for user")
         onView(withId(R.id.sign_out)).perform(click())
 
         // Check that the login activity is displayed
