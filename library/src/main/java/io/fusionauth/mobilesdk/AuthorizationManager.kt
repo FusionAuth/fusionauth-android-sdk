@@ -205,7 +205,8 @@ object AuthorizationManager {
         ensureInitialized()
         return configuration
     }
-    @Synchronized private fun ensureInitialized() {
+    @Synchronized
+    private fun ensureInitialized() {
         if (!isInitialized) {
             throw AuthorizationException("AuthorizationManager must be initialized by calling initialize() first.")
         }
