@@ -239,6 +239,10 @@ class TokenActivity : AppCompatActivity() {
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 )
         }
+
+        // reset the configuration to its default state
+        AuthorizationManager.resetConfiguration(
+            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config))
     }
 
     @Suppress("MagicNumber")
