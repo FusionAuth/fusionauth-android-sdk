@@ -180,9 +180,6 @@ object AuthorizationManager {
     fun resetConfiguration(configuration: AuthorizationConfiguration) {
         ensureInitialized()
         this.configuration = configuration
-
-        // clear the auth state as a new configuration is being used.
-        tokenManager.clearAuthState()
     }
 
     /**

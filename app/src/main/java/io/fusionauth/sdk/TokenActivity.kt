@@ -231,18 +231,26 @@ class TokenActivity : AppCompatActivity() {
     @MainThread
     private fun endSession() {
         lifecycleScope.launch {
-            intent.putExtra("endSession", true)
-            AuthorizationManager
-                .oAuth(this@TokenActivity)
-                .logout(
-                    Intent(this@TokenActivity, LoginActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                )
-        }
+            try {
+                intent.putExtra("endSession", true)
+                AuthorizationManager
+                    .oAuth(this@TokenActivity)
+                    .logout(
+                        Intent(this@TokenActivity, LoginActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    )
 
-        // reset the configuration to its default state
-        AuthorizationManager.resetConfiguration(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config))
+                AuthorizationManager.clearState()
+
+                // reset the configuration to its default state
+                AuthorizationManager.resetConfiguration(
+                    AuthorizationConfiguration.fromResources(
+                        this@TokenActivity, R.raw.fusionauth_config))
+
+            } catch (ex: AuthorizationException) {
+                Log.e(TAG, "Failed to end the session", ex)
+            }
+        }
     }
 
     @Suppress("MagicNumber")
@@ -287,15 +295,26 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun resetConfiguration() {
-        AuthorizationManager.clearState()
+        lifecycleScope.launch {
+            try {
+                intent.putExtra("endSession", true)
+                AuthorizationManager
+                    .oAuth(this@TokenActivity)
+                    .logout(
+                        Intent(this@TokenActivity, LoginActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    )
 
-        AuthorizationManager.resetConfiguration(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config_reset_configuration))
+                AuthorizationManager.clearState()
 
-        val mainIntent = Intent(this, LoginActivity::class.java)
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(mainIntent)
-        finish()
+                // set a new configuration
+                AuthorizationManager.resetConfiguration(
+                    AuthorizationConfiguration.fromResources(
+                        this@TokenActivity, R.raw.fusionauth_config_reset_configuration))
+            } catch (ex: AuthorizationException) {
+                Log.e(TAG, "Failed to reset the configuration", ex)
+            }
+        }
     }
 
     /**

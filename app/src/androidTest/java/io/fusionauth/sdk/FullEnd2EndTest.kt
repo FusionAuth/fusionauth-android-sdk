@@ -129,7 +129,6 @@ internal class FullEnd2EndTest {
         logger.info("Check that the login activity is displayed")
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
-
     }
 
     /**
