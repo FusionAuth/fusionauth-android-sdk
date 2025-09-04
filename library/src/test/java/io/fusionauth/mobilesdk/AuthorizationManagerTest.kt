@@ -4,7 +4,6 @@ import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.Storage
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -12,6 +11,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.verifyNoInteractions
 
 @RunWith(MockitoJUnitRunner::class)
 class AuthorizationManagerTest {
@@ -78,7 +78,7 @@ class AuthorizationManagerTest {
     }
 
     @Test
-    fun `resetConfiguration should interact with storage and clear the auth state`() {
+    fun `resetConfiguration should not interact with the storage`() {
         // Arrange
         val initialConfig = createTestConfig()
         AuthorizationManager.initialize(initialConfig, mockStorage)
@@ -88,8 +88,10 @@ class AuthorizationManagerTest {
         AuthorizationManager.resetConfiguration(newConfig)
 
         // Assert
-        // Verify the auth state has been cleared
-        assertNull(mockStorage.get("authState"))
+        // Verify that no methods were called on the mockStorage. This is crucial because
+        // it proves that resetting the configuration does not have the side effect of
+        // clearing the stored authentication state.
+        verifyNoInteractions(mockStorage)
     }
 
     @Test
