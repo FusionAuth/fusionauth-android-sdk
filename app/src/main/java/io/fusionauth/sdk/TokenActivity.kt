@@ -230,27 +230,7 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-        lifecycleScope.launch {
-            try {
-                intent.putExtra("endSession", true)
-                AuthorizationManager
-                    .oAuth(this@TokenActivity)
-                    .logout(
-                        Intent(this@TokenActivity, LoginActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    )
-
-                AuthorizationManager.clearState()
-
-                // reset the configuration to its default state
-                AuthorizationManager.resetConfiguration(
-                    AuthorizationConfiguration.fromResources(
-                        this@TokenActivity, R.raw.fusionauth_config))
-
-            } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to end the session", ex)
-            }
-        }
+        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config)
     }
 
     @Suppress("MagicNumber")
@@ -295,6 +275,11 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun resetConfiguration() {
+        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config_reset_configuration)
+    }
+
+    @MainThread
+    private fun endSessionAndSetConfigurationFromResource(resource: Int) {
         lifecycleScope.launch {
             try {
                 intent.putExtra("endSession", true)
@@ -310,9 +295,9 @@ class TokenActivity : AppCompatActivity() {
                 // set a new configuration
                 AuthorizationManager.resetConfiguration(
                     AuthorizationConfiguration.fromResources(
-                        this@TokenActivity, R.raw.fusionauth_config_reset_configuration))
+                        this@TokenActivity, resource))
             } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to reset the configuration", ex)
+                Log.e(TAG, "Failed to set the configuration", ex)
             }
         }
     }
