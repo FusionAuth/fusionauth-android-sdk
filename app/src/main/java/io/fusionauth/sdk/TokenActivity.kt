@@ -55,7 +55,7 @@ class TokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!AuthorizationManager.getIsInitialized()) {
+        if (!AuthorizationManager.isInitialized()) {
             AuthorizationManager.initialize(
                 AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
                 SharedPreferencesStorage(this)

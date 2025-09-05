@@ -187,17 +187,8 @@ object AuthorizationManager {
      *
      * @return true if the AuthorizationManager is initialized, false otherwise.
      */
-    fun getIsInitialized(): Boolean {
+    fun isInitialized(): Boolean {
         return isInitialized
-    }
-
-    /**
-     * Sets the initialization status of the AuthorizationManager.
-     *
-     * @param isInitialized A boolean value indicating whether the AuthorizationManager is initialized.
-     */
-    internal fun setIsInitialized(isInitialized: Boolean) {
-        this.isInitialized = isInitialized
     }
 
     internal fun getConfiguration(): AuthorizationConfiguration {

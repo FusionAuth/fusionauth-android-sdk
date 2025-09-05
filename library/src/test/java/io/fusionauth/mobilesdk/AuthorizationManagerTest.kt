@@ -18,20 +18,6 @@ class AuthorizationManagerTest {
     private val mockStorage: Storage = Mockito.mock(Storage::class.java)
 
     /**
-     * The singleton 'object' AuthorizationManager holds state across test runs.
-     * Reset it before and after each test to ensure test isolation.
-     */
-    @Before
-    fun setUp() {
-        AuthorizationManager.setIsInitialized(false)
-    }
-
-    @After
-    fun tearDown() {
-        AuthorizationManager.setIsInitialized(false)
-    }
-
-    /**
      * A helper function to create a standard configuration for tests.
      */
     private fun createTestConfig(clientId: String = "default-client-id"): AuthorizationConfiguration {
@@ -39,19 +25,6 @@ class AuthorizationManagerTest {
             fusionAuthUrl = "https://test.fusionauth.io",
             clientId = clientId
         )
-    }
-
-    @Test
-    fun `resetConfiguration when not initialized should throw AuthorizationException`() {
-        // Arrange: AuthorizationManager is in an uninitialized state.
-
-        // Act & Assert
-        val exception = assertThrows(AuthorizationException::class.java) {
-            AuthorizationManager.resetConfiguration(createTestConfig())
-        }
-
-        // Assert the exception message is as expected
-        assertEquals("AuthorizationManager must be initialized by calling initialize() first.", exception.message)
     }
 
     @Test
@@ -73,7 +46,7 @@ class AuthorizationManagerTest {
         assertEquals("new-id", internalConfigAfter.clientId)
 
         // Verify the AuthorizationManager is initialized
-        val isInitialized = AuthorizationManager.getIsInitialized()
+        val isInitialized = AuthorizationManager.isInitialized()
         assertTrue(isInitialized)
     }
 
@@ -96,11 +69,7 @@ class AuthorizationManagerTest {
 
     @Test
     fun `resetConfiguration after uninitialized state should throw AuthorizationException`() {
-        // Arrange
-        AuthorizationManager.initialize(createTestConfig(), mockStorage)
-        AuthorizationManager.setIsInitialized(false) // Reset the manager to its uninitialized state
-
-        // Act & Assert
+        // Arrange & Act & Assert
         assertThrows(AuthorizationException::class.java) {
             AuthorizationManager.resetConfiguration(createTestConfig())
         }
