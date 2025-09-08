@@ -278,7 +278,6 @@ class TokenActivity : AppCompatActivity() {
         endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config_reset_configuration)
     }
 
-    @MainThread
     private fun endSessionAndSetConfigurationFromResource(resource: Int) {
         lifecycleScope.launch {
             try {
