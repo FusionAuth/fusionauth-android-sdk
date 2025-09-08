@@ -297,7 +297,7 @@ class TokenActivity : AppCompatActivity() {
                     AuthorizationConfiguration.fromResources(
                         this@TokenActivity, resource))
             } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to set the auth configuration")
+                Log.e(TAG, "Failed to set the auth configuration", ex)
             }
         }
     }
