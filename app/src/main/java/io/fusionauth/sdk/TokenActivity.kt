@@ -55,10 +55,12 @@ class TokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthorizationManager.initialize(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-            SharedPreferencesStorage(this)
-        )
+        if (!AuthorizationManager.isInitialized()) {
+            AuthorizationManager.initialize(
+                AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
+                SharedPreferencesStorage(this)
+            )
+        }
 
         setContentView(R.layout.activity_token)
         displayLoading("Restoring state...")
@@ -152,6 +154,9 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.refresh_token).setOnClickListener {
             refreshToken()
         }
+        findViewById<View>(R.id.reset_configuration).setOnClickListener {
+            resetConfiguration()
+        }
 
         var name = ""
         var email = ""
@@ -225,15 +230,7 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-        lifecycleScope.launch {
-            intent.putExtra("endSession", true)
-            AuthorizationManager
-                .oAuth(this@TokenActivity)
-                .logout(
-                    Intent(this@TokenActivity, LoginActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                )
-        }
+        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config)
     }
 
     @Suppress("MagicNumber")
@@ -274,6 +271,35 @@ class TokenActivity : AppCompatActivity() {
         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(mainIntent)
         finish()
+    }
+
+    @MainThread
+    private fun resetConfiguration() {
+        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config_reset_configuration)
+    }
+
+    private fun endSessionAndSetConfigurationFromResource(resource: Int) {
+        lifecycleScope.launch {
+            try {
+                intent.putExtra("endSession", true)
+                AuthorizationManager
+                    .oAuth(this@TokenActivity)
+                    .logout(
+                        Intent(this@TokenActivity, LoginActivity::class.java)
+                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    )
+
+                AuthorizationManager.clearState()
+
+                // set a new configuration
+                AuthorizationManager.resetConfiguration(
+                    AuthorizationConfiguration.fromResources(
+                        this@TokenActivity, resource))
+            } catch (ex: AuthorizationException) {
+                Log.e(TAG, "Failed to set the auth configuration")
+                showSnackbar("Failed to set the auth configuration -  " + ex.message)
+            }
+        }
     }
 
     /**
