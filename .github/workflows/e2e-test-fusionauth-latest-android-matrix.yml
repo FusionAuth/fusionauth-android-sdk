@@ -38,16 +38,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 29 ]
+        api-level: [ 36 ]
         target: [ google_apis ]
-        arch: [ x86 ]
+        arch: [ x86_64 ]
         include:
-          - api-level: 29
-            target: google_apis
-            arch: x86
-          - api-level: 30
-            target: google_apis
-            arch: x86
           - api-level: 31
             target: google_apis
             arch: x86_64

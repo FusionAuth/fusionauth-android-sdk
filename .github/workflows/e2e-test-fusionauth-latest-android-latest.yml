@@ -4,7 +4,7 @@
 # documentation.
 
 # This workflow performs a full End 2 End test of the App
-# It runs the test on the last 5 Android releases.
+# It runs the test on the latest Android release.
 
 name: Weekly E2E Test with latest FusionAuth and latest Android
 
@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 35 ]
+        api-level: [ 36 ]
         target: [ google_apis ]
         arch: [ x86_64 ]
     # Steps represent a sequence of tasks that will be executed as part of the job
