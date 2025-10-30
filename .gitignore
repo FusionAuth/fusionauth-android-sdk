@@ -16,6 +16,8 @@
 /.idea/deploymentTargetSelector.xml
 /.idea/kotlinc.xml
 /.idea/misc.xml
+/.idea/runConfigurations.xml
+/.idea/AndroidProjectSystem.xml
 
 .DS_Store
 /build
