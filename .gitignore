@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -11,9 +12,16 @@
 /.idea/androidTestResultsUserPreferences.xml
 /.idea/git_toolbox_prj.xml
 /.idea/copilot
+/.idea/copilot.*
+/.idea/deploymentTargetSelector.xml
+/.idea/kotlinc.xml
+/.idea/misc.xml
+
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+.vscode/**
