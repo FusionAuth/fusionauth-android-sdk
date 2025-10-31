@@ -42,16 +42,16 @@ jobs:
         target: [ google_apis ]
         arch: [ x86_64 ]
         include:
-          - api-level: 31
-            target: google_apis
-            arch: x86_64
-          - api-level: 33
+          - api-level: 35
             target: google_apis
             arch: x86_64
           - api-level: 34
             target: google_apis
             arch: x86_64
-          - api-level: 35
+          - api-level: 33
+            target: google_apis
+            arch: x86_64
+          - api-level: 31
             target: google_apis
             arch: x86_64
     # Steps represent a sequence of tasks that will be executed as part of the job
