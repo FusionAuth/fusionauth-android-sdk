@@ -22,7 +22,7 @@ allprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
 
     tasks.withType<Detekt>().configureEach {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
         reports {
             xml.required = true
             html.required = true
