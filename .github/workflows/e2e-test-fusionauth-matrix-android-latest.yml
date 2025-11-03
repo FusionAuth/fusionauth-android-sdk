@@ -38,7 +38,7 @@ jobs:
         api-level: [ 36 ]
         target: [ google_apis ]
         arch: [ x86_64 ]
-        fusionauth-docker-image-version: [ 1.52.1, 1.53.3, 1.54.0, 1.55.1, 1.56.0, 1.57.1 ]
+        fusionauth-docker-image-version: [ 1.56.0, 1.57.1 , 1.58.3, 1.59.1, 1.60.2 ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
