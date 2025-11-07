@@ -18,7 +18,7 @@ on:
   workflow_call:
 
 env:
-  fusionauth-docker-image-version: "1.57.1"
+  fusionauth-docker-image-version: "1.60.2"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,26 +38,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 29 ]
+        api-level: [ 36 ]
         target: [ google_apis ]
-        arch: [ x86 ]
+        arch: [ x86_64 ]
         include:
-          - api-level: 29
-            target: google_apis
-            arch: x86
-          - api-level: 30
-            target: google_apis
-            arch: x86
-          - api-level: 31
-            target: google_apis
-            arch: x86_64
-          - api-level: 33
+          - api-level: 35
             target: google_apis
             arch: x86_64
           - api-level: 34
             target: google_apis
             arch: x86_64
-          - api-level: 35
+          - api-level: 33
+            target: google_apis
+            arch: x86_64
+          - api-level: 31
             target: google_apis
             arch: x86_64
     # Steps represent a sequence of tasks that will be executed as part of the job

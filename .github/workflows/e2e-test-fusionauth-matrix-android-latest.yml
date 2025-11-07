@@ -4,9 +4,8 @@
 # documentation.
 
 # This workflow performs a full End 2 End test of the App.
-# It includes all versions of the past ~6 months.
-# And uses the Android Target API level requirements for Google Play apps 34.
-# https://support.google.com/googleplay/android-developer/answer/11926878
+# It includes all FusionAuth versions in the past ~6 months.
+# It runs the test on the latest Android release.
 
 # The workflow is reusable by other workflows or can be triggered manually
 
@@ -36,10 +35,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 35 ]
+        api-level: [ 36 ]
         target: [ google_apis ]
         arch: [ x86_64 ]
-        fusionauth-docker-image-version: [ 1.52.1, 1.53.3, 1.54.0, 1.55.1, 1.56.0, 1.57.1 ]
+        fusionauth-docker-image-version: [ 1.57.1 , 1.58.3, 1.59.1, 1.60.2 ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Sets up JDK as a prerequisite to run Gradle
