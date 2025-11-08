@@ -6,6 +6,8 @@
 name: Vulnerability Scan with MobSF
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   schedule:
@@ -53,7 +55,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.29.1
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json

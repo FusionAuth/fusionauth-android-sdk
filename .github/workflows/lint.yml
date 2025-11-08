@@ -14,6 +14,8 @@
 name: Check Code Quality with Android Lint
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
@@ -59,17 +61,15 @@ jobs:
       
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 # v4.3.1
-        with:
-          gradle-home-cache-cleanup: true
-      
+        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
+
       # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
       - name: Run Android Lint
         run: ./gradlew lint --continue
 
       # Uploads Sarif Report for the library to GitHub
       - name: Upload kotlin library report
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.29.1
         if: success() || failure()
         with:
           sarif_file: library/build/reports/lint-results-debug.sarif
@@ -116,9 +116,7 @@ jobs:
 
       # Sets up Gradle as a prerequisite to run Android Lint
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 # v4.3.1
-        with:
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
 
       # Performs analysis using Android Lint via Gradle and outputs a Sarif Report
       - name: Run Android Lint
@@ -126,7 +124,7 @@ jobs:
 
       # Uploads Sarif Report for the app to GitHub
       - name: Upload kotlin app report
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.29.1
         if: success() || failure()
         with:
           sarif_file: app/build/reports/lint-results-debug.sarif

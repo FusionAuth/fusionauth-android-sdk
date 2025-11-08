@@ -18,6 +18,8 @@
 name: Vulnerability Scan with Detekt
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   schedule:
@@ -65,9 +67,7 @@ jobs:
 
       # Sets up Gradle as a prerequisite to run Detekt
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244 # v4.3.1
-        with:
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
 
       # Performs analysis using Detekt via Gradle and outputs a Sarif Report
       - name: Run Detekt
@@ -75,7 +75,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3.28.17
+        uses: github/codeql-action/upload-sarif@v3.29.1
         if: success() || failure()
         with:
           sarif_file: build/reports/detekt/merge.sarif.json
