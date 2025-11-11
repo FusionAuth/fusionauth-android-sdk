@@ -43,14 +43,14 @@ jobs:
     steps:
       # Sets up JDK as a prerequisite to run Gradle
       - name: Setup Java
-        uses: actions/setup-java@v4.7.1
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'zulu'
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5
 
       # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
       # Despite its waiting until the container started with the status healthy,
@@ -70,7 +70,7 @@ jobs:
 
       # Performs E2E Test using android-emulator-runner
       - name: run tests
-        uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2.34.0
+        uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -84,7 +84,7 @@ jobs:
 
       # Upload E2E Test recording
       - name: Upload recording
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         if: ${{ failure() }}
         with:
           name: 'E2E Test recording - ${{ matrix.api-level }} ${{ matrix.target }} ${{ matrix.arch }} ${{ matrix.fusionauth-docker-image-version }}'
