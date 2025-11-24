@@ -52,7 +52,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
       # Despite its waiting until the container started with the status healthy,
