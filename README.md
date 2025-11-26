@@ -199,7 +199,7 @@ end::forDocSiteQuickstart[]
 <!--
 tag::forDocSiteDocumentation[]
 -->
-See the latest [Full library documentation](https://github.com/FusionAuth/fusionauth-android-sdk/blob/main/library/docs/index.md) for the complete documentation of the SDK.
+See the latest [Full library documentation](https://github.com/FusionAuth/fusionauth-android-sdk/blob/main/library/docs/index.html) for the complete documentation of the SDK.
 <!--
 end::forDocSiteDocumentation[]
 -->
