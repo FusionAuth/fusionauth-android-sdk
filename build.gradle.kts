@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.2.0" apply false
     id("com.android.library") version "8.13.0" apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
-    id("org.jetbrains.dokka") version "2.0.0"
+    id("org.jetbrains.dokka") version "2.1.0"
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 
     kotlin("jvm") version "2.2.0"
@@ -46,6 +46,16 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://your-server.com/snapshots"))
             username.set("your-username") // defaults to project.properties["myNexusUsername"]
             password.set("your-password") // defaults to project.properties["myNexusPassword"]
+        }
+    }
+}
+
+dokka {
+    dokkaPublications.html {
+        outputDirectory.set(rootDir.resolve("library/docs"))
+
+        dokkaSourceSets.named("main") {
+            sourceRoots.from(file("library/src/main/java"))
         }
     }
 }

@@ -90,7 +90,7 @@ The pre-release process is as follows:
 - Compare the gradlew version `./gradlew -v` with the latest [gradle release](https://gradle.org/releases/) and update if necessary.
 - Review, test and merge any open [Dependency Pull Requests](https://github.com/FusionAuth/fusionauth-android-sdk/pulls).
 - Update the version in the `library/build.gradle.kts` file with a pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
-- Update the documentation with `./gradlew dokkaGfm`.
+- Update the documentation with `./gradlew :dokkaGenerate`.
 - Commit the changes with the commit message `chore(release): <pre-release-version> 🎉`.
 - Create a new tag `v<pre-release-version>`.
 - Make sure all Workflows where successful in [Actions](https://github.com/FusionAuth/fusionauth-android-sdk/actions).
