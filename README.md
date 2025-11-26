@@ -199,7 +199,7 @@ end::forDocSiteQuickstart[]
 <!--
 tag::forDocSiteDocumentation[]
 -->
-See the latest [Full library documentation]('./library/docs/index.htm') for the complete documentation of the SDK.
+See the latest [Full library documentation]('./library/docs/index.html') for the complete documentation of the SDK.
 <!--
 end::forDocSiteDocumentation[]
 -->
