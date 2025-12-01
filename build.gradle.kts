@@ -52,7 +52,7 @@ nexusPublishing {
 
 dokka {
     dokkaPublications.html {
-        outputDirectory.set(rootDir.resolve("library/docs"))
+        outputDirectory.set(rootDir.resolve("build/library/docs"))
 
         dokkaSourceSets.named("main") {
             sourceRoots.from(file("library/src/main/java"))
