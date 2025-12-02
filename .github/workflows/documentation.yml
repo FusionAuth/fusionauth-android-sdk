@@ -30,13 +30,13 @@ jobs:
             echo "=== whereami ==="
             pwd
             echo "=== Root build directory ==="
-            ls -la build/ || echo "No build/ directory"
+            ls -la build/library/docs/.* || echo "No build/ directory"
             echo ""
             echo "=== Looking for dokka output ==="
             find . -name "dokka" -o -name "dokkaHtml" -type d
             echo ""
             echo "=== All HTML files ==="
-            find . -name "*.html" -path "*/build/*"
+            find . -name "*.html" -path "*/build/library/docs/.*"
 
       - name: Determine deployment path
         id: deploy-path
