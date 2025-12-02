@@ -27,6 +27,8 @@ jobs:
 
       - name: Debug - List build directory
         run: |
+            echo "=== whereami ==="
+            pwd
             echo "=== Root build directory ==="
             ls -la build/ || echo "No build/ directory"
             echo ""
