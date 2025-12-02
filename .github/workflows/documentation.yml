@@ -25,19 +25,6 @@ jobs:
       - name: Build Dokka HTML
         run: ./gradlew dokkaGenerateHtml --info
 
-      - name: Debug - List build directory
-        run: |
-            echo "=== whereami ==="
-            pwd
-            echo "=== Root build directory ==="
-            ls -la build/library/docs/.* || echo "No build/ directory"
-            echo ""
-            echo "=== Looking for dokka output ==="
-            find . -name "dokka" -o -name "dokkaHtml" -type d
-            echo ""
-            echo "=== All HTML files ==="
-            find . -name "*.html" -path "*/build/library/docs/.*"
-
       - name: Determine deployment path
         id: deploy-path
         run: |
@@ -54,4 +41,10 @@ jobs:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_dir: ./build/library/docs
             destination_dir: ${{ steps.deploy-path.outputs.path }}
-            keep_files: true  # Important! Prevents deleting other directories 
+            keep_files: true  # Important! Prevents deleting other directories
+
+      - name: Debug outputs
+        run: |
+            echo "GITHUB_OUTPUT file location: $GITHUB_OUTPUT"
+            echo "Contents:"
+            cat $GITHUB_OUTPUT || echo "File doesn't exist yet"
