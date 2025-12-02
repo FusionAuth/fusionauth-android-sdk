@@ -43,8 +43,3 @@ jobs:
             destination_dir: ${{ steps.deploy-path.outputs.path }}
             keep_files: true  # Important! Prevents deleting other directories
 
-      - name: Debug outputs
-        run: |
-            echo "GITHUB_OUTPUT file location: $GITHUB_OUTPUT"
-            echo "Contents:"
-            cat $GITHUB_OUTPUT || echo "File doesn't exist yet"
