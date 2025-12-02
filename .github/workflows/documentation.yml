@@ -4,11 +4,9 @@ on:
   push:
     branches: ["main"]
   pull_request:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 jobs:
-  build:
+  deploy-docs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,27 +25,20 @@ jobs:
         id: build
         run: ./gradlew :dokkaGenerate
 
-      - name: Upload static files as artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Verify this matches your Dokka output path.
-          path: 'build/library/docs' 
-
-  deploy:
-    needs: build
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    steps:
+      - name: Determine deployment path
+        id: deploy-path
+        run: |
+            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+                echo "path=." >> $GITHUB_OUTPUT
+            else
+                BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///' | sed 's/\//-/g')
+                echo "path=$BRANCH_NAME" >> $GITHUB_OUTPUT
+            fi
+            
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4  
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./build/library/docs
+            destination_dir: ${{ steps.deploy-path.outputs.path }}
+            keep_files: true  # Important! Prevents deleting other directories 
