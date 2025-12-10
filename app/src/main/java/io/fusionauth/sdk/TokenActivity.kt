@@ -30,7 +30,7 @@ import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
+import io.fusionauth.mobilesdk.storage.DataStoreStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.io.IOException
@@ -58,7 +58,7 @@ class TokenActivity : AppCompatActivity() {
         if (!AuthorizationManager.isInitialized()) {
             AuthorizationManager.initialize(
                 AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-                SharedPreferencesStorage(this)
+                DataStoreStorage(this)
             )
         }
 
