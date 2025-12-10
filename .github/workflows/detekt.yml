@@ -54,14 +54,14 @@ jobs:
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@d8edfce3dd5e1ec6978745e801f9c50b5ef80252 # v1.4.0
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
 
       - name: Show reviewdog version
         run: reviewdog -version
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Sets up Gradle as a prerequisite to run Detekt
       - name: Setup Gradle
@@ -75,7 +75,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v4.31.2
+        uses: github/codeql-action/upload-sarif@v4.31.7
         if: success() || failure()
         with:
           sarif_file: build/reports/detekt/merge.sarif.json
