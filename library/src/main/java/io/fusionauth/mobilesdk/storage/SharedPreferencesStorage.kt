@@ -13,6 +13,11 @@ import androidx.core.content.edit
  * @param context The context used to access the application's SharedPreferences.
  * @param fileName The name of the SharedPreferences file. Default value is "_fusionauth_mobile_sdk".
  */
+@Deprecated(
+    message = "Use DataStoreStorage instead",
+    replaceWith = ReplaceWith("DataStoreStorage"),
+    level = DeprecationLevel.WARNING
+)
 class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth_mobile_sdk") : Storage {
 
     private val sharedPreferences: SharedPreferences
