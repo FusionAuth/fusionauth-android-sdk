@@ -39,7 +39,7 @@ class TokenManager {
      * @throws StorageException if an error occurs while decoding the authorization state.
      */
     @Suppress("TooGenericExceptionCaught")
-    fun getAuthState(): FusionAuthState? {
+    suspend fun getAuthState(): FusionAuthState? {
         if (this.authState.get() != null) {
             return this.authState.get()
         }
@@ -62,7 +62,7 @@ class TokenManager {
      * @param authState The authorization state to be saved.
      * @throws NullPointerException if `storage` is null.
      */
-    fun saveAuthState(authState: FusionAuthState) {
+    suspend fun saveAuthState(authState: FusionAuthState) {
         if (this.storage == null) throw StorageException.notSet()
 
         this.authState.set(authState)
@@ -74,7 +74,7 @@ class TokenManager {
      *
      * @throws StorageException if the storage implementation is not set.
      */
-    fun clearAuthState() {
+    suspend fun clearAuthState() {
         if (this.storage == null) throw StorageException.notSet()
 
         this.authState.set(null)

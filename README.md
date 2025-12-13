@@ -101,7 +101,7 @@ The `fusionauth_config.json` file should be placed in the `res/raw` directory an
 
 By default, the SDK uses the `MemoryStorage` for storing tokens. This means that tokens will be lost when the app is
 closed.
-To persist tokens, you can use the `SharedPreferencesStorage` or implement your own `TokenStorage`.
+To persist tokens, you can use the `DataStoreStorage` or implement your own `TokenStorage`.
 <!--
 end::forDocSiteGettingStarted[]
 -->

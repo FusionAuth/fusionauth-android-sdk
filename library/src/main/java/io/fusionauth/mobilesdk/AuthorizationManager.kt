@@ -61,7 +61,7 @@ object AuthorizationManager {
      *
      * @return true if the user is authenticated, false otherwise
      */
-    fun isAuthenticated(): Boolean {
+    suspend fun isAuthenticated(): Boolean {
         return !isAccessTokenExpired()
     }
 
@@ -107,7 +107,7 @@ object AuthorizationManager {
      *
      * @return The access token string or null if not available.
      */
-    fun getAccessToken(): String? {
+    suspend fun getAccessToken(): String? {
         return tokenManager.getAuthState()?.accessToken
     }
 
@@ -117,7 +117,7 @@ object AuthorizationManager {
      * @return The expiration time of the access token, or null if the token manager is not set or the access token is
      * not available.
      */
-    fun getAccessTokenExpirationTime(): Long? {
+    suspend fun getAccessTokenExpirationTime(): Long? {
         return tokenManager.getAuthState()?.accessTokenExpirationTime
     }
 
@@ -126,7 +126,7 @@ object AuthorizationManager {
      *
      * @return true if the access token is expired, false otherwise.
      */
-    fun isAccessTokenExpired(): Boolean {
+    suspend fun isAccessTokenExpired(): Boolean {
         return getAccessTokenExpirationTime()?.let {
             it < System.currentTimeMillis()
         } ?: true
@@ -137,7 +137,7 @@ object AuthorizationManager {
      *
      * @return The ID token string, or null if the user is not authenticated.
      */
-    fun getIdToken(): String? {
+    suspend fun getIdToken(): String? {
         return tokenManager.getAuthState()?.idToken
     }
 
@@ -154,7 +154,7 @@ object AuthorizationManager {
      * @return The parsed ID token, or null if it cannot be parsed.
      */
     @OptIn(ExperimentalEncodingApi::class)
-    fun getParsedIdToken(): IdToken? {
+    suspend fun getParsedIdToken(): IdToken? {
         return tokenManager.getAuthState()?.idToken?.let {
             val parts = it.split(".")
             require(parts.size == JWT_PARTS) { "Invalid JWT token" }
@@ -167,7 +167,7 @@ object AuthorizationManager {
      *
      * This method clears the authorization state by removing the "authState" key from the storage.
      */
-    fun clearState() {
+    suspend fun clearState() {
         tokenManager.clearAuthState()
     }
 

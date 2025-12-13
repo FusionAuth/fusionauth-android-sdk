@@ -11,7 +11,7 @@ interface Storage {
      * @param key The key for which to retrieve the value.
      * @return The value associated with the key, or null if the key is not found in the storage.
      */
-    fun get(key: String): String?
+    suspend fun get(key: String): String?
 
     /**
      * Sets the value associated with the given key in the storage.
@@ -19,7 +19,7 @@ interface Storage {
      * @param key The key for which to set the value.
      * @param content The value to be set for the key.
      */
-    fun set(
+    suspend fun set(
         key: String,
         content: Any,
     )
@@ -29,6 +29,6 @@ interface Storage {
      *
      * @param key The key for which to remove the value.
      */
-    fun remove(key: String)
+    suspend fun remove(key: String)
 
 }
