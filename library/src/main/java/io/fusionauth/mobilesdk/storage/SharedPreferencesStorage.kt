@@ -43,7 +43,7 @@ class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth
      * @param key The key used to retrieve the value.
      * @return The value associated with the key, or null if the key does not exist.
      */
-    override fun get(key: String): String? {
+    override suspend fun get(key: String): String? {
         return this.sharedPreferences.getString(key, null)
     }
 
@@ -53,7 +53,7 @@ class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth
      * @param key The key to associate with the value.
      * @param content The value to be stored. It can be of any type.
      */
-    override fun set(
+    override suspend fun set(
         key: String,
         content: Any,
     ) {
@@ -65,7 +65,7 @@ class SharedPreferencesStorage(context: Context, fileName: String = "_fusionauth
      *
      * @param key The key of the value to be removed.
      */
-    override fun remove(key: String) {
+    override suspend fun remove(key: String) {
         this.sharedPreferences.edit { remove(key) }
     }
 }

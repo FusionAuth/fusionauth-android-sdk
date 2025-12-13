@@ -15,6 +15,7 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import io.fusionauth.mobilesdk.AuthorizationManager
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -85,13 +86,13 @@ internal class FullEnd2EndTest {
         logger.info("Token activity displayed")
 
         // Check refresh token functionality
-        val expirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+        val expirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
         logger.info("Check refresh token")
         onView(withId(R.id.refresh_token))
             .check(matches(isDisplayed()))
             .perform(click())
 
-        val newExpirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+        val newExpirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
 
         logger.info("Token was refreshed (${expirationTime} to ${newExpirationTime})")
         check(newExpirationTime > expirationTime) { "Token was not refreshed" }
@@ -193,13 +194,13 @@ internal class FullEnd2EndTest {
         logger.info("Token activity displayed for user in reset configuration tenant")
 
         // Check refresh token functionality
-        val expirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+        val expirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
         logger.info("Check refresh token")
         onView(withId(R.id.refresh_token))
             .check(matches(isDisplayed()))
             .perform(click())
 
-        val newExpirationTime = AuthorizationManager.getAccessTokenExpirationTime()!!
+        val newExpirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
 
         logger.info("Token was refreshed (${expirationTime} to ${newExpirationTime})")
         check(newExpirationTime > expirationTime) { "Token was not refreshed" }
