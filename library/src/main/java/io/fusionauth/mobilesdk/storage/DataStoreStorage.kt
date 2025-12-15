@@ -1,12 +1,17 @@
 package io.fusionauth.mobilesdk.storage
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import java.io.IOException
 
 // Define the DataStore instance as an extension on Context.
 // The name "fusionauth_settings" is the file name where preferences will be stored.
@@ -29,7 +34,18 @@ class DataStoreStorage(private val context: Context) : Storage {
      */
     override suspend fun get(key: String): String? {
         val prefKey = stringPreferencesKey(key)
-        return context.dataStore.data.first()[prefKey]
+        return context.dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    Log.e("DataStoreStorage", "Error reading from DataStore", exception)
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[prefKey]
+            }.first()
     }
 
     /**

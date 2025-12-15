@@ -479,9 +479,7 @@ class OAuthAuthorizationService internal constructor(
         val config = getConfiguration()
         val authService = getAuthorizationService()
 
-        val tm = tokenManager ?: throw AuthorizationException("TokenManager not available or not configured.")
-
-        val authState = tm.getAuthState()
+        val authState = tokenManager?.getAuthState()
             ?: throw AuthorizationException("Not authenticated.")
 
         val refreshToken = authState.refreshToken

@@ -31,7 +31,6 @@ import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.DataStoreStorage
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.io.IOException
@@ -267,12 +266,12 @@ class TokenActivity : AppCompatActivity() {
     private fun signOut() {
         lifecycleScope.launch {
             AuthorizationManager.clearState()
-        }
 
-        val mainIntent = Intent(this, LoginActivity::class.java)
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(mainIntent)
-        finish()
+            val mainIntent = Intent(this@TokenActivity, LoginActivity::class.java)
+            mainIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(mainIntent)
+            finish()
+        }
     }
 
     @MainThread
