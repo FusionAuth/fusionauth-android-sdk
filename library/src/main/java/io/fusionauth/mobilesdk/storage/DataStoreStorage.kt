@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 // Define the DataStore instance as an extension on Context.
-// The name "fusionauth_settings" is the file name where preferences will be stored.
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "fusionauth_settings")
+// The name "_fusionauth_mobile_sdk" is the file name where preferences will be stored.
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "_fusionauth_mobile_sdk")
 
 /**
  * An implementation of the [Storage] interface that uses Android's Jetpack DataStore for persistence.
@@ -37,7 +37,7 @@ class DataStoreStorage(private val context: Context) : Storage {
         return context.dataStore.data
             .catch { exception ->
                 if (exception is IOException) {
-                    Log.e("DataStoreStorage", "Error reading from DataStore", exception)
+                    Log.e(TAG, "Error reading from DataStore: " + exception.message)
                     emit(emptyPreferences())
                 } else {
                     throw exception
@@ -73,5 +73,9 @@ class DataStoreStorage(private val context: Context) : Storage {
         context.dataStore.edit { settings ->
             settings.remove(prefKey)
         }
+    }
+
+    companion object {
+        private const val TAG = "DataStoreStorage"
     }
 }
