@@ -509,7 +509,7 @@ class OAuthAuthorizationService internal constructor(
             idToken = response.idToken,
             refreshToken = response.refreshToken ?: authState.refreshToken,
         )
-        tm.saveAuthState(newAuthState)
+        tokenManager.saveAuthState(newAuthState)
 
         return response.accessToken
     }
