@@ -27,7 +27,6 @@ import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
 import io.fusionauth.mobilesdk.storage.DataStoreStorage
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
 import kotlinx.coroutines.launch
 
 /**
