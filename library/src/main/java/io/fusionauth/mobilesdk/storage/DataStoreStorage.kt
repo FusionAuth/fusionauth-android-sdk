@@ -11,7 +11,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 
 // Define the DataStore instance as an extension on Context.
 // The name "_fusionauth_mobile_sdk" is the file name where preferences will be stored.
@@ -36,12 +35,8 @@ class DataStoreStorage(private val context: Context) : Storage {
         val prefKey = stringPreferencesKey(key)
         return context.dataStore.data
             .catch { exception ->
-                if (exception is IOException) {
-                    Log.e(TAG, "Error reading from DataStore: " + exception.message)
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
-                }
+                Log.e(TAG, "Error reading from DataStore" )
+                emit(emptyPreferences())
             }
             .map { preferences ->
                 preferences[prefKey]
