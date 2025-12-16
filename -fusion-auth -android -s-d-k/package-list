@@ -52,6 +52,12 @@ $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions/cancelIntent/#/
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions/postLogoutRedirectUri/#/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.oauth/-o-auth-logout-options/post-logout-redirect-uri.html
 $dokka.location:io.fusionauth.mobilesdk.oauth/OAuthLogoutOptions/state/#/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.oauth/-o-auth-logout-options/state.html
 $dokka.location:io.fusionauth.mobilesdk.storage////PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/index.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage.Companion///PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/-companion/index.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage///PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/index.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage/DataStoreStorage/#<ERROR CLASS> ERROR CLASS: Symbol not found for Context/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/-data-store-storage.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage/get/#kotlin.String/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/get.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage/remove/#kotlin.String/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/remove.html
+$dokka.location:io.fusionauth.mobilesdk.storage/DataStoreStorage/set/#kotlin.String#kotlin.Any/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-data-store-storage/set.html
 $dokka.location:io.fusionauth.mobilesdk.storage/MemoryStorage///PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-memory-storage/index.html
 $dokka.location:io.fusionauth.mobilesdk.storage/MemoryStorage/MemoryStorage/#/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-memory-storage/-memory-storage.html
 $dokka.location:io.fusionauth.mobilesdk.storage/MemoryStorage/get/#kotlin.String/PointingToDeclaration/-fusion-auth -android -s-d-k/io.fusionauth.mobilesdk.storage/-memory-storage/get.html
