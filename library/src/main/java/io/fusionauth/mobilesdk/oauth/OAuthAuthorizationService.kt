@@ -477,44 +477,41 @@ class OAuthAuthorizationService internal constructor(
      */
     private suspend fun freshAccessTokenInternal(): String? {
         val config = getConfiguration()
+        val authService = getAuthorizationService()
 
-        return suspendCoroutine {
-            val authService = getAuthorizationService()
+        val authState = tokenManager?.getAuthState()
+            ?: throw AuthorizationException("Not authenticated.")
 
-            val refreshToken = tokenManager?.getAuthState()?.refreshToken
-            if (refreshToken == null) {
-                it.resumeWithException(AuthorizationException("No refresh token available"))
-                return@suspendCoroutine
-            }
+        val refreshToken = authState.refreshToken
+            ?: throw AuthorizationException("No refresh token available")
 
+        val response = suspendCoroutine<TokenResponse> { continuation ->
             authService.performTokenRequest(
-                TokenRequest.Builder(
-                    config,
-                    clientId
-                )
+                TokenRequest.Builder(config, clientId)
                     .setGrantType(GrantTypeValues.REFRESH_TOKEN)
                     .setRefreshToken(refreshToken)
                     .build(),
                 appAuthState.clientAuthentication
             ) { response, exception ->
+                appAuthState.update(response, exception)
                 if (response != null) {
-                    val authState = tokenManager?.getAuthState()
-                    if (authState != null) {
-                        val newAuthState = authState.copy(
-                            accessToken = response.accessToken,
-                            accessTokenExpirationTime = response.accessTokenExpirationTime,
-                            idToken = response.idToken,
-                            refreshToken = response.refreshToken,
-                        )
-                        tokenManager?.saveAuthState(newAuthState)
-                    }
-                    it.resume(response.accessToken)
+                    continuation.resume(response)
                 } else {
-                    it.resumeWithException(exception?.let { ex -> AuthorizationException(ex) }
+                    continuation.resumeWithException(exception?.let { AuthorizationException(it) } 
                         ?: AuthorizationException("Unknown error"))
                 }
             }
         }
+
+        val newAuthState = authState.copy(
+            accessToken = response.accessToken,
+            accessTokenExpirationTime = response.accessTokenExpirationTime,
+            idToken = response.idToken,
+            refreshToken = response.refreshToken ?: authState.refreshToken,
+        )
+        tokenManager.saveAuthState(newAuthState)
+
+        return response.accessToken
     }
 
     /**

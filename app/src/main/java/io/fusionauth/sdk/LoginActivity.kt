@@ -26,7 +26,7 @@ import io.fusionauth.mobilesdk.AuthorizationConfiguration
 import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
+import io.fusionauth.mobilesdk.storage.DataStoreStorage
 import kotlinx.coroutines.launch
 
 /**
@@ -41,15 +41,17 @@ class LoginActivity : AppCompatActivity() {
         if (!AuthorizationManager.isInitialized()) {
             AuthorizationManager.initialize(
                 AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-                SharedPreferencesStorage(this)
+                DataStoreStorage(this)
             )
         }
 
-        if (AuthorizationManager.isAuthenticated()) {
-            Log.i(TAG, "User is already authenticated, proceeding to token activity")
-            startActivity(Intent(this, TokenActivity::class.java))
-            finish()
-            return
+        lifecycleScope.launch {
+            if (AuthorizationManager.isAuthenticated()) {
+                Log.i(TAG, "User is already authenticated, proceeding to token activity")
+                startActivity(Intent(this@LoginActivity, TokenActivity::class.java))
+                finish()
+                return@launch
+            }
         }
 
         setContentView(R.layout.activity_login)

@@ -30,7 +30,7 @@ import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
+import io.fusionauth.mobilesdk.storage.DataStoreStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.io.IOException
@@ -58,7 +58,7 @@ class TokenActivity : AppCompatActivity() {
         if (!AuthorizationManager.isInitialized()) {
             AuthorizationManager.initialize(
                 AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-                SharedPreferencesStorage(this)
+                DataStoreStorage(this)
             )
         }
 
@@ -75,21 +75,20 @@ class TokenActivity : AppCompatActivity() {
         }
 
         Logger.getLogger(TAG).info("Checking for authorization response")
-        if (AuthorizationManager.isAuthenticated()) {
-            fetchUserInfoAndDisplayAuthorized(/*authState.getAccessToken()*/)
-            return
-        }
-
         lifecycleScope.launch {
-            displayLoading("Exchanging authorization code")
-            try {
-                val authState: FusionAuthState = AuthorizationManager.oAuth(this@TokenActivity)
-                    .handleRedirect(intent)
-                Log.i(TAG, authState.toString())
+            if (AuthorizationManager.isAuthenticated()) {
                 fetchUserInfoAndDisplayAuthorized()
-            } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to exchange authorization code", ex)
-                displayNotAuthorized("Authorization failed")
+            } else {
+                displayLoading("Exchanging authorization code")
+                try {
+                    val authState: FusionAuthState = AuthorizationManager.oAuth(this@TokenActivity)
+                        .handleRedirect(intent)
+                    Log.i(TAG, authState.toString())
+                    fetchUserInfoAndDisplayAuthorized()
+                } catch (ex: AuthorizationException) {
+                    Log.e(TAG, "Failed to exchange authorization code", ex)
+                    displayNotAuthorized("Authorization failed")
+                }
             }
         }
     }
@@ -129,7 +128,7 @@ class TokenActivity : AppCompatActivity() {
     }
 
     @MainThread
-    private fun displayAuthorized() {
+    private suspend fun displayAuthorized() {
         findViewById<View>(R.id.authorized).visibility = View.VISIBLE
         findViewById<View>(R.id.not_authorized).visibility = View.GONE
         findViewById<View>(R.id.loading_container).visibility = View.GONE
@@ -214,7 +213,7 @@ class TokenActivity : AppCompatActivity() {
                 showSnackbar("Failed to parse user info")
             }
 
-            runOnUiThread { this@TokenActivity.displayAuthorized() }
+            this@TokenActivity.displayAuthorized()
         }
     }
 
@@ -265,12 +264,14 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun signOut() {
-        AuthorizationManager.clearState()
+        lifecycleScope.launch {
+            AuthorizationManager.clearState()
 
-        val mainIntent = Intent(this, LoginActivity::class.java)
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(mainIntent)
-        finish()
+            val mainIntent = Intent(this@TokenActivity, LoginActivity::class.java)
+            mainIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(mainIntent)
+            finish()
+        }
     }
 
     @MainThread
