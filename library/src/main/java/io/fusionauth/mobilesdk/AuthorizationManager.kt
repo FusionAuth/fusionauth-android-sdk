@@ -191,7 +191,7 @@ object AuthorizationManager {
         return isInitialized
     }
 
-    internal fun getConfiguration(): AuthorizationConfiguration {
+    public fun getConfiguration(): AuthorizationConfiguration {
         ensureInitialized()
         return configuration
     }
