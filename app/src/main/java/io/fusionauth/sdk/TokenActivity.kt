@@ -14,15 +14,19 @@
 package io.fusionauth.sdk
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthorizationConfiguration
@@ -41,6 +45,7 @@ import java.text.NumberFormat
 import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
 import kotlin.math.floor
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Displays the authorized state of the user. This activity is provided with the outcome of the
@@ -51,13 +56,16 @@ import kotlin.math.floor
 @Suppress("TooManyFunctions")
 class TokenActivity : AppCompatActivity() {
     private val mUserInfo = AtomicReference<UserInfo?>()
+    private lateinit var configurationManager: ConfigurationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        configurationManager = ConfigurationManager()
+
         if (!AuthorizationManager.isInitialized()) {
             AuthorizationManager.initialize(
-                AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
+                configurationManager.getPrimaryConfig(),
                 DataStoreStorage(this)
             )
         }
@@ -144,6 +152,13 @@ class TokenActivity : AppCompatActivity() {
             }
         }
 
+        val tenantId = AuthorizationManager.getConfiguration().tenant
+        if (tenantId != null) {
+            (findViewById<View>(R.id.tenant_id_value) as TextView).text = tenantId
+        } else {
+            findViewById<View>(R.id.configuration_info).visibility = View.GONE
+        }
+
         val changeTextInput: EditText = findViewById(R.id.change_text_input)
         changeTextInput.addTextChangedListener(MoneyChangedHandler(changeTextInput))
         findViewById<View>(R.id.sign_out).setOnClickListener {
@@ -185,7 +200,7 @@ class TokenActivity : AppCompatActivity() {
             welcomeView.text = String.format(welcomeTemplate, name)
         }
 
-        (findViewById<View>(R.id.auth_granted_email) as TextView).text = email
+        (findViewById<View>(R.id.account_balance) as TextView).text = getString(R.string.account_balance_value)
     }
 
     private fun refreshToken() {
@@ -229,7 +244,9 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun endSession() {
-        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config)
+        lifecycleScope.launch {
+            logoutAndResetConfiguration(configurationManager.getPrimaryConfig())
+        }
     }
 
     @Suppress("MagicNumber")
@@ -276,30 +293,72 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun resetConfiguration() {
-        endSessionAndSetConfigurationFromResource(R.raw.fusionauth_config_reset_configuration)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_reset_configuration, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getColor(
+                this,
+                android.R.color.transparent
+            ).toDrawable())
+
+        val switchToPrimaryButton = dialogView.findViewById<Button>(R.id.switch_to_primary_button)
+        val switchToAlternativeButton = dialogView.findViewById<Button>(R.id.switch_to_alternative_button)
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancel_button)
+
+        val isPrimary = configurationManager.isPrimaryConfig(AuthorizationManager.getConfiguration())
+        switchToPrimaryButton.isEnabled = !isPrimary
+        switchToAlternativeButton.isEnabled = isPrimary
+
+        switchToPrimaryButton.setOnClickListener {
+            lifecycleScope.launch {
+                switchConfigurationAndRestart(configurationManager.getPrimaryConfig())
+                dialog.dismiss()
+            }
+        }
+
+        switchToAlternativeButton.setOnClickListener {
+            lifecycleScope.launch {
+                switchConfigurationAndRestart(configurationManager.getAlternativeConfig())
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
-    private fun endSessionAndSetConfigurationFromResource(resource: Int) {
-        lifecycleScope.launch {
-            try {
-                intent.putExtra("endSession", true)
-                AuthorizationManager
-                    .oAuth(this@TokenActivity)
-                    .logout(
-                        Intent(this@TokenActivity, LoginActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    )
+    private suspend fun switchConfigurationAndRestart(config: AuthorizationConfiguration) {
+        AuthorizationManager.clearState()
+        AuthorizationManager.resetConfiguration(config)
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
 
-                AuthorizationManager.clearState()
+    private suspend fun logoutAndResetConfiguration(config: AuthorizationConfiguration) {
+        try {
+            intent.putExtra("endSession", true)
+            AuthorizationManager
+                .oAuth(this@TokenActivity)
+                .logout(
+                    Intent(this@TokenActivity, LoginActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                )
 
-                // set a new configuration
-                AuthorizationManager.resetConfiguration(
-                    AuthorizationConfiguration.fromResources(
-                        this@TokenActivity, resource))
-            } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to set the auth configuration")
-                showSnackbar("Failed to set the auth configuration -  " + ex.message)
-            }
+            AuthorizationManager.clearState()
+
+            // set a new configuration
+            AuthorizationManager.resetConfiguration(config)
+        } catch (ex: AuthorizationException) {
+            Log.e(TAG, "Failed to set the auth configuration")
+            showSnackbar("Failed to set the auth configuration -  " + ex.message)
         }
     }
 
