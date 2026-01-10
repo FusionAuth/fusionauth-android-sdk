@@ -40,24 +40,15 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="20dp">
 
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                    <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            app:srcCompat="@drawable/ic_settings"
-                            android:contentDescription="@null"
-                            app:tint="?android:attr/textColorSecondary"/>
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Active Configuration"
-                            style="@style/Base.TextAppearance.AppCompat.Small"/>
-                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/active_configuration"
+                    app:drawableStartCompat="@drawable/ic_settings"
+                    app:drawableTint="?android:attr/textColorSecondary"
+                    style="@style/Base.TextAppearance.AppCompat.Small"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

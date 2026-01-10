@@ -24,4 +24,5 @@
     <string name="reset_config_switch_to_alternative">Switch to Alternative Tenant</string>
     <string name="reset_config_switch_to_primary">Switch to Primary Tenant</string>
     <string name="reset_config_cancel">Cancel</string>
+    <string name="active_configuration">Active Configuration</string>
 </resources>
