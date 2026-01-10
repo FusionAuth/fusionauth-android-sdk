@@ -45,6 +45,7 @@ import java.text.NumberFormat
 import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
 import kotlin.math.floor
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Displays the authorized state of the user. This activity is provided with the outcome of the
@@ -199,7 +200,7 @@ class TokenActivity : AppCompatActivity() {
             welcomeView.text = String.format(welcomeTemplate, name)
         }
 
-        (findViewById<View>(R.id.account_balance) as TextView).text = "$100.00"
+        (findViewById<View>(R.id.account_balance) as TextView).text = getString(R.string.account_balance_value)
     }
 
     private fun refreshToken() {
@@ -297,7 +298,11 @@ class TokenActivity : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-        dialog.window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, android.R.color.transparent)))
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getColor(
+                this,
+                android.R.color.transparent
+            ).toDrawable())
 
         val switchToPrimaryButton = dialogView.findViewById<Button>(R.id.switch_to_primary_button)
         val switchToAlternativeButton = dialogView.findViewById<Button>(R.id.switch_to_alternative_button)
