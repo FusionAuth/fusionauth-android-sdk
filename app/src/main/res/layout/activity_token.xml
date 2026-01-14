@@ -80,197 +80,189 @@
 
             </LinearLayout>
 
+            <!--
+            displayed while token requests are occurring
+            -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                    android:id="@+id/loading_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp">
 
-                <!--
-                displayed while token requests are occurring
-                -->
-                <LinearLayout
-                        android:id="@+id/loading_container"
+                <TextView
+                        android:id="@+id/loading_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                <ProgressBar
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="16dp">
+                        android:indeterminate="true"/>
 
-                    <TextView
-                            android:id="@+id/loading_description"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+            </LinearLayout>
 
-                    <ProgressBar
-                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:indeterminate="true"/>
+            <!-- Shown when authorization has failed. -->
+            <LinearLayout
+                    android:id="@+id/not_authorized"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                </LinearLayout>
-
-                <!-- Shown when authorization has failed. -->
-                <LinearLayout
-                        android:id="@+id/not_authorized"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/not_authorized"
-                            style="@style/Base.TextAppearance.AppCompat.Title" />
-
-                    <TextView
-                            android:id="@+id/explanation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="8dp" />
-
-                    <Button
-                            android:id="@+id/reauth"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/reauthorize" />
-
-                </LinearLayout>
-
-                <!-- Shown when the user is authorized, and there are no pending operations -->
-                <LinearLayout
-                        android:id="@+id/authorized"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
-
-                    <TextView
-                            android:id="@+id/auth_granted"
-                            style="@style/Base.TextAppearance.AppCompat.Title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="32dp"
-                            android:textColor="@android:color/black"
-                            tools:text="Welcome Richard Hendricks" />
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="32dp"
-                            android:text="Your balance is:"
-                            style="@style/Base.TextAppearance.AppCompat.Medium"
-                            />
-
-                    <TextView
-                            android:id="@+id/account_balance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="48sp"
-                            android:textColor="@android:color/black"
-                            tools:text="$0.00" />
-
-                    <TextView
-                            android:id="@+id/no_access_token_returned"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/no_access_token_returned"
-                            android:visibility="gone"
-                            style="@style/Base.TextAppearance.AppCompat.Body1" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="20dp"
-                        android:background="?android:attr/listDivider" />
-
-                    <Button
-                        android:id="@+id/refresh_token"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/refresh_token"
-                        android:textColor="@color/colorAccent" />
+                        android:layout_gravity="center"
+                        android:text="@string/not_authorized"
+                        style="@style/Base.TextAppearance.AppCompat.Title" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reset_configuration"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                <TextView
+                        android:id="@+id/explanation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        app:cornerRadius="24dp"
-                        android:text="@string/reset_configuration" />
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/sign_out"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                <Button
+                        android:id="@+id/reauth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        app:cornerRadius="24dp"
-                        android:text="@string/sign_out" />
+                        android:layout_gravity="center"
+                        android:text="@string/reauthorize" />
 
-                     <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="20dp"
-                        android:background="?android:attr/listDivider" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/changebank_title"
+            <!-- Shown when the user is authorized, and there are no pending operations -->
+            <LinearLayout
+                    android:id="@+id/authorized"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:id="@+id/auth_granted"
                         style="@style/Base.TextAppearance.AppCompat.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:textColor="@android:color/black"
+                        tools:text="Welcome Richard Hendricks" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="Your balance is:"
+                        style="@style/Base.TextAppearance.AppCompat.Medium"
+                        />
+
+                <TextView
+                        android:id="@+id/account_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="48sp"
+                        android:textColor="@android:color/black"
+                        tools:text="$0.00" />
+
+                <TextView
+                        android:id="@+id/no_access_token_returned"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:gravity="center"
-                        android:text="@string/changebank_title"
-                        android:textColor="@color/colorAccent" />
+                        android:text="@string/no_access_token_returned"
+                        android:visibility="gone"
+                        style="@style/Base.TextAppearance.AppCompat.Body1" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="?android:attr/listDivider" />
 
-                        <TextView
-                            android:id="@+id/change_text_input_prepend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/change_text_input_prepend" />
+                <Button
+                    android:id="@+id/refresh_token"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/refresh_token"
+                    android:textColor="@color/colorAccent" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/change_text_input"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:inputType="numberDecimal"
-                            android:hint="@string/change_text_input_placeholder"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reset_configuration"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="24dp"
+                    android:text="@string/reset_configuration" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/change_button"
-                            style="@style/Widget.MaterialComponents.Button"
-                            android:text="@string/change_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/sign_out"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="24dp"
+                    android:text="@string/sign_out" />
+
+                 <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:id="@+id/changebank_title"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/changebank_title"
+                    android:textColor="@color/colorAccent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/change_result_text_view"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
+                        android:id="@+id/change_text_input_prepend"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/change_result_text_view"
-                        style="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:text="@string/change_text_input_prepend" />
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/change_text_input"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/change_text_input_placeholder"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/change_button"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:text="@string/change_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/change_result_text_view"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/change_result_text_view"
+                    style="@style/Base.TextAppearance.AppCompat.Medium" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

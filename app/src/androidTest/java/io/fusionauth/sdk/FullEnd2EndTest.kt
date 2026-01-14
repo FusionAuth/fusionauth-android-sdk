@@ -158,7 +158,7 @@ internal class FullEnd2EndTest {
         logger.info("Login button clicked")
 
         logger.info("Waiting for login form to appear")
-        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
         handleFALoginForm(device, USERNAME, PASSWORD)
 
@@ -173,6 +173,9 @@ internal class FullEnd2EndTest {
         onView(withId(R.id.reset_configuration))
             .check(matches(isDisplayed()))
             .perform(click())
+
+        logger.info("Switch to alternative tenant")
+        onView(withId(R.id.switch_to_alternative_button)).perform(click())
 
         // Check that the login activity is displayed
         logger.info("Check that the login activity is displayed")
@@ -209,6 +212,19 @@ internal class FullEnd2EndTest {
 
         // Click the sign-out button
         logger.info("Click sign out button for user")
+        onView(withId(R.id.sign_out)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        logger.info("Click login button for user login")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        // Click the sign-out button
+        logger.info("Click sign out button for second user")
         onView(withId(R.id.sign_out)).perform(click())
 
         // Check that the login activity is displayed
@@ -273,6 +289,8 @@ internal class FullEnd2EndTest {
     @After
     fun tearDown() {
         logger.info("Tearing down test")
+
+        runBlocking { AuthorizationManager.clearState() }
 
         Intents.release()
     }
