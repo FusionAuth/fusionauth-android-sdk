@@ -50,23 +50,6 @@ internal class FullEnd2EndTest {
         automation.serviceInfo = info
     }
 
-    /**
-     * Executes an end-to-end test for the login functionality.
-     *
-     * It performs the following steps:
-     *
-     * 1. Clicks the login button.
-     * 2. Wait for the login form to appear.
-     * 3. Sets the username and password on the login form.
-     * 4. Submits the form by pressing the enter key.
-     * 5. Wait for the token activity to be displayed.
-     * 6. Checks the refresh token functionality.
-     * 7. Checks if the token was refreshed.
-     * 8. Clicks the sign-out button.
-     * 9. Wait for the login activity to be displayed.
-     *
-     * This test is repeated twice to ensure logout was successful and the login form is displayed again.
-     */
     @Test
     @Repeat(2)
     fun e2eTest() {
@@ -132,34 +115,14 @@ internal class FullEnd2EndTest {
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
     }
 
-    /**
-     * Executes an end-to-end test for the login functionality where the configuration is reset to login
-     * to a different tenant.  It performs the following steps:
-     * 1. Clicks the login button.
-     * 2. Waits for the login form to appear.
-     * 3. Sets the username and password on the login form.
-     * 4. Submits the form by pressing the enter key.
-     * 5. Waits for the token activity to be displayed.
-     * 6. Checks the reset configuration functionality.
-     * 7. Waits for the login activity to be displayed.
-     * 8. Clicks the login button.
-     * 9. Waits for the login form to appear.
-     * 10. Sets the username and password on the login form.
-     * 11. Submits the form by pressing the enter key.
-     * 12. Checks the refresh token functionality.
-     * 13. Checks if the token was refreshed.
-     * 14. Clicks the sign-out button.
-     * 15. Waits for the login activity to be displayed.
-     */
     @Test
-    fun e2eTestResetConfiguration() {
+    fun e2eTestSwitchFromPrimaryToAlternative() {
         logger.info("Click login button")
         onView(withId(R.id.start_auth)).perform(click())
         logger.info("Login button clicked")
 
         logger.info("Waiting for login form to appear")
-        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-
+        var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         handleFALoginForm(device, USERNAME, PASSWORD)
 
         // Check that the token activity is displayed
@@ -182,36 +145,20 @@ internal class FullEnd2EndTest {
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
 
-        logger.info("Click login button for user login")
+        logger.info("Click login button for alternative user login")
         onView(withId(R.id.start_auth)).perform(click())
         logger.info("Login button clicked")
 
         logger.info("Waiting for login form to appear")
-
         handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
 
         // Check that the token activity is displayed
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
-
         logger.info("Token activity displayed for user in reset configuration tenant")
 
-        // Check refresh token functionality
-        val expirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
-        logger.info("Check refresh token")
-        onView(withId(R.id.refresh_token))
-            .check(matches(isDisplayed()))
-            .perform(click())
-
-        val newExpirationTime = runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
-
-        logger.info("Token was refreshed (${expirationTime} to ${newExpirationTime})")
-        check(newExpirationTime > expirationTime) { "Token was not refreshed" }
-
-        Thread.sleep(1000)
-
         // Click the sign-out button
-        logger.info("Click sign out button for user")
+        logger.info("Click sign out button for alternative user")
         onView(withId(R.id.sign_out)).perform(click())
 
         // Check that the login activity is displayed
@@ -219,12 +166,134 @@ internal class FullEnd2EndTest {
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
         onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
 
-        logger.info("Click login button for user login")
+        logger.info("Click login button")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        logger.info("Waiting for login form to appear")
+        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+        // Click the sign-out button
+        logger.info("Click sign out button for primary user")
+        onView(withId(R.id.sign_out)).perform(click())
+    }
+
+    @Test
+    fun e2eTestSwitchFromAlternativeToPrimary() {
+        // Start with the primary configuration, log in, and switch to alternative
+        logger.info("Click login button")
+        onView(withId(R.id.start_auth)).perform(click())
+        var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        handleFALoginForm(device, USERNAME, PASSWORD)
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        logger.info("Reset configuration to switch to alternative")
+        onView(withId(R.id.reset_configuration)).perform(click())
+        onView(withId(R.id.switch_to_alternative_button)).perform(click())
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+
+        // Now with alternative config, log in with the alternative user
+        logger.info("Click login button for alternative user")
+        onView(withId(R.id.start_auth)).perform(click())
+        handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Logged in with alternative user")
+
+        // Now, test switching back to primary
+        logger.info("Reset configuration to switch back to primary")
+        onView(withId(R.id.reset_configuration)).perform(click())
+        onView(withId(R.id.switch_to_primary_button)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        // Log in with the primary user to confirm
+        logger.info("Click login button for primary user")
+        onView(withId(R.id.start_auth)).perform(click())
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Successfully logged in with primary user again")
+
+        // Now, test switching back to alternative
+        logger.info("Reset configuration to switch back to alternative")
+        onView(withId(R.id.reset_configuration)).perform(click())
+        onView(withId(R.id.switch_to_alternative_button)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        // Log in with the alternative user to confirm
+        logger.info("Click login button for alternative user")
+        onView(withId(R.id.start_auth)).perform(click())
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Successfully logged in with alternative user again")
+
+        // Click the sign-out button
+        logger.info("Click sign out button for alternative user")
+        onView(withId(R.id.sign_out)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        logger.info("Click login button for primary user login")
         onView(withId(R.id.start_auth)).perform(click())
         logger.info("Login button clicked")
 
         // Click the sign-out button
-        logger.info("Click sign out button for second user")
+        logger.info("Click sign out button for primary user")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        onView(withId(R.id.sign_out)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun e2eTestCancelConfigurationSwitch() {
+        // 1. Login with the primary user
+        logger.info("Click login button")
+        onView(withId(R.id.start_auth)).perform(click())
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        handleFALoginForm(device, USERNAME, PASSWORD)
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        // 2. Get token expiration before cancel
+        val expirationTimeBefore =
+            runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
+
+        // 3. Open reset dialog and click cancel
+        logger.info("Click reset configuration")
+        onView(withId(R.id.reset_configuration)).perform(click())
+        logger.info("Click cancel button on dialog")
+        onView(withId(R.id.cancel_button)).perform(click())
+
+        // 4. Verify we are still on TokenActivity and the session is active
+        logger.info("Verify still on TokenActivity")
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+
+        // 5. Refresh token to prove session is still active
+        logger.info("Click refresh token to confirm session is active")
+        onView(withId(R.id.refresh_token)).perform(click())
+        val expirationTimeAfter =
+            runBlocking { AuthorizationManager.getAccessTokenExpirationTime()!! }
+        logger.info("Token was refreshed (${expirationTimeBefore} to ${expirationTimeAfter})")
+        check(expirationTimeAfter > expirationTimeBefore) { "Token was not refreshed after canceling config switch" }
+
+        // Click the sign-out button
+        logger.info("Click sign out button for user")
         onView(withId(R.id.sign_out)).perform(click())
 
         // Check that the login activity is displayed
