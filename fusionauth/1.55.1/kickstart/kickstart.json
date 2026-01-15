@@ -229,8 +229,6 @@
         "user": {
           "birthDate": "1985-12-23",
           "email": "#{userEmailResetConfiguration}",
-          "firstName": "Mike",
-          "lastName": "Hendricks",
           "password": "#{userPasswordResetConfiguration}"
         },
         "registration": {
