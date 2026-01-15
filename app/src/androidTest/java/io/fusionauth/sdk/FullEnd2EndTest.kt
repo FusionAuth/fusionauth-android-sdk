@@ -183,7 +183,7 @@ internal class FullEnd2EndTest {
         // Start with the primary configuration, log in, and switch to alternative
         logger.info("Click login button")
         onView(withId(R.id.start_auth)).perform(click())
-        var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         handleFALoginForm(device, USERNAME, PASSWORD)
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
