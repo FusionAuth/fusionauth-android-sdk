@@ -26,4 +26,5 @@
     <string name="reset_config_cancel">Cancel</string>
     <string name="active_configuration">Active Configuration</string>
     <string name="your_balance_is">Your balance is:</string>
+    <string name="tenant_label">Tenant: </string>
 </resources>

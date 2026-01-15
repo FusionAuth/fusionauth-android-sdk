@@ -45,7 +45,6 @@ import java.text.NumberFormat
 import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
 import kotlin.math.floor
-import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Displays the authorized state of the user. This activity is provided with the outcome of the
@@ -298,11 +297,7 @@ class TokenActivity : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-        dialog.window?.setBackgroundDrawable(
-            ContextCompat.getColor(
-                this,
-                android.R.color.transparent
-            ).toDrawable())
+        dialog.window?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, android.R.color.transparent)))
 
         val switchToPrimaryButton = dialogView.findViewById<Button>(R.id.switch_to_primary_button)
         val switchToAlternativeButton = dialogView.findViewById<Button>(R.id.switch_to_alternative_button)
