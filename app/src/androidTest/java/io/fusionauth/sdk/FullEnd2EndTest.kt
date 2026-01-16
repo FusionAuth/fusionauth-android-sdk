@@ -122,7 +122,7 @@ internal class FullEnd2EndTest {
         logger.info("Login button clicked")
 
         logger.info("Waiting for login form to appear")
-        var device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         handleFALoginForm(device, USERNAME, PASSWORD)
 
         // Check that the token activity is displayed
