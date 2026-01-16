@@ -218,6 +218,11 @@ internal class FullEnd2EndTest {
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         logger.info("Successfully logged in with primary user again")
 
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Token activity displayed")
+
         // Now, test switching back to alternative
         logger.info("Reset configuration to switch back to alternative")
         onView(withId(R.id.reset_configuration)).perform(click())
@@ -235,6 +240,11 @@ internal class FullEnd2EndTest {
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         logger.info("Successfully logged in with alternative user again")
 
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Token activity displayed")
+
         // Click the sign-out button
         logger.info("Click sign out button for alternative user")
         onView(withId(R.id.sign_out)).perform(click())
@@ -247,6 +257,11 @@ internal class FullEnd2EndTest {
         logger.info("Click login button for primary user login")
         onView(withId(R.id.start_auth)).perform(click())
         logger.info("Login button clicked")
+
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Token activity displayed")
 
         // Click the sign-out button
         logger.info("Click sign out button for primary user")
