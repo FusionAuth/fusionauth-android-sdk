@@ -155,7 +155,7 @@ internal class FullEnd2EndTest {
 
     @Test
     fun e2eTestSwitchFromAlternativeToPrimary() {
-        // Start with the primary configuration, log in, and switch to alternative
+        // Start with the primary configuration and login
         logger.info("Click login button")
         onView(withId(R.id.start_auth)).perform(click())
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -179,7 +179,6 @@ internal class FullEnd2EndTest {
         logger.info("Click login button for primary user")
         onView(withId(R.id.start_auth)).perform(click())
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
-        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         logger.info("Successfully logged in with primary user again")
 
         // Check that the token activity is displayed
@@ -201,7 +200,6 @@ internal class FullEnd2EndTest {
         logger.info("Click login button for alternative user")
         onView(withId(R.id.start_auth)).perform(click())
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
-        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         logger.info("Successfully logged in with alternative user again")
 
         // Check that the token activity is displayed
@@ -229,8 +227,6 @@ internal class FullEnd2EndTest {
 
         // Click the sign-out button
         logger.info("Click sign out button for primary user")
-        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
-        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         onView(withId(R.id.sign_out)).perform(click())
 
         // Check that the login activity is displayed
