@@ -145,8 +145,10 @@ internal class FullEnd2EndTest {
         onView(withId(R.id.start_auth)).perform(click())
         logger.info("Login button clicked")
 
-        logger.info("Waiting for login form to appear")
-        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Token activity displayed")
 
         // Click the sign-out button
         logger.info("Click sign out button for primary user")
