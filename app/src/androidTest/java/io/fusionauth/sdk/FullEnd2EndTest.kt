@@ -128,34 +128,9 @@ internal class FullEnd2EndTest {
         // Check that the token activity is displayed
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
-
         logger.info("Token activity displayed")
 
-        // Check reset configuration functionality
-        logger.info("Check reset configuration")
-        onView(withId(R.id.reset_configuration))
-            .check(matches(isDisplayed()))
-            .perform(click())
-
-        logger.info("Switch to alternative tenant")
-        onView(withId(R.id.switch_to_alternative_button)).perform(click())
-
-        // Check that the login activity is displayed
-        logger.info("Check that the login activity is displayed")
-        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
-        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
-
-        logger.info("Click login button for alternative user login")
-        onView(withId(R.id.start_auth)).perform(click())
-        logger.info("Login button clicked")
-
-        logger.info("Waiting for login form to appear")
-        handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
-
-        // Check that the token activity is displayed
-        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
-        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
-        logger.info("Token activity displayed for user in reset configuration tenant")
+        switchFromPrimaryToAlternative(device)
 
         // Click the sign-out button
         logger.info("Click sign out button for alternative user")
@@ -188,18 +163,7 @@ internal class FullEnd2EndTest {
         device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
 
-        logger.info("Reset configuration to switch to alternative")
-        onView(withId(R.id.reset_configuration)).perform(click())
-        onView(withId(R.id.switch_to_alternative_button)).perform(click())
-        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
-
-        // Now with alternative config, log in with the alternative user
-        logger.info("Click login button for alternative user")
-        onView(withId(R.id.start_auth)).perform(click())
-        handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
-        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
-        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
-        logger.info("Logged in with alternative user")
+        switchFromPrimaryToAlternative(device)
 
         // Now, test switching back to primary
         logger.info("Reset configuration to switch back to primary")
@@ -368,6 +332,42 @@ internal class FullEnd2EndTest {
                 return
             }
         }
+    }
+
+    /**
+     * Switch from the primary configuration to the alternative configuration and
+     * login with the alternative user.
+     *
+     * @param device The UiDevice used to interact with the UI.
+     */
+    private fun switchFromPrimaryToAlternative(
+        device: UiDevice
+    ) {
+        // Check reset configuration functionality
+        logger.info("Check reset configuration")
+        onView(withId(R.id.reset_configuration))
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        logger.info("Switch to alternative tenant")
+        onView(withId(R.id.switch_to_alternative_button)).perform(click())
+
+        // Check that the login activity is displayed
+        logger.info("Check that the login activity is displayed")
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/start_auth")), TIMEOUT_MILLIS)
+        onView(withId(R.id.start_auth)).check(matches(isDisplayed()))
+
+        logger.info("Click login button for alternative user login")
+        onView(withId(R.id.start_auth)).perform(click())
+        logger.info("Login button clicked")
+
+        logger.info("Waiting for login form to appear")
+        handleFALoginForm(device, USERNAME_RESET_CONFIGURATION, PASSWORD_RESET_CONFIGURATION)
+
+        // Check that the token activity is displayed
+        device.wait(Until.findObject(By.res("io.fusionauth.app:id/sign_out")), TIMEOUT_MILLIS)
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        logger.info("Token activity displayed for user in reset configuration tenant")
     }
 
     @After
