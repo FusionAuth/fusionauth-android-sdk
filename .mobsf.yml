@@ -1,5 +1,5 @@
 ignore-paths:
-  - app/
+  - app/**/*
 
 ignore-rules:
   - android_logging
