@@ -49,7 +49,7 @@ jobs:
       - name: Run mobsfscan
         uses: MobSF/mobsfscan@3d87bc570c4614d705547bddb521395663dba353 # 0.4.5
         with:
-          args: . --sarif --output mobsf.sarif.json || true
+          args: . --config .mobsf.yml --sarif --output mobsf.sarif.json || true
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
