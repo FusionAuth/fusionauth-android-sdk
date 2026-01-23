@@ -1,25 +1,29 @@
 # Changelog
 
-## [1.0.0-rc](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v1.0.0-rc) (2026-01-23)
+## [1.0.0-rc](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v1.0.0-rc) (2026-01-22)
+
+### Features
+
+* **feat:** Support Android SDK 36 ([#243](https://github.com/FusionAuth/fusionauth-android-sdk/pull/243))
+* **feat:** Use dokka v2 to generate html vs markdown documentation. ([#253](https://github.com/FusionAuth/fusionauth-android-sdk/pull/253))
+* **feat:** DataStoreStorage replaces the deprecated SharedPreferencesStorage ([#259](https://github.com/FusionAuth/fusionauth-android-sdk/pull/259))
 
 
 ### Bug Fixes
 
+* **fix:** Don't run the GitHub Action Deploy Dokka Docs on a PR ([#257](https://github.com/FusionAuth/fusionauth-android-sdk/pull/257))
 * **release:** add prerelease-manifest.json to release-config.json ([96859aa](https://github.com/FusionAuth/fusionauth-android-sdk/commit/96859aaf9563092159ef257fc114ee76689591c4))
-* **release:** align release and prerelease-config.json ([1e0c34e](https://github.com/FusionAuth/fusionauth-android-sdk/commit/1e0c34e49b108e01b8d85f7f3ef68dae88e1584e))
-* **release:** remove sync prerelease manifest steps ([3fec835](https://github.com/FusionAuth/fusionauth-android-sdk/commit/3fec8356dd4d9760905b6d767ba31888b3acb8c9))
 
 
 ### Code Refactoring
 
-* use KTX extensions ([#208](https://github.com/FusionAuth/fusionauth-android-sdk/issues/208)) ([48963b9](https://github.com/FusionAuth/fusionauth-android-sdk/commit/48963b9ccbe28fa5a579056ec634d4be96444e8e))
+* **refactor:** use KTX extensions ([#208](https://github.com/FusionAuth/fusionauth-android-sdk/pull/208))
+* **refactor:** Update the Sample Application View to match the UI in iOS SDK ([#265](https://github.com/FusionAuth/fusionauth-android-sdk/pull/265))
 
 
 ### Miscellaneous Chores
 
 * manual version sync to prerelease-manifest.json ([62901e1](https://github.com/FusionAuth/fusionauth-android-sdk/commit/62901e13c246d8805cad1edd3c2e1501268a3eb9))
-* release 1.0.0-rc ([f5038f5](https://github.com/FusionAuth/fusionauth-android-sdk/commit/f5038f52ff491e2c2a32568e685feb2736a3c009))
-* release 1.0.0-rc ([545cf93](https://github.com/FusionAuth/fusionauth-android-sdk/commit/545cf93b6ffdc828bac96a379bc30e1251389771))
 
 
 ### Build System and Dependencies
