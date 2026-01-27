@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v1.0.0-rc) (2026-01-27)
+## [1.0.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v1.0.0) (2026-01-27)
 
 
 ### Features
