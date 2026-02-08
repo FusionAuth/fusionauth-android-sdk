@@ -94,7 +94,7 @@ The pre-release process is as follows:
 - Create a new tag `<pre-release-version>`.
 - Make sure all Workflows where successful in [Actions](https://github.com/FusionAuth/fusionauth-android-sdk/actions).
 
-The `pre-release.yml` workflow will automatically create a GitHub release, build the library, and add the artifact to GitHub.
+The `release.yml` workflow will automatically create a GitHub release, build the library, and add the artifact to GitHub.
 
 ## Release Process
 
