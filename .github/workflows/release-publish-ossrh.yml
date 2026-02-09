@@ -16,6 +16,9 @@ on:
 concurrency:
   group: release
 
+env:
+  AWS_REGION: us-west-2
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # The e2e-test job first verifies the release with multiple fusionauth versions
@@ -51,6 +54,23 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: set aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-chaining: true
+          role-to-assume: arn:aws:iam::752443094709:role/github-actions
+          role-session-name: github-actions
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: retrieve secrets in environment variables
+        uses: fusionauth/fusionauth-actions/aws-secrets-to-env-vars@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          secret-name: platform/maven
+
+      - name: List env keys
+        run: env | cut -d '=' -f 1 | sort
 
       # Sets up Gradle as a prerequisite to run Maven Release
       - name: Setup Gradle
