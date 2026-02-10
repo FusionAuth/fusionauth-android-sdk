@@ -64,7 +64,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: retrieve secrets in environment variables
-        uses: fusionauth/fusionauth-actions/aws-secrets-to-env-vars@v1
+        uses: fusionauth/fusionauth-actions/aws-secrets-to-env-vars@v3
         with:
           aws-region: ${{ env.AWS_REGION }}
           secret-name: platform/maven
