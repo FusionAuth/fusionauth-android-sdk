@@ -63,11 +63,10 @@ jobs:
           role-session-name: github-actions
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: retrieve secrets in environment variables
-        uses: fusionauth/fusionauth-actions/aws-secrets-to-env-vars@v3
+      - name: Get secrets by name
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          secret-name: platform/maven
+          secret-ids: platform/maven
 
       - name: List env keys
         run: env | cut -d '=' -f 1 | sort
