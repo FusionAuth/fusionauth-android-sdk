@@ -65,7 +65,7 @@ jobs:
       - name: set aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::752443094709:role/github-actions
+          role-to-assume: arn:aws:iam::752443094709:role/gha-fusionauth-android-sdk
           role-session-name: aws-auth-action
           aws-region: ${{ env.AWS_REGION }}
 
