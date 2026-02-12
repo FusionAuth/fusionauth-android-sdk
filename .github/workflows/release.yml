@@ -137,7 +137,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.prerelease-prep.outputs.tag_name }}
         run: |
-          gh workflow run release-publish-ossrh.yml --ref refs/tags/$RELEASE_TAG
+          gh workflow run release-publish.yml --ref refs/tags/$RELEASE_TAG
 
   # This job runs post-release steps
   post-release:
