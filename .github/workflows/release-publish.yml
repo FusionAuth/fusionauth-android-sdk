@@ -104,17 +104,19 @@ jobs:
       # Publish to Central Portal
       - name: Publish to Central Portal
         run: |
-          RESPONSE=$(curl --request POST \
-            --verbose \
+          HTTP_STATUS=$(curl --request POST \
+            --silent \
+            --output response.json \
+            --write-out "%{http_code}" \
             --user '${{ env.CENTRAL_USERNAME }}:${{ env.CENTRAL_PASSWORD }}' \
             --form bundle=@library/build/deployment-bundle.zip \
             https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC)
           
           echo "Response from Central Portal:"
-          echo "$RESPONSE"
+          cat response.json
+          echo
           
-          # Check if the upload was successful
-          if echo "$RESPONSE" | grep -q "error"; then
-            echo "Error: Upload failed"
-            exit 1
-          fi
+          # Check if the upload was successful based on HTTP status code
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Error: Upload failed with HTTP status ${HTTP_STATUS}"
+            

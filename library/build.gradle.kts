@@ -113,7 +113,7 @@ publishing {
     repositories {
         maven {
             // publish to a local directory first
-            name = "MavenLocalRepository"
+            name = "MavenLocal"
             url = uri("${buildDir}/maven-local-repository")
         }
     }
