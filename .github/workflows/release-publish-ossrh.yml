@@ -55,12 +55,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Debug OIDC token
-        run: |
-          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
-          echo "$TOKEN" | jq -r '.value' | cut -d. -f2 | base64 -d 2>/dev/null | jq '.sub, .aud'
           
       - name: set aws credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -69,10 +63,17 @@ jobs:
           role-session-name: aws-auth-action
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get secrets by name
-        uses: aws-actions/aws-secretsmanager-get-secrets@v2
-        with:
-          secret-ids: platform/maven
+      - name: get secrets into the env
+        run: |
+          while IFS=$'\t' read -r key value; do
+            echo "::add-mask::${value}"
+            echo "${key}=${value}" >> $GITHUB_ENV
+          done < <(aws secretsmanager get-secret-value \
+            --region us-west-2 \
+            --secret-id platform/maven \
+            --query SecretString \
+            --output text | \
+            jq -r 'to_entries[] | [.key, .value] | @tsv')
 
       - name: List env keys
         run: env | cut -d '=' -f 1 | sort
