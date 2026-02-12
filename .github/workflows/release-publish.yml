@@ -119,4 +119,4 @@ jobs:
           # Check if the upload was successful based on HTTP status code
           if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
             echo "Error: Upload failed with HTTP status ${HTTP_STATUS}"
-            
+          fi
