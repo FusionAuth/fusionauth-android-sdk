@@ -98,10 +98,7 @@ jobs:
       # Create deployment bundle for Central Portal
       - name: Create Deployment Bundle
         run: |
-          pwd
-          ls
-          ls build
-          cd build/maven-local-repository
+          cd library/build/maven-local-repository
           zip -r ../deployment-bundle.zip .
 
       # Publish to Central Portal
