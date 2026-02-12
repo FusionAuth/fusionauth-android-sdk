@@ -103,13 +103,11 @@ jobs:
 
       # Publish to Central Portal
       - name: Publish to Central Portal
-        env:
-          CENTRAL_TOKEN: ${{ secrets.CENTRAL_PORTAL_TOKEN }}
         run: |
           RESPONSE=$(curl --request POST \
             --verbose \
-            --header 'Authorization: Bearer ${{ secrets.CENTRAL_PORTAL_TOKEN }}' \
-            --form bundle=@build/deployment-bundle.zip \
+            --user '${{ env.CENTRAL_USERNAME }}:${{ env.CENTRAL_PASSWORD }}' \
+            --form bundle=@library/build/deployment-bundle.zip \
             https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC)
           
           echo "Response from Central Portal:"
