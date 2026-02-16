@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:18.1-bookworm
+    image: postgres:18.2-bookworm
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_USER: ${POSTGRES_USER}
