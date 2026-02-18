@@ -1,0 +1,122 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow performs a Maven Release to Central Portal
+#
+
+name: Maven Release Central Portal
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# This workflow is part of the release group and will not run concurrently with other workflows in the same group
+concurrency:
+  group: release
+
+env:
+  AWS_REGION: us-west-2
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # The e2e-test job first verifies the release with multiple fusionauth versions
+  e2e-test:
+    uses: ./.github/workflows/e2e-test-fusionauth-matrix-android-latest.yml
+
+  # The publish job builds and publishes the release to Central Portal
+  publish:
+    name: Maven Release
+
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+      id-token: write
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Requires e2e-test job
+    needs: [ e2e-test ]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Sets up JDK as a prerequisite to run Gradle
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v6
+          
+      - name: set aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::752443094709:role/gha-fusionauth-android-sdk
+          role-session-name: aws-auth-action
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: get secrets into the env
+        run: |
+          while IFS=$'\t' read -r key value; do
+            echo "::add-mask::${value}"
+            echo "${key}=${value}" >> $GITHUB_ENV
+          done < <(aws secretsmanager get-secret-value \
+            --region us-west-2 \
+            --secret-id platform/maven \
+            --query SecretString \
+            --output text | \
+            jq -r 'to_entries[] | [.key, .value] | @tsv')
+
+      # Sets up Gradle as a prerequisite to run Maven Release
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        with:
+          gradle-home-cache-cleanup: true
+
+      # Performs a Local Maven Release
+      - name: Run Maven Local Release
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        run: ./gradlew publishReleasePublicationToMavenLocal
+
+      # Build and sign the publication bundle
+      - name: Build Publication Bundle
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        run: ./gradlew publishReleasePublicationToMavenLocalRepository
+
+      # Create deployment bundle for Central Portal
+      - name: Create Deployment Bundle
+        run: |
+          cd library/build/maven-local-repository
+          zip -r ../deployment-bundle.zip .
+
+      # Publish to Central Portal
+      - name: Publish to Central Portal
+        run: |
+          HTTP_STATUS=$(curl --request POST \
+            --silent \
+            --output response.json \
+            --write-out "%{http_code}" \
+            --user '${{ env.CENTRAL_USERNAME }}:${{ env.CENTRAL_PASSWORD }}' \
+            --form bundle=@library/build/deployment-bundle.zip \
+            https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC)
+          
+          echo "Response from Central Portal:"
+          cat response.json
+          echo
+          
+          # Check if the upload was successful based on HTTP status code
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Error: Upload failed with HTTP status ${HTTP_STATUS}"
+          fi

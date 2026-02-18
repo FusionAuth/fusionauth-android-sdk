@@ -111,26 +111,10 @@ publishing {
 
     // Here we define some repositories that we can publish our outputs to.
     repositories {
-        // Specifying that this is a custom maven repository.
         maven {
-            // This is the name of the repo that is used as the value of ${target}
-            // from above.
-            name = "OSSRH"
-
-            // Self-explanatory.
-            setUrl {
-                val repositoryId =
-                    System.getenv("SONATYPE_REPOSITORY_ID") ?: error("Missing env variable: SONATYPE_REPOSITORY_ID")
-                "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-            }
-
-            // These need to be defined in ~/.gradle/gradle.properties:
-            // ossrhUsername=<your sonatype jira username>
-            // ossrhPassword=<your sonatype jira password>
-            credentials {
-                username = project.findProperty("ossrhUsername") as String?
-                password = project.findProperty("ossrhPassword") as String?
-            }
+            // publish to a local directory first
+            name = "MavenLocal"
+            url = uri("${buildDir}/maven-local-repository")
         }
     }
 }
