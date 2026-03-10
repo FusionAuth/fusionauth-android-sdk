@@ -347,7 +347,7 @@ class OAuthAuthorizationService internal constructor(
         response: AuthorizationResponse,
         ex: net.openid.appauth.AuthorizationException?
     ): TokenResponse {
-        return suspendCancellableCoroutine { continuation ->406
+        return suspendCancellableCoroutine { continuation ->
             val authService = getAuthorizationService()
 
             appAuthState.update(response, ex)
