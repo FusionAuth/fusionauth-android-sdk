@@ -39,6 +39,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import androidx.core.net.toUri
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
  * OAuthAuthorizationService class is responsible for handling OAuth authorization and authorization process.
@@ -346,7 +347,7 @@ class OAuthAuthorizationService internal constructor(
         response: AuthorizationResponse,
         ex: net.openid.appauth.AuthorizationException?
     ): TokenResponse {
-        return suspendCoroutine { continuation ->
+        return suspendCancellableCoroutine { continuation ->406
             val authService = getAuthorizationService()
 
             appAuthState.update(response, ex)
@@ -413,7 +414,7 @@ class OAuthAuthorizationService internal constructor(
         uriBuilder.appendPath(AuthorizationServiceConfiguration.WELL_KNOWN_PATH)
             .appendPath(AuthorizationServiceConfiguration.OPENID_CONFIGURATION_RESOURCE)
 
-        return suspendCoroutine { continuation ->
+        return suspendCancellableCoroutine { continuation ->
             AuthorizationServiceConfiguration.fetchFromUrl(
                 uriBuilder.build(),
                 { configuration, ex ->
