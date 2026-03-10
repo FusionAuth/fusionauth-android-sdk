@@ -19,10 +19,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import io.fusionauth.mobilesdk.AuthorizationConfiguration
@@ -30,7 +33,7 @@ import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.FusionAuthState
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
-import io.fusionauth.mobilesdk.storage.SharedPreferencesStorage
+import io.fusionauth.mobilesdk.storage.DataStoreStorage
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.io.IOException
@@ -41,6 +44,7 @@ import java.text.NumberFormat
 import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
 import kotlin.math.floor
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Displays the authorized state of the user. This activity is provided with the outcome of the
@@ -51,14 +55,19 @@ import kotlin.math.floor
 @Suppress("TooManyFunctions")
 class TokenActivity : AppCompatActivity() {
     private val mUserInfo = AtomicReference<UserInfo?>()
+    private lateinit var configurationManager: ConfigurationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthorizationManager.initialize(
-            AuthorizationConfiguration.fromResources(this, R.raw.fusionauth_config),
-            SharedPreferencesStorage(this)
-        )
+        configurationManager = ConfigurationManager()
+
+        if (!AuthorizationManager.isInitialized()) {
+            AuthorizationManager.initialize(
+                configurationManager.getPrimaryConfig(),
+                DataStoreStorage(this)
+            )
+        }
 
         setContentView(R.layout.activity_token)
         displayLoading("Restoring state...")
@@ -73,21 +82,20 @@ class TokenActivity : AppCompatActivity() {
         }
 
         Logger.getLogger(TAG).info("Checking for authorization response")
-        if (AuthorizationManager.isAuthenticated()) {
-            fetchUserInfoAndDisplayAuthorized(/*authState.getAccessToken()*/)
-            return
-        }
-
         lifecycleScope.launch {
-            displayLoading("Exchanging authorization code")
-            try {
-                val authState: FusionAuthState = AuthorizationManager.oAuth(this@TokenActivity)
-                    .handleRedirect(intent)
-                Log.i(TAG, authState.toString())
+            if (AuthorizationManager.isAuthenticated()) {
                 fetchUserInfoAndDisplayAuthorized()
-            } catch (ex: AuthorizationException) {
-                Log.e(TAG, "Failed to exchange authorization code", ex)
-                displayNotAuthorized("Authorization failed")
+            } else {
+                displayLoading("Exchanging authorization code")
+                try {
+                    val authState: FusionAuthState = AuthorizationManager.oAuth(this@TokenActivity)
+                        .handleRedirect(intent)
+                    Log.i(TAG, authState.toString())
+                    fetchUserInfoAndDisplayAuthorized()
+                } catch (ex: AuthorizationException) {
+                    Log.e(TAG, "Failed to exchange authorization code", ex)
+                    displayNotAuthorized("Authorization failed")
+                }
             }
         }
     }
@@ -127,7 +135,7 @@ class TokenActivity : AppCompatActivity() {
     }
 
     @MainThread
-    private fun displayAuthorized() {
+    private suspend fun displayAuthorized() {
         findViewById<View>(R.id.authorized).visibility = View.VISIBLE
         findViewById<View>(R.id.not_authorized).visibility = View.GONE
         findViewById<View>(R.id.loading_container).visibility = View.GONE
@@ -143,6 +151,13 @@ class TokenActivity : AppCompatActivity() {
             }
         }
 
+        val tenantId = AuthorizationManager.getConfiguration().tenant
+        if (tenantId != null) {
+            (findViewById<View>(R.id.tenant_id_value) as TextView).text = tenantId
+        } else {
+            findViewById<View>(R.id.configuration_info).visibility = View.GONE
+        }
+
         val changeTextInput: EditText = findViewById(R.id.change_text_input)
         changeTextInput.addTextChangedListener(MoneyChangedHandler(changeTextInput))
         findViewById<View>(R.id.sign_out).setOnClickListener {
@@ -151,6 +166,9 @@ class TokenActivity : AppCompatActivity() {
         findViewById<View>(R.id.change_button).setOnClickListener { makeChange() }
         findViewById<View>(R.id.refresh_token).setOnClickListener {
             refreshToken()
+        }
+        findViewById<View>(R.id.reset_configuration).setOnClickListener {
+            resetConfiguration()
         }
 
         var name = ""
@@ -181,7 +199,7 @@ class TokenActivity : AppCompatActivity() {
             welcomeView.text = String.format(welcomeTemplate, name)
         }
 
-        (findViewById<View>(R.id.auth_granted_email) as TextView).text = email
+        (findViewById<View>(R.id.account_balance) as TextView).text = getString(R.string.account_balance_value)
     }
 
     private fun refreshToken() {
@@ -209,7 +227,7 @@ class TokenActivity : AppCompatActivity() {
                 showSnackbar("Failed to parse user info")
             }
 
-            runOnUiThread { this@TokenActivity.displayAuthorized() }
+            this@TokenActivity.displayAuthorized()
         }
     }
 
@@ -226,13 +244,7 @@ class TokenActivity : AppCompatActivity() {
     @MainThread
     private fun endSession() {
         lifecycleScope.launch {
-            intent.putExtra("endSession", true)
-            AuthorizationManager
-                .oAuth(this@TokenActivity)
-                .logout(
-                    Intent(this@TokenActivity, LoginActivity::class.java)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                )
+            logoutAndResetConfiguration(configurationManager.getPrimaryConfig())
         }
     }
 
@@ -268,12 +280,85 @@ class TokenActivity : AppCompatActivity() {
 
     @MainThread
     private fun signOut() {
-        AuthorizationManager.clearState()
+        lifecycleScope.launch {
+            AuthorizationManager.clearState()
 
-        val mainIntent = Intent(this, LoginActivity::class.java)
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(mainIntent)
+            val mainIntent = Intent(this@TokenActivity, LoginActivity::class.java)
+            mainIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(mainIntent)
+            finish()
+        }
+    }
+
+    @MainThread
+    private fun resetConfiguration() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_reset_configuration, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(
+            ContextCompat.getColor(
+                this,
+                android.R.color.transparent
+            ).toDrawable())
+
+        val switchToPrimaryButton = dialogView.findViewById<Button>(R.id.switch_to_primary_button)
+        val switchToAlternativeButton = dialogView.findViewById<Button>(R.id.switch_to_alternative_button)
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancel_button)
+
+        val isPrimary = configurationManager.isPrimaryConfig(AuthorizationManager.getConfiguration())
+        switchToPrimaryButton.isEnabled = !isPrimary
+        switchToAlternativeButton.isEnabled = isPrimary
+
+        switchToPrimaryButton.setOnClickListener {
+            lifecycleScope.launch {
+                switchConfigurationAndRestart(configurationManager.getPrimaryConfig())
+                dialog.dismiss()
+            }
+        }
+
+        switchToAlternativeButton.setOnClickListener {
+            lifecycleScope.launch {
+                switchConfigurationAndRestart(configurationManager.getAlternativeConfig())
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private suspend fun switchConfigurationAndRestart(config: AuthorizationConfiguration) {
+        AuthorizationManager.clearState()
+        AuthorizationManager.resetConfiguration(config)
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
         finish()
+    }
+
+    private suspend fun logoutAndResetConfiguration(config: AuthorizationConfiguration) {
+        try {
+            intent.putExtra("endSession", true)
+            AuthorizationManager
+                .oAuth(this@TokenActivity)
+                .logout(
+                    Intent(this@TokenActivity, LoginActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                )
+
+            AuthorizationManager.clearState()
+
+            // set a new configuration
+            AuthorizationManager.resetConfiguration(config)
+        } catch (ex: AuthorizationException) {
+            Log.e(TAG, "Failed to set the auth configuration")
+            showSnackbar("Failed to set the auth configuration -  " + ex.message)
+        }
     }
 
     /**

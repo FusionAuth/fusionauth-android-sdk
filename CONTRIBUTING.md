@@ -90,12 +90,11 @@ The pre-release process is as follows:
 - Compare the gradlew version `./gradlew -v` with the latest [gradle release](https://gradle.org/releases/) and update if necessary.
 - Review, test and merge any open [Dependency Pull Requests](https://github.com/FusionAuth/fusionauth-android-sdk/pulls).
 - Update the version in the `library/build.gradle.kts` file with a pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
-- Update the documentation with `./gradlew dokkaGfm`.
 - Commit the changes with the commit message `chore(release): <pre-release-version> 🎉`.
-- Create a new tag `v<pre-release-version>`.
+- Create a new tag `<pre-release-version>`.
 - Make sure all Workflows where successful in [Actions](https://github.com/FusionAuth/fusionauth-android-sdk/actions).
 
-The `pre-release.yml` workflow will automatically create a GitHub release, build the library, and add the artifact to GitHub.
+The `release.yml` workflow will automatically create a GitHub release, build the library, and add the artifact to GitHub.
 
 ## Release Process
 
@@ -104,7 +103,7 @@ The release process is as follows:
 - Update the release version in the `library/build.gradle.kts` file, derived from the pre-release version according to the [Semantic Versioning](https://semver.org/) guidelines.
 - Update the [SECURITY.md](SECURITY.md) version information with the latest `Supported Versions` according to the current specification E2E test workflows.
 - Commit the changes with the commit message `chore(release): <version> 🎉`.
-- Create a new tag `v<version>`.
+- Create a new tag `<version>`.
 - Push the changes and the tag to the repository.
 
 The `release.yml` workflow will automatically create a GitHub release, build the library, and publish it to Maven Central.
@@ -119,7 +118,7 @@ After the release is published, update the version in the [FusionAuth Android Qu
 - (Optional) If the FusionAuth configuration changed, update the according `docker-compose.yml`, `.env` and `kickstart/` files in the quickstart repository.
 - (Optional) Compare the gradlew version `./gradlew -v` with the version used in the SDK and copy or update if necessary.
 - Commit the changes with the commit message `chore(release): <version> 🎉`.
-- Create a new tag `v<version>`.
+- Create a new tag `<version>`.
 - Push the changes and the tag to the repository.
 <!--
 end::forDocSiteRelease[]

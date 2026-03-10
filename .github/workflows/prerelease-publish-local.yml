@@ -43,18 +43,20 @@ jobs:
     steps:
       # Sets up JDK as a prerequisite to run Gradle
       - name: Setup Java
-        uses: actions/setup-java@v4.7.1
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'zulu'
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       # Sets up Gradle as a prerequisite to run Maven Pre-Release
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96 # v4.4.1
+        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        with:
+          gradle-home-cache-cleanup: true
 
       # Performs a Local Maven Pre-Release
       - name: Run Maven Local Pre-Release

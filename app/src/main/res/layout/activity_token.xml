@@ -11,7 +11,8 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -23,31 +24,60 @@
                 android:orientation="vertical"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="start"
                     android:layout_marginBottom="20dp"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/changebank"
+                    android:contentDescription="@string/openid_logo_content_description"/>
+
+            <LinearLayout
+                android:id="@+id/configuration_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/active_configuration"
+                    app:drawableStartCompat="@drawable/ic_settings"
+                    app:drawableTint="?android:attr/textColorSecondary"
+                    style="@style/Base.TextAppearance.AppCompat.Small"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="100">
+                    android:layout_marginTop="8dp"
+                    android:background="#E3F2FD"
+                    android:padding="8dp">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tenant_label"
+                            android:textStyle="bold"
+                            style="@style/Base.TextAppearance.AppCompat.Small"/>
+                    <TextView
+                            android:id="@+id/tenant_id_value"
+                            style="@style/Base.TextAppearance.AppCompat.Small"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="d7d09513-a3f5-401c-9685-34ab6c552453" />
+                </LinearLayout>
 
                 <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="25"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="20dp"
+                        android:background="?android:attr/listDivider" />
 
-                <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="50"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/changebank"
-                        android:contentDescription="@string/openid_logo_content_description"/>
-
-                <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="25"/>
             </LinearLayout>
 
             <!--
@@ -108,106 +138,33 @@
                     android:id="@+id/authorized"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:id="@+id/auth_granted_email"
-                            style="@style/Base.TextAppearance.AppCompat.Small"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_gravity="center" />
-
-                    <Button
-                            android:id="@+id/sign_out"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sign_out"
-                            style="@style/Widget.AppCompat.Button.Small"/>
-
-                    <Button
-                            android:id="@+id/refresh_token"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/refresh_token"
-                            style="@style/Widget.AppCompat.Button.Small"/>
-
-                </LinearLayout>
 
                 <TextView
                         android:id="@+id/auth_granted"
                         style="@style/Base.TextAppearance.AppCompat.Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:text="@string/auth_granted"
-                        android:textColor="@color/colorAccent" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:textColor="@android:color/black"
+                        tools:text="Welcome Richard Hendricks" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/your_balance_is"
+                        style="@style/Base.TextAppearance.AppCompat.Medium"
+                        />
 
                 <TextView
                         android:id="@+id/account_balance"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:text="@string/account_balance"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        style="@style/Base.TextAppearance.AppCompat.Medium" />
-
-                <TextView
-                        android:id="@+id/changebank_title"
-                        style="@style/Base.TextAppearance.AppCompat.Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/changebank_title"
-                        android:textColor="@color/colorAccent" />
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-
-                    <TextView
-                            android:id="@+id/change_text_input_prepend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/change_text_input_prepend" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/change_text_input"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_gravity="center"
-                            android:inputType="numberDecimal"
-                            android:hint="@string/change_text_input_placeholder"/>
-
-                    <Button
-                            android:id="@+id/change_button"
-                            style="@style/Widget.AppCompat.Button.Small"
-                            android:text="@string/change_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"/>
-                </LinearLayout>
-
-                <TextView
-                        android:id="@+id/change_result_text_view"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/change_result_text_view"
-                        style="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textSize="48sp"
+                        android:textColor="@android:color/black"
+                        tools:text="$0.00" />
 
                 <TextView
                         android:id="@+id/no_access_token_returned"
@@ -216,6 +173,96 @@
                         android:text="@string/no_access_token_returned"
                         android:visibility="gone"
                         style="@style/Base.TextAppearance.AppCompat.Body1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Button
+                    android:id="@+id/refresh_token"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/refresh_token"
+                    android:textColor="@color/colorAccent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reset_configuration"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="24dp"
+                    android:text="@string/reset_configuration" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/sign_out"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="24dp"
+                    android:text="@string/sign_out" />
+
+                 <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="20dp"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:id="@+id/changebank_title"
+                    style="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/changebank_title"
+                    android:textColor="@color/colorAccent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/change_text_input_prepend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/change_text_input_prepend" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/change_text_input"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:hint="@string/change_text_input_placeholder"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/change_button"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:text="@string/change_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/change_result_text_view"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/change_result_text_view"
+                    style="@style/Base.TextAppearance.AppCompat.Medium" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

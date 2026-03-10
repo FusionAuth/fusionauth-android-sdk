@@ -1,4 +1,5 @@
 <resources>
+    <string name="account_balance_value">$100.00</string>
     <string name="app_name_short">FusionAuth</string>
     <string name="auth_granted">Welcome!</string>
     <string name="auth_granted_name">Welcome %s!</string>
@@ -17,4 +18,13 @@
     <string name="change_text_input_placeholder">0.00</string>
     <string name="change_button">Make change</string>
     <string name="change_result_text_view">We can make change for %1$s with %2$d nickels and %3$d pennies!</string>
+    <string name="reset_configuration">Reset configuration</string>
+    <string name="reset_config_dialog_title">Reset Configuration</string>
+    <string name="reset_config_dialog_message">Choose a configuration to switch to. This will clear your current authentication state.</string>
+    <string name="reset_config_switch_to_alternative">Switch to Alternative Tenant</string>
+    <string name="reset_config_switch_to_primary">Switch to Primary Tenant</string>
+    <string name="reset_config_cancel">Cancel</string>
+    <string name="active_configuration">Active Configuration</string>
+    <string name="your_balance_is">Your balance is:</string>
+    <string name="tenant_label">Tenant: </string>
 </resources>

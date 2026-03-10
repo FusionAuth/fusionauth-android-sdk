@@ -32,17 +32,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v6
 
       # Sets up the python as a prerequisites for MobSF
       - name: Setup python
-        uses: actions/setup-python@v5.6.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: 3.9
 
       # Sets up the reviewdog cli
       - name: Setup reviewdog
-        uses: reviewdog/action-setup@e04ffabe3898a0af8d0fb1af00c188831c4b5893 # v1.3.2
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
 
       - name: Show reviewdog version
         run: reviewdog -version
@@ -51,11 +51,11 @@ jobs:
       - name: Run mobsfscan
         uses: MobSF/mobsfscan@3d87bc570c4614d705547bddb521395663dba353 # 0.4.5
         with:
-          args: . --sarif --output mobsf.sarif.json || true
+          args: . --config .mobsf.yml --sarif --output mobsf.sarif.json || true
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v3.29.1
+        uses: github/codeql-action/upload-sarif@v4.31.7
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json

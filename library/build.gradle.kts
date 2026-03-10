@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -9,7 +11,7 @@ plugins {
 
 android {
     namespace = "io.fusionauth.mobilesdk"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -30,11 +32,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
     lint {
         sarifReport = true
@@ -72,7 +76,7 @@ publishing {
                 groupId = "io.fusionauth"
                 artifactId = "fusionauth-android-sdk"
                 // x-release-please-start-version
-                version = "0.2.0"
+                version = "1.0.0"
                 // x-release-please-end
 
                 // And here are some more properties that go into the pom file.
@@ -107,26 +111,10 @@ publishing {
 
     // Here we define some repositories that we can publish our outputs to.
     repositories {
-        // Specifying that this is a custom maven repository.
         maven {
-            // This is the name of the repo that is used as the value of ${target}
-            // from above.
-            name = "OSSRH"
-
-            // Self-explanatory.
-            setUrl {
-                val repositoryId =
-                    System.getenv("SONATYPE_REPOSITORY_ID") ?: error("Missing env variable: SONATYPE_REPOSITORY_ID")
-                "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${repositoryId}/"
-            }
-
-            // These need to be defined in ~/.gradle/gradle.properties:
-            // ossrhUsername=<your sonatype jira username>
-            // ossrhPassword=<your sonatype jira password>
-            credentials {
-                username = project.findProperty("ossrhUsername") as String?
-                password = project.findProperty("ossrhPassword") as String?
-            }
+            // publish to a local directory first
+            name = "MavenLocal"
+            url = uri("${buildDir}/maven-local-repository")
         }
     }
 }
@@ -163,20 +151,20 @@ signing {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("net.openid:appauth:0.11.1")
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+    implementation("androidx.security:security-crypto-ktx:1.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-}
-
-tasks.dokkaGfm {
-    outputDirectory.set(layout.projectDirectory.dir("docs"))
+    testImplementation("org.mockito:mockito-core:5.21.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 }
