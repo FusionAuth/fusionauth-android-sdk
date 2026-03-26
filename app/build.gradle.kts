@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation(project(":library"))
@@ -60,7 +60,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.9.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
     annotationProcessor("androidx.room:room-compiler:2.8.4")
     testImplementation("junit:junit:4.13.2")
