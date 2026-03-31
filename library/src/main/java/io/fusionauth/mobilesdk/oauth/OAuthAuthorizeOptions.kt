@@ -39,6 +39,15 @@ data class OAuthAuthorizeOptions(
      */
     val state: String? = null,
     /**
+     * The prompt parameter to be used for the OAuth authorize request. This parameter indicates
+     * whether the authorization server should prompt the end-user for reauthentication or consent.
+     * Standard OIDC values include: none, login, consent, select_account.
+     *
+     * See [OIDC prompt parameter](https://fusionauth.io/docs/lifecycle/authenticate-users/oauth/prompt)
+     * for more information.
+     */
+    val prompt: String? = null,
+    /**
      * The end-user verification code.
      */
     val userCode: String? = null,

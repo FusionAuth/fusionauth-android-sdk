@@ -173,6 +173,7 @@ class OAuthAuthorizationService internal constructor(
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
+        options?.prompt?.let { additionalParameters["prompt"] = it }
         return additionalParameters
     }
 
