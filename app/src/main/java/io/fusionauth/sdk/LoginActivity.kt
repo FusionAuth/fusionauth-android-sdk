@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     @MainThread
-    fun startAuth() {
+    fun startAuth(prompt: String? = null) {
         displayLoading("Making authorization request")
 
         lifecycleScope.launch {
@@ -94,7 +94,8 @@ class LoginActivity : AppCompatActivity() {
                         OAuthAuthorizeOptions(
                             cancelIntent = Intent(this@LoginActivity, LoginActivity::class.java)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
-                            state = "state-${System.currentTimeMillis()}"
+                            state = "state-${System.currentTimeMillis()}",
+                            prompt = prompt
                         )
                     )
             } catch (e: AuthorizationException) {

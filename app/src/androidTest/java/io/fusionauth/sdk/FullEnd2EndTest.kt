@@ -63,6 +63,23 @@ internal class FullEnd2EndTest {
     }
 
     @Test
+    fun e2eTestWithPromptLogin() {
+        // Establish a session first
+        login(USERNAME, PASSWORD)
+
+        // Trigger a new authorization request with prompt=login.
+        // This must force the FusionAuth login form to appear even though a server session
+        // is already active for the user.
+        loginActivityRule.scenario.onActivity { activity ->
+            activity.startAuth("login")
+        }
+        handleFALoginForm(USERNAME, PASSWORD)
+        verifyOnTokenActivity()
+
+        logout()
+    }
+
+    @Test
     fun e2eTestSwitchFromPrimaryToAlternative() {
         login(USERNAME, PASSWORD)
         switchToAlternative()
