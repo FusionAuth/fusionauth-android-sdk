@@ -227,13 +227,9 @@ internal class FullEnd2EndTest {
         loginActivityRule.scenario.onActivity { activity ->
             activity.startAuth(prompt)
         }
-        // Wait for either login form or token activity
-        try {
-            handleFALoginForm(username, password)
-            verifyOnTokenActivity()
-        } catch (e: IllegalStateException) {
-            // Login form not displayed, likely due to error UI. Let test handle this.
-        }
+
+        handleFALoginForm(username, password)
+        verifyOnTokenActivity()
     }
 
     private fun verifyAuthorizationError() {
