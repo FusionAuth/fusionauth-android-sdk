@@ -1,6 +1,5 @@
 {
   "release-type": "simple",
-  "include-component-in-tag": false,
   "changelog-sections": [
     { "type": "feat", "hidden": false, "section": "Features" },
     { "type": "fix", "hidden": false, "section": "Bug Fixes" },
@@ -11,18 +10,7 @@
   ],
   "packages": {
     ".": {
-      "type": "generic",
-      "extra-files": [
-        {
-          "type": "generic",
-          "path": "library/build.gradle.kts"
-        },
-        {
-          "type": "json",
-          "path": ".github/prerelease-manifest.json",
-          "jsonpath": "$[\".\"]"
-        }
-      ]
+      "release-type": "generic"
     }
   }
 }
