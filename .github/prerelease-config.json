@@ -2,8 +2,6 @@
   "release-type": "simple",
   "prerelease": true,
   "prerelease-type": "rc",
-  "versioning": "prerelease",
-  "include-component-in-tag": false,
   "changelog-sections": [
     { "type": "feat", "hidden": false, "section": "Features" },
     { "type": "fix", "hidden": false, "section": "Bug Fixes" },
@@ -14,13 +12,10 @@
   ],
   "packages": {
     ".": {
-      "type": "generic",
-      "extra-files": [
-        {
-          "type": "generic",
-          "path": "library/build.gradle.kts"
-        }
-      ]
+      "release-type": "simple",
+      "prerelease": true,
+      "prerelease-type": "rc",
+      "release-as": "1.1.0-rc"
     }
   }
 }
