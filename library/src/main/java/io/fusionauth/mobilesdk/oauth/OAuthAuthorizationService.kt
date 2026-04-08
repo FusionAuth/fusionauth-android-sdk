@@ -118,6 +118,7 @@ class OAuthAuthorizationService internal constructor(
         options?.state?.let { authRequestBuilder.setState(it) }
         options?.loginHint?.let { authRequestBuilder.setLoginHint(it) }
         options?.nonce?.let { authRequestBuilder.setNonce(it) }
+        options?.prompt?.let { authRequestBuilder.setPrompt(it) }
 
         val completedPendingIntent = PendingIntent.getActivity(
             context,
@@ -173,6 +174,7 @@ class OAuthAuthorizationService internal constructor(
         options?.idpHint?.let { additionalParameters["idp_hint"] = it }
         options?.deviceDescription?.let { additionalParameters["metaData.device.description"] = it }
         options?.userCode?.let { additionalParameters["user_code"] = it }
+
         return additionalParameters
     }
 
