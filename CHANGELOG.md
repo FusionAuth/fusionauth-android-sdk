@@ -5,7 +5,7 @@
 
 ### Features
 
-* Add prompt parameter support to OAuth2 authorization request ([#295](https://github.com/FusionAuth/fusionauth-android-sdk/issues/295)) ([bfe4834](https://github.com/FusionAuth/fusionauth-android-sdk/commit/bfe48345485cec1a42f9478b15eb30f23db447de))
+* Add prompt parameter support to OAuth2 authorization request ([#295](https://github.com/FusionAuth/fusionauth-android-sdk/issues/295)) ([e7c7e7a](https://github.com/FusionAuth/fusionauth-android-sdk/commit/e7c7e7a3841bf156af2c461faa23ee877a9b05e9))
 
 
 ### Miscellaneous Chores
