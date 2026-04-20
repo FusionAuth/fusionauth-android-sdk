@@ -66,7 +66,7 @@ jobs:
     steps:
       - id: release
         name: Run prerelease release-please
-        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+        uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         with:
           config-file: ".github/prerelease-config.json"
           manifest-file: ".github/prerelease-manifest.json"
@@ -103,7 +103,7 @@ jobs:
           gh workflow run prerelease-publish-local.yml --ref refs/tags/$PRERELEASE_TAG
 
       - name: Run release release-please
-        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+        uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
         with:
           config-file: ".github/release-config.json"
           manifest-file: ".github/release-manifest.json"
