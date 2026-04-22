@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.0-rc](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v1.0.0...v1.1.0-rc) (2026-04-09)
+
+
+### Features
+
+* Add prompt parameter support to OAuth2 authorization request ([#295](https://github.com/FusionAuth/fusionauth-android-sdk/issues/295)) ([e7c7e7a](https://github.com/FusionAuth/fusionauth-android-sdk/commit/e7c7e7a3841bf156af2c461faa23ee877a9b05e9))
+
+
+### Miscellaneous Chores
+* Updated all docker-compose files with installation source ([#287](https://github.com/FusionAuth/fusionauth-android-sdk/pull/287)) ([bfe4834](https://github.com/FusionAuth/fusionauth-android-sdk/commit/bfe48345485cec1a42f9478b15eb30f23db447de))
+
+
+### Build System and Dependencies
+
+* **deps:** bump github/codeql-action in the prod-github-actions group ([#293](https://github.com/FusionAuth/fusionauth-android-sdk/issues/293)) ([b6d869c](https://github.com/FusionAuth/fusionauth-android-sdk/commit/b6d869c552d2cb1d6d9b468a967d22f70e67ccb9))
+* **deps:** bump the prod-github-actions group across 1 directory with 6 updates ([#285](https://github.com/FusionAuth/fusionauth-android-sdk/issues/285)) ([88c5cfd](https://github.com/FusionAuth/fusionauth-android-sdk/commit/88c5cfd41e76b520dfa08bed7b6f3027e18ef3ac))
+* **ci:** workflows update ([#214](https://github.com/FusionAuth/fusionauth-android-sdk/pull/214)) ([d5c68ee](https://github.com/FusionAuth/fusionauth-android-sdk/commit/d5c68ee986384156d383801aa3f6d62e4f5eae31))
+* **deps:** bump opensearchproject/opensearch in /fusionauth/latest ([#284](https://github.com/FusionAuth/fusionauth-android-sdk/issues/284)) ([b51b360](https://github.com/FusionAuth/fusionauth-android-sdk/commit/b51b360ba519a4e2881c63e4a971f3dcbacd646d))
+
+
 ## [1.0.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v0.2.0...v1.0.0) (2026-01-27)
 
 
