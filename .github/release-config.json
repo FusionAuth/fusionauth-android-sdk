@@ -10,7 +10,7 @@
   ],
   "packages": {
     ".": {
-      "release-type": "generic"
+      "release-type": "simple"
     }
   }
 }
