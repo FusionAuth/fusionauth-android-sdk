@@ -7,8 +7,7 @@ For Responsible Disclosure Program, Discovering Security Vulnerabilities
 
 | SDK Version   | Tested FusionAuth Version | Tested Android API Level | Supported          |
 |---------------|---------------------------|--------------------------|--------------------|
-| \>= 1.2.0     | 1.61.2 - 1.64.1           | 31 - 36                  | :white_check_mark: |
-| \>= 1.1.0     | 1.57 - 1.60               | 31 - 36                  | :white_check_mark: |
+| \>= 1.1.0     | 1.61.2 - 1.64.1           | 31 - 36                  | :white_check_mark: |
 | \>= 1.0.0     | 1.57 - 1.60               | 31 - 36                  | :white_check_mark: |
 | \>= 0.2.0     | 1.51 - 1.56               | 29 - 35                  | :white_check_mark: |
 | 0.1.6         | 1.47 - 1.51               | 29 - 34                  | :x:                |
