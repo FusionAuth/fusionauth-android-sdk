@@ -14,7 +14,7 @@
     ".": {
       "release-type": "simple",
       "prerelease": true,
-      "prerelease-type": "rc",
+      "prerelease-type": "rc"
     }
   }
 }
