@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "io.fusionauth.mobilesdk"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
