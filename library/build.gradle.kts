@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "io.fusionauth.mobilesdk"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 24
@@ -158,8 +158,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.appauth)
     implementation(libs.androidx.security.crypto.ktx)
-    implementation(libs.kotlinx.coroutines.core.v1110)
-    implementation(libs.kotlinx.coroutines.android.v1110)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)

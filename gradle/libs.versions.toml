@@ -9,12 +9,9 @@ datastorePreferences = "1.2.1"
 espresso = "3.7.0"
 junit = "1.3.0"
 junitVersion = "4.13.2"
-kotlinx = "1.10.2"
-kotlinxCoroutinesAndroid = "1.11.0"
-kotlinxCoroutinesCore = "1.11.0"
-kotlinxSerializationCbor = "1.11.0"
+kotlinx = "1.11.0"
 lifecycleRuntimeKtx = "2.10.0"
-material = "1.13.0"
+material = "1.14.0"
 mockitoCore = "5.23.0"
 mockitoKotlin = "6.3.0"
 navigation = "2.9.8"
@@ -45,12 +42,10 @@ androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomato
 appauth = { module = "net.openid:appauth", version.ref = "appauth" }
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx" }
-kotlinx-coroutines-android-v1110 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx" }
-kotlinx-coroutines-core-v1110 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
-kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinxSerializationCbor" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCbor" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
