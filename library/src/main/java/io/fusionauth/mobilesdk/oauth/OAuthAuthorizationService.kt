@@ -344,6 +344,7 @@ class OAuthAuthorizationService internal constructor(
      * @param ex The authorization exception received from the authorization process, or null if no exception occurred.
      * @return The token response from the authorization service.
      */
+    @Suppress("RedundantSuspendModifier")
     private suspend fun performTokenRequest(
         response: AuthorizationResponse,
         ex: net.openid.appauth.AuthorizationException?
@@ -405,6 +406,7 @@ class OAuthAuthorizationService internal constructor(
      *
      * @return The [AuthorizationServiceConfiguration] object.
      */
+    @Suppress("RedundantSuspendModifier")
     private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration {
         val uriBuilder = fusionAuthUrl.toUri().buildUpon()
 
