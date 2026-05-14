@@ -37,7 +37,6 @@ import java.net.HttpURLConnection
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import androidx.core.net.toUri
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -488,7 +487,7 @@ class OAuthAuthorizationService internal constructor(
         val refreshToken = authState.refreshToken
             ?: throw AuthorizationException("No refresh token available")
 
-        val response = suspendCoroutine<TokenResponse> { continuation ->
+        val response = suspendCancellableCoroutine<TokenResponse> { continuation ->
             authService.performTokenRequest(
                 TokenRequest.Builder(config, clientId)
                     .setGrantType(GrantTypeValues.REFRESH_TOKEN)
@@ -500,7 +499,7 @@ class OAuthAuthorizationService internal constructor(
                 if (response != null) {
                     continuation.resume(response)
                 } else {
-                    continuation.resumeWithException(exception?.let { AuthorizationException(it) } 
+                    continuation.resumeWithException(exception?.let { AuthorizationException(it) }
                         ?: AuthorizationException("Unknown error"))
                 }
             }
