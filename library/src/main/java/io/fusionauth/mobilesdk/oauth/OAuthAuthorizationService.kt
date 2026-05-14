@@ -37,7 +37,6 @@ import java.net.HttpURLConnection
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import androidx.core.net.toUri
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -345,6 +344,7 @@ class OAuthAuthorizationService internal constructor(
      * @param ex The authorization exception received from the authorization process, or null if no exception occurred.
      * @return The token response from the authorization service.
      */
+    @Suppress("RedundantSuspendModifier")
     private suspend fun performTokenRequest(
         response: AuthorizationResponse,
         ex: net.openid.appauth.AuthorizationException?
@@ -406,6 +406,7 @@ class OAuthAuthorizationService internal constructor(
      *
      * @return The [AuthorizationServiceConfiguration] object.
      */
+    @Suppress("RedundantSuspendModifier")
     private suspend fun fetchConfiguration(): AuthorizationServiceConfiguration {
         val uriBuilder = fusionAuthUrl.toUri().buildUpon()
 
@@ -488,7 +489,7 @@ class OAuthAuthorizationService internal constructor(
         val refreshToken = authState.refreshToken
             ?: throw AuthorizationException("No refresh token available")
 
-        val response = suspendCoroutine<TokenResponse> { continuation ->
+        val response = suspendCancellableCoroutine<TokenResponse> { continuation ->
             authService.performTokenRequest(
                 TokenRequest.Builder(config, clientId)
                     .setGrantType(GrantTypeValues.REFRESH_TOKEN)
@@ -500,7 +501,7 @@ class OAuthAuthorizationService internal constructor(
                 if (response != null) {
                     continuation.resume(response)
                 } else {
-                    continuation.resumeWithException(exception?.let { AuthorizationException(it) } 
+                    continuation.resumeWithException(exception?.let { AuthorizationException(it) }
                         ?: AuthorizationException("Unknown error"))
                 }
             }
