@@ -1,6 +1,7 @@
 package io.fusionauth.mobilesdk.oauth
 
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +12,7 @@ import io.fusionauth.mobilesdk.SingletonUnsecureConnectionBuilder
 import io.fusionauth.mobilesdk.TokenManager
 import io.fusionauth.mobilesdk.UserInfo
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
+import io.fusionauth.mobilesdk.exceptions.BrowserNotAvailableException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -133,27 +135,34 @@ class OAuthAuthorizationService internal constructor(
         val authRequest = authRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (options?.cancelIntent == null) {
+        try {
+            if (options?.cancelIntent == null) {
+                authService.performAuthorizationRequest(
+                    authRequest,
+                    completedPendingIntent,
+                )
+                return
+            }
             authService.performAuthorizationRequest(
                 authRequest,
                 completedPendingIntent,
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    options.cancelIntent.also {
+                        replaceExtras(it, Bundle().also { bundle ->
+                            bundle.putBoolean(EXTRA_CANCELLED, true)
+                        })
+                    },
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                ),
             )
-            return
+        } catch (e: ActivityNotFoundException) {
+            throw BrowserNotAvailableException(
+                "No browser is available to perform the authorization request",
+                e
+            )
         }
-        authService.performAuthorizationRequest(
-            authRequest,
-            completedPendingIntent,
-            PendingIntent.getActivity(
-                context,
-                0,
-                options.cancelIntent.also {
-                    replaceExtras(it, Bundle().also { bundle ->
-                        bundle.putBoolean(EXTRA_CANCELLED, true)
-                    })
-                },
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            ),
-        )
     }
 
     /**
@@ -314,27 +323,34 @@ class OAuthAuthorizationService internal constructor(
         val logoutRequest = logoutRequestBuilder.build()
 
         val authService = getAuthorizationService()
-        if (options?.cancelIntent == null) {
+        try {
+            if (options?.cancelIntent == null) {
+                authService.performEndSessionRequest(
+                    logoutRequest,
+                    completedPendingIntent,
+                )
+                return
+            }
             authService.performEndSessionRequest(
                 logoutRequest,
                 completedPendingIntent,
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    options.cancelIntent.also {
+                        replaceExtras(it, Bundle().also { bundle ->
+                            bundle.putBoolean(EXTRA_CANCELLED, true)
+                        })
+                    },
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                ),
             )
-            return
+        } catch (e: ActivityNotFoundException) {
+            throw BrowserNotAvailableException(
+                "No browser is available to perform the end session request",
+                e
+            )
         }
-        authService.performEndSessionRequest(
-            logoutRequest,
-            completedPendingIntent,
-            PendingIntent.getActivity(
-                context,
-                0,
-                options.cancelIntent.also {
-                    replaceExtras(it, Bundle().also { bundle ->
-                        bundle.putBoolean(EXTRA_CANCELLED, true)
-                    })
-                },
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            ),
-        )
     }
 
     /**
