@@ -26,6 +26,7 @@ import io.fusionauth.mobilesdk.AuthorizationConfiguration
 import io.fusionauth.mobilesdk.AuthorizationManager
 import io.fusionauth.mobilesdk.oauth.OAuthAuthorizeOptions
 import io.fusionauth.mobilesdk.exceptions.AuthorizationException
+import io.fusionauth.mobilesdk.exceptions.BrowserNotAvailableException
 import io.fusionauth.mobilesdk.storage.DataStoreStorage
 import kotlinx.coroutines.launch
 
@@ -98,6 +99,9 @@ class LoginActivity : AppCompatActivity() {
                             prompt = prompt
                         )
                     )
+            } catch (e: BrowserNotAvailableException) {
+                Log.e(TAG, "No browser available to perform authorization", e)
+                displayError(getString(R.string.no_browser_available), false)
             } catch (e: AuthorizationException) {
                 Log.e(TAG, "Error while authorizing", e)
                 displayError(e.message ?: "Error while authorizing", true)
