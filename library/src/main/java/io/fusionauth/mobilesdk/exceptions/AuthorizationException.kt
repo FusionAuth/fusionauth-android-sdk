@@ -1,6 +1,6 @@
 package io.fusionauth.mobilesdk.exceptions
 
-class AuthorizationException: Exception {
+open class AuthorizationException: Exception {
 
     constructor(message: String): super(message)
 

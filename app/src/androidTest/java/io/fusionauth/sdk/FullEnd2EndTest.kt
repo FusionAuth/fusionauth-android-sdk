@@ -17,6 +17,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import io.fusionauth.mobilesdk.AuthorizationManager
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -123,6 +124,66 @@ internal class FullEnd2EndTest {
 
         logout()
     }
+
+    @Test
+    fun e2eTestNoBrowserAvailable() {
+        val disabled = disableAllBrowsers()
+        try {
+            // The test only makes sense if we actually removed every https handler.
+            check(!hasHttpsHandler()) {
+                "Could not disable all browsers on this device; cannot validate no-browser path"
+            }
+
+            // Trigger auth from the activity.
+            onView(withId(R.id.start_auth)).perform(click())
+
+            // Verify the friendly no-browser message is shown and Retry is hidden.
+            val expected = InstrumentationRegistry.getInstrumentation()
+                .targetContext
+                .getString(R.string.no_browser_available)
+            device.wait(Until.findObject(By.text(expected)), TIMEOUT_MILLIS)
+            onView(withText(expected)).check(matches(isDisplayed()))
+            onView(withId(R.id.retry)).check(matches(not(isDisplayed())))
+        } finally {
+            enablePackages(disabled)
+        }
+    }
+
+    /**
+     * Disables every package that currently handles `https` VIEW intents for user 0 and
+     * returns the list so it can be re-enabled in teardown.
+     */
+    private fun disableAllBrowsers(): List<String> {
+        val handlers = httpsHandlerPackages()
+        logger.info("Disabling browser packages: $handlers")
+        handlers.forEach { pkg ->
+            device.executeShellCommand("pm disable-user --user 0 $pkg")
+        }
+        // Allow PackageManager state to settle.
+        Thread.sleep(500)
+        return handlers
+    }
+
+    private fun enablePackages(packages: List<String>) {
+        packages.forEach { pkg ->
+            logger.info("Re-enabling package: $pkg")
+            device.executeShellCommand("pm enable $pkg")
+        }
+    }
+
+    private fun httpsHandlerPackages(): List<String> {
+        val pm = InstrumentationRegistry.getInstrumentation().targetContext.packageManager
+        val intent = android.content.Intent(
+            android.content.Intent.ACTION_VIEW,
+            android.net.Uri.parse("https://example.com")
+        )
+        @Suppress("DEPRECATION")
+        return pm.queryIntentActivities(intent, 0)
+            .map { it.activityInfo.packageName }
+            .distinct()
+    }
+
+    private fun hasHttpsHandler(): Boolean = httpsHandlerPackages().isNotEmpty()
 
     // Helper Functions
 
