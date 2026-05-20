@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.1](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v1.1.0...v1.1.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* ActivityNotFound exception when no browser is found ([#313](https://github.com/FusionAuth/fusionauth-android-sdk/issues/313)) ([f94827f](https://github.com/FusionAuth/fusionauth-android-sdk/commit/f94827f19d191bad16fb04d2b60dafe7644d7ea0))
+
+
+### Build System and Dependencies
+
+* **deps:** bump github/codeql-action in the prod-github-actions group ([#309](https://github.com/FusionAuth/fusionauth-android-sdk/issues/309)) ([7f7e743](https://github.com/FusionAuth/fusionauth-android-sdk/commit/7f7e74354e56372ae758f9d870437294bafec079))
+* **deps:** bump the gradle-minor-dependencies group with 14 updates ([#310](https://github.com/FusionAuth/fusionauth-android-sdk/issues/310)) ([c6943ce](https://github.com/FusionAuth/fusionauth-android-sdk/commit/c6943ce3e08901482ce92e2a2adf13e9225a7a13))
+* **deps:** bump the prod-github-actions group across 1 directory with 2 updates ([#307](https://github.com/FusionAuth/fusionauth-android-sdk/issues/307)) ([0531c01](https://github.com/FusionAuth/fusionauth-android-sdk/commit/0531c0154ebefe29398e9d03e93b1d8d7a881052))
+* **deps:** bump the prod-github-actions group with 2 updates ([#312](https://github.com/FusionAuth/fusionauth-android-sdk/issues/312)) ([9f25f21](https://github.com/FusionAuth/fusionauth-android-sdk/commit/9f25f216ff38d37b10db0b06ccd25974211fab0e))
+
 ## [1.1.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v1.0.0...v1.1.0) (2026-04-09)
 
 
