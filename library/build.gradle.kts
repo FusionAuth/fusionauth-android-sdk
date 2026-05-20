@@ -76,7 +76,11 @@ publishing {
                 groupId = "io.fusionauth"
                 artifactId = "fusionauth-android-sdk"
                 // x-release-please-start-version
+<<<<<<< HEAD
                 version = "1.2.0"
+=======
+                version = "1.2.0-rc"
+>>>>>>> c0b7bcb (chore(main): release 1.2.0-rc)
                 // x-release-please-end
 
                 // And here are some more properties that go into the pom file.
