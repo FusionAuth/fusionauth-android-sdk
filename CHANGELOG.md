@@ -8,11 +8,6 @@
 * ActivityNotFound exception when no browser is found ([#313](https://github.com/FusionAuth/fusionauth-android-sdk/issues/313)) ([f94827f](https://github.com/FusionAuth/fusionauth-android-sdk/commit/f94827f19d191bad16fb04d2b60dafe7644d7ea0))
 
 
-### Miscellaneous Chores
-
-* **main:** release 1.2.0-rc ([#311](https://github.com/FusionAuth/fusionauth-android-sdk/issues/311)) ([f45371d](https://github.com/FusionAuth/fusionauth-android-sdk/commit/f45371d751497c54eb4a3453026eb66776901389))
-
-
 ### Build System and Dependencies
 
 * **deps:** bump github/codeql-action in the prod-github-actions group ([#309](https://github.com/FusionAuth/fusionauth-android-sdk/issues/309)) ([7f7e743](https://github.com/FusionAuth/fusionauth-android-sdk/commit/7f7e74354e56372ae758f9d870437294bafec079))
