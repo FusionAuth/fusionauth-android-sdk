@@ -2,7 +2,6 @@
 <lint>
     <!-- compileSdk/targetSdk intentionally held at 36 pending upgrade -->
     <issue id="OldTargetApi" severity="ignore" />
-    <issue id="GradleDependency" severity="ignore" />
     <!-- Launcher icon DIP sizes are intentionally non-standard for this sample app -->
     <issue id="IconDipSize" severity="ignore" />
     <!-- changebank.png is intentionally present in both drawable and drawable-nodpi -->
