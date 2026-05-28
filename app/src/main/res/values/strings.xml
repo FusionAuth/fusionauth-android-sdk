@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="account_balance_value">$100.00</string>
     <string name="app_name_short">FusionAuth</string>
     <string name="auth_granted_name">Welcome %s!</string>
@@ -15,7 +15,7 @@
     <string name="change_text_input_prepend">Amount in USD: $</string>
     <string name="change_text_input_placeholder">0.00</string>
     <string name="change_button">Make change</string>
-    <string name="change_result_text_view" tools:ignore="PluralsCandidate">We can make change for %1$s with %2$d nickels and %3$d pennies!</string>
+    <string name="change_result_text_view">We can make change for %1$s with %2$s and %3$s!</string>
     <string name="reset_configuration">Reset configuration</string>
     <string name="reset_config_dialog_title">Reset Configuration</string>
     <string name="reset_config_dialog_message">Choose a configuration to switch to. This will clear your current authentication state.</string>

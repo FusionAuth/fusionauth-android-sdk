@@ -269,11 +269,13 @@ class TokenActivity : AppCompatActivity() {
         val pennies = (cents % 5).toInt()
         val textView: TextView = findViewById(R.id.change_result_text_view)
         val changeTemplate: String = resources.getString(R.string.change_result_text_view)
+        val nickelsText = resources.getQuantityString(R.plurals.nickel_count, nickels, nickels)
+        val penniesText = resources.getQuantityString(R.plurals.penny_count, pennies, pennies)
         textView.text = String.format(
             changeTemplate,
             NumberFormat.getCurrencyInstance().format(floatValue.toDouble()),
-            nickels,
-            pennies
+            nickelsText,
+            penniesText
         )
         textView.visibility = View.VISIBLE
     }
