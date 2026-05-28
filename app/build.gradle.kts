@@ -46,6 +46,7 @@ android {
     }
     lint {
         sarifReport = true
+        lintConfig = file("lint.xml")
     }
 }
 

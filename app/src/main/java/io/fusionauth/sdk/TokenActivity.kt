@@ -254,7 +254,7 @@ class TokenActivity : AppCompatActivity() {
         val value: String = (findViewById<View>(R.id.change_text_input) as EditText)
             .text
             .toString()
-            .trim { it <= ' ' }
+            .trim()
 
         if (value.isEmpty()) {
             return
