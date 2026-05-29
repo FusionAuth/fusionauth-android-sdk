@@ -1,0 +1,10 @@
+<resources>
+    <plurals name="nickel_count">
+        <item quantity="one">%d nickel</item>
+        <item quantity="other">%d nickels</item>
+    </plurals>
+    <plurals name="penny_count">
+        <item quantity="one">%d penny</item>
+        <item quantity="other">%d pennies</item>
+    </plurals>
+</resources>
