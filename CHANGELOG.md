@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v1.2.0...v1.2.1) (2026-05-29)
+
+
+### Build System and Dependencies
+
+* Android Lint is failing due to maximum warnings exceeded. ([#317](https://github.com/FusionAuth/fusionauth-android-sdk/issues/317)) ([dc3ba6e](https://github.com/FusionAuth/fusionauth-android-sdk/commit/dc3ba6ea4a5d1692f55ddc283678fd06d276587a))
+* **deps:** bump github/codeql-action in the prod-github-actions group ([#315](https://github.com/FusionAuth/fusionauth-android-sdk/issues/315)) ([033f116](https://github.com/FusionAuth/fusionauth-android-sdk/commit/033f1165b604c0c181100ef1e40354c026bd6a4e))
+
 ## [1.2.0](https://github.com/FusionAuth/fusionauth-android-sdk/compare/v1.1.0...v1.2.0) (2026-05-21)
 
 
