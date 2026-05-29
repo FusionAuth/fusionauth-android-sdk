@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- compileSdk/targetSdk intentionally held at 36 pending upgrade -->
+    <issue id="OldTargetApi" severity="ignore" />
+    <!-- Launcher icon DIP sizes are intentionally non-standard for this sample app -->
+    <issue id="IconDipSize" severity="ignore" />
+    <!-- changebank.png is intentionally present in both drawable and drawable-nodpi -->
+    <issue id="IconDuplicatesConfig" severity="ignore" />
+    <!-- changebank.png lives in drawable/ by design for this sample app -->
+    <issue id="IconLocation" severity="ignore" />
+</lint>
