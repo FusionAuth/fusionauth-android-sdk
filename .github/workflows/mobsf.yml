@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # Sets up the python as a prerequisites for MobSF
       - name: Setup python
@@ -55,7 +55,7 @@ jobs:
 
       # Uploads Sarif Report to GitHub
       - name: Upload mobsfscan report
-        uses: github/codeql-action/upload-sarif@v4.36.0
+        uses: github/codeql-action/upload-sarif@v4.36.2
         if: success() || failure()
         with:
           sarif_file: mobsf.sarif.json
