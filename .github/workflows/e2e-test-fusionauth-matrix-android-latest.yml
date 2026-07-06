@@ -50,7 +50,7 @@ jobs:
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Create and start FusionAuth containers used by E2E test and sleeps for 30 seconds.
       # Despite its waiting until the container started with the status healthy,
@@ -70,7 +70,7 @@ jobs:
 
       # Performs E2E Test using android-emulator-runner
       - name: run tests
-        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2.37.0
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
